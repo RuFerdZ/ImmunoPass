@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("EuT9a951sqQCQQDAvkDtgHe3JtPxzU6QMB27Woxhfcvs");
 
 #[program]
 pub mod immunopass {
