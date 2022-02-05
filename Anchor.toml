@@ -21,4 +21,4 @@ wallet = "/home/rusiru/.config/solana/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
-sync-idl = "node sync_idl.js "
+sync-idl = "mkdir -p app/src && cp target/idl/immunopass.json app/src/idl.json"
