@@ -3,6 +3,15 @@ seeds = false
 [programs.localnet]
 immunopass = "HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG"
 
+[programs.testnet]
+immunopass = "HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG"
+
+[programs.devnet]
+immunopass = "HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG"
+
+[programs.mainnet]
+immunopass = "HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG"
+
 [registry]
 url = "https://anchor.projectserum.com"
 
