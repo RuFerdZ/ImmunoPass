@@ -1,7 +1,7 @@
 [features]
 seeds = false
 [programs.localnet]
-immunopass = "EuT9a951sqQCQQDAvkDtgHe3JtPxzU6QMB27Woxhfcvs"
+immunopass = "HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG"
 
 [registry]
 url = "https://anchor.projectserum.com"
