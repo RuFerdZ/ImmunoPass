@@ -27,10 +27,14 @@ const TIMESTAMP_LENGTH: usize = 8;
 // since according to UTF-8 encoding, a character can take upto 1 to 4 bytes
 // we consider the max bite size as 4 therefore usize = characters * 4 bytes
 const NAME_LENGTH: usize = 50 * 4;             
-const LICENSE_NUMBER_LENGTH: usize = 50 * 4;   
+const LICENSE_NUMBER_LENGTH: usize = 50 * 4;  
+const REGISTRATION_NUMBER_LENGTH: usize = 50 * 4; 
 const ADDRESS_LENGTH: usize = 500 * 4; 
 const TELEPHONE_LENGTH: usize = 15 * 4; 
+const EMAIL_LENGTH: usize = 100 * 4; 
+const WEBSITE_LENGTH: usize = 100 * 4; 
 const QUALIFICATIONS_LENGTH: usize = 250 * 4; 
+const TIMESLOTS_LENGTH: usize = 500 * 4;
 
 // Create doctor
 #[derive(Accounts)]
@@ -61,7 +65,7 @@ pub struct Doctor {
 
 // doctor attribute length rules
 impl Doctor {
-    const LEN: size = DISCRIMINATOR_LENGTH
+    const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH                               // owner
         + STRING_LENGTH_PREFIX + NAME_LENGTH              // firstname
         + STRING_LENGTH_PREFIX + NAME_LENGTH              // lastname
@@ -73,4 +77,43 @@ impl Doctor {
         + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH         // business_telephone
         + STRING_LENGTH_PREFIX + QUALIFICATIONS_LENGTH    // qualifications 
         + TIMESTAMP_LENGTH                                // joined_date
+}
+
+// Create vaccination camp
+#[derive(Accounts)]
+pub struct CreateVaccinationCamp<'info> {
+    #[account(init, payer = author, space = VaccinationCamp::LEN)]
+    pub vaccination_camp: Account<'info, VaccinationCamp>,
+    #[account(mut)]
+    pub author: Signer<'info>,
+    #[account(address = system_program::ID)]
+    pub system_program: AccountInfo<'info>,
+}
+
+// vaccination camp account
+#[account]
+pub struct VaccinationCamp {
+    pub owner: Pubkey,
+    pub registration_number: String,
+    pub name: String,
+    pub phone: String,
+    pub email: String,
+    pub web: String,
+    pub opening_times: String,
+    pub address: String,
+    pub joined_date: i64
+}
+
+// vaccination camp attribute length rules
+impl VaccinationCamp {
+    const LEN: usize = DISCRIMINATOR_LENGTH
+        + PUBLIC_KEY_LENGTH                                   // owner
+        + STRING_LENGTH_PREFIX + REGISTRATION_NUMBER_LENGTH   // registration_number
+        + STRING_LENGTH_PREFIX + NAME_LENGTH                  // name
+        + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH             // phone
+        + STRING_LENGTH_PREFIX + EMAIL_LENGTH                 // email
+        + STRING_LENGTH_PREFIX + WEBSITE_LENGTH               // web
+        + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH             // opening_times
+        + STRING_LENGTH_PREFIX + ADDRESS_LENGTH               // address
+        + TIMESTAMP_LENGTH                                    // joined_date
 }
