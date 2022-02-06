@@ -1,10 +1,19 @@
 use anchor_lang::prelude::*;
+use anchor_lang::solana_program::system_program;
 
 declare_id!("HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG");
 
 #[program]
 pub mod immunopass {
     use super::*;
+
+    pub fn create_doctor(ctx: Context<CreateDoctor>) -> ProgramResult {
+        let doctor: &mut Account<Doctor> = &mut ctx.accounts.doctor;
+        let author: &Signer = &ctx.accounts.author;
+        let joined_date: Clock = Clock::get.unwrap();
+
+        //TODO:methana should we send all attributes as parametes????
+    }
 
 }
 
