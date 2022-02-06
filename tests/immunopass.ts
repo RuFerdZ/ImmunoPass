@@ -9,9 +9,4 @@ describe('immunopass', () => {
 
   const program = anchor.workspace.Immunopass as Program<Immunopass>;
 
-  it('Is initialized!', async () => {
-    // Add your test here.
-    const tx = await program.rpc.initialize({});
-    console.log("Your transaction signature", tx);
-  });
 });
