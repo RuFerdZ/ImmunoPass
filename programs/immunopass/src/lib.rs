@@ -7,12 +7,43 @@ declare_id!("HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG");
 pub mod immunopass {
     use super::*;
 
-    pub fn create_doctor(ctx: Context<CreateDoctor>) -> ProgramResult {
+    pub fn create_doctor(
+        ctx: Context<CreateDoctor>,
+        firstname: String,
+        lastname: String,
+        date_of_birth: i64,
+        license_number: String,
+        licence_issued_date: i64,
+        licence_expiry_date: i64,
+        business_address: String,
+        business_telephone: String,
+        qualifications: String,
+        joined_date: i64
+    ) -> ProgramResult {
+        let clock: Clock = Clock::get().unwrap();
+
         let doctor: &mut Account<Doctor> = &mut ctx.accounts.doctor;
         let author: &Signer = &ctx.accounts.author;
         let joined_date: Clock = Clock::get.unwrap();
 
-        //TODO:methana should we send all attributes as parametes????
+        // check if first name and lastname are empry
+        if firstname.is_empty() || lastname.is_empty() {
+            return Err(ProgramError::InvalidArgument);
+        }
+
+        doctor.owner = *author.key;
+        doctor.joined_date = clock.unix_timestamp;
+        doctor.firstname = firstname;
+        doctor.lastname = lastname;
+        doctor.date_of_birth = date_of_birth;
+        doctor.license_number = license_number;
+        doctor.licence_issued_date = licence_issued_date;
+        doctor.licence_expiry_date = licence_expiry_date;
+        doctor.business_address = business_address;
+        doctor.business_telephone = business_telephone;
+        doctor.qualifications = qualifications;
+        doctor.joined_date = joined_date;
+
     }
 
 }
@@ -115,5 +146,90 @@ impl VaccinationCamp {
         + STRING_LENGTH_PREFIX + WEBSITE_LENGTH               // web
         + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH             // opening_times
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH               // address
-        + TIMESTAMP_LENGTH                                    // joined_date
+        + TIMESTAMP_LENGTH;                                   // joined_date
+}
+
+#[error]
+pub enum ErrorCode {
+    // first name errors
+    #[msg("The first name should be less than 50 characters")]
+    FirstNameTooLong,
+    #[msg("The first name should not be empty")]
+    FirstNameEmpty,
+
+    // last name errors
+    #[msg("The last name should be less than 50 characters")]
+    LastNameTooLong,
+    #[msg("The last name should not be empty")]
+    LastNameEmpty,
+
+    // license number errors
+    #[msg("The license number should be less than 50 characters")]
+    LicenseNumberTooLong,
+    #[msg("The license number should not be empty")]
+    LicenseNumberEmpty,
+
+    // registration number errors
+    #[msg("The registration number should be less than 50 characters")]
+    RegistrationNumberTooLong,
+    #[msg("The registration number should not be empty")]
+    RegistrationNumberEmpty,
+
+    // address errors
+    #[msg("The address should be less than 500 characters")]
+    AddressTooLong,
+    #[msg("The address should not be empty")]
+    AddressEmpty,
+    
+    // telephone errors
+    #[msg("The telephone number should be less than 15 characters")]
+    TelephoneTooLong,
+    #[msg("The telephone number should not be empty")]
+    TelephoneEmpty,
+    #[msg("The telephone number is invalid")]
+    TelephoneInvalid,
+
+    // email errors
+    #[msg("The email should be less than 100 characters")]
+    EmailTooLong,
+    #[msg("The email should not be empty")]
+    EmailEmpty,
+    #[msg("The email is invalid")]
+    EmailInvalid,
+
+    // website errors
+    #[msg("The website should be less than 100 characters")]
+    WebsiteTooLong,
+    #[msg("The website should not be empty")]
+    WebsiteEmpty,
+
+    // qualifications errors
+    #[msg("The qualifications should be less than 250 characters")]
+    QualificationsTooLong,
+    #[msg("The qualifications should not be empty")]
+    QualificationsEmpty,
+
+    // opening times errors
+    #[msg("The opening times should be less than 500 characters")]
+    OpeningTimesTooLong,
+    #[msg("The opening times should not be empty")]
+    OpeningTimesEmpty,
+
+    // doctor errors
+    #[msg("The doctor is not registered")]
+    DoctorNotFound,
+    #[msg("The doctor is already registered")]
+    DoctorAlreadyExists,
+
+    // vaccination camp errors
+    #[msg("The vaccination camp is not registered")]
+    VaccinationCampNotFound,
+    #[msg("The vaccination camp is already registered")]
+    VaccinationCampAlreadyExists,
+
+    // doctor-vaccination camp errors
+    #[msg("The doctor is not registered to the vaccination camp")]
+    DoctorNotRegisteredToVaccinationCamp,
+    #[msg("The doctor is already registered to the vaccination camp")]
+    DoctorAlreadyRegisteredToVaccinationCamp,
 }
