@@ -44,8 +44,12 @@ pub mod immunopass {
         doctor.qualifications = qualifications;
         doctor.joined_date = joined_date;
 
+        Ok(())
     }
 
+    pub fn create_vaccination_camp{
+        
+    }
 }
 
 // program specific
