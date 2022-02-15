@@ -96,12 +96,41 @@ describe('immunopass', () => {
     var phone = "07123456789";
     var email = "abc.med@immunopass.io"
     var web = "abc.med.com";
-    var openingTimes = "12";
+    var openingTimes = [
+      {
+       "day" :"monday",
+       "time" : "4.00pm - 5.30pm"
+      },
+      {
+       "day" :"tuesday",
+       "time" : "4.00pm - 5.30pm"
+      },
+      {
+       "day" :"vednesday",
+       "time" : "4.00pm - 5.30pm"
+      },
+      {
+       "day" :"thursday",
+       "time" : "4.00pm - 5.30pm"
+      },
+      {
+       "day" :"friday",
+       "time" : "4.00pm - 5.30pm"
+      },
+      {
+       "day" :"saturday",
+       "time" : "12.00pm - 1.30pm"
+      },
+      {
+       "day" :"sunday",
+       "time" : "Closed"
+      }
+    ];
     var address = "No.1, Galle Road, Colombo";
 
 // integers of type i64 cant be passed as arguments to the contract
 
-    await program.rpc.createVaccinationCamp(registrationNumber, name, phone, email, web, openingTimes, address, {
+    await program.rpc.createVaccinationCamp(registrationNumber, name, phone, email, web, JSON.stringify(openingTimes), address, {
       accounts: {
         vaccinationCamp: camp.publicKey,
         author: program.provider.wallet.publicKey,
@@ -118,7 +147,7 @@ describe('immunopass', () => {
     assert.equal(campCreated.phone, phone);
     assert.equal(campCreated.email, email);
     assert.equal(campCreated.web, web);
-    assert.equal(campCreated.openingTimes, openingTimes);
+    assert.equal(campCreated.openingTimes, JSON.stringify(openingTimes));
     assert.equal(campCreated.address, address);
     assert.ok(campCreated.joinedDate);
 
@@ -131,4 +160,63 @@ describe('immunopass', () => {
     var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
   });
 
+
+  it('shoud be able to create a vaccination camp', async () => {
+    
+    // create new keypair for a doctor
+    const camp = anchor.web3.Keypair.generate();
+
+    var registrationNumber = "";
+    var name = "ABC Medical Center";
+    var phone = "07123456789";
+    var email = "abc.med@immunopass.io"
+    var web = "abc.med.com";
+    var openingTimes = [
+      {
+       "day" :"monday",
+       "time" : "4.00pm - 5.30pm"
+      },
+      {
+       "day" :"tuesday",
+       "time" : "4.00pm - 5.30pm"
+      },
+      {
+       "day" :"vednesday",
+       "time" : "4.00pm - 5.30pm"
+      },
+      {
+       "day" :"thursday",
+       "time" : "4.00pm - 5.30pm"
+      },
+      {
+       "day" :"friday",
+       "time" : "4.00pm - 5.30pm"
+      },
+      {
+       "day" :"saturday",
+       "time" : "12.00pm - 1.30pm"
+      },
+      {
+       "day" :"sunday",
+       "time" : "Closed"
+      }
+    ];
+    var address = "No.1, Galle Road, Colombo";
+
+// integers of type i64 cant be passed as arguments to the contract
+    try {
+      await program.rpc.createVaccinationCamp(registrationNumber, name, phone, email, web, JSON.stringify(openingTimes), address, {
+        accounts: {
+          vaccinationCamp: camp.publicKey,
+          author: program.provider.wallet.publicKey,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        },
+        signers: [camp],
+      });
+    } catch(error) {
+      assert.equal(error.msg, 'The registration number should not be empty');
+      return;
+    }
+    assert.fail('The instruction should have failed with an empty registration number.');
+  });
 });
