@@ -7,24 +7,11 @@ declare_id!("HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG");
 pub mod immunopass {
     use super::*;
 
-    pub fn create_doctor(
-        ctx: Context<CreateDoctor>,
-        firstname: String,
-        lastname: String,
-        date_of_birth: i64,
-        license_number: String,
-        licence_issued_date: i64,
-        licence_expiry_date: i64,
-        business_address: String,
-        business_telephone: String,
-        qualifications: String,
-        joined_date: i64
-    ) -> ProgramResult {
-        let clock: Clock = Clock::get().unwrap();
+    pub fn create_doctor(ctx: Context<CreateDoctor>, firstname: String, lastname: String, date_of_birth: String, license_number: String, licence_issued_date: String, licence_expiry_date: String, business_address: String, business_telephone: String, qualifications: String) -> ProgramResult {
 
         let doctor: &mut Account<Doctor> = &mut ctx.accounts.doctor;
         let author: &Signer = &ctx.accounts.author;
-        let joined_date: Clock = Clock::get.unwrap();
+        let joined_date: Clock = Clock::get().unwrap();
 
         // check if first name and lastname are empry
         if firstname.is_empty() || lastname.is_empty() {
@@ -32,23 +19,18 @@ pub mod immunopass {
         }
 
         doctor.owner = *author.key;
-        doctor.joined_date = clock.unix_timestamp;
         doctor.firstname = firstname;
         doctor.lastname = lastname;
-        doctor.date_of_birth = date_of_birth;
+        doctor.date_of_birth = date_of_birth.parse().unwrap();;
         doctor.license_number = license_number;
-        doctor.licence_issued_date = licence_issued_date;
-        doctor.licence_expiry_date = licence_expiry_date;
+        doctor.licence_issued_date = licence_issued_date.parse().unwrap();
+        doctor.licence_expiry_date = licence_expiry_date.parse().unwrap();
         doctor.business_address = business_address;
         doctor.business_telephone = business_telephone;
         doctor.qualifications = qualifications;
-        doctor.joined_date = joined_date;
+        doctor.joined_date = joined_date.unix_timestamp;
 
         Ok(())
-    }
-
-    pub fn create_vaccination_camp{
-        
     }
 }
 
@@ -69,7 +51,7 @@ const TELEPHONE_LENGTH: usize = 15 * 4;
 const EMAIL_LENGTH: usize = 100 * 4; 
 const WEBSITE_LENGTH: usize = 100 * 4; 
 const QUALIFICATIONS_LENGTH: usize = 250 * 4; 
-const TIMESLOTS_LENGTH: usize = 500 * 4;
+// const TIMESLOTS_LENGTH: usize = 500 * 4;
 
 // Create doctor
 #[derive(Accounts)]
@@ -111,7 +93,7 @@ impl Doctor {
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH           // business_address
         + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH         // business_telephone
         + STRING_LENGTH_PREFIX + QUALIFICATIONS_LENGTH    // qualifications 
-        + TIMESTAMP_LENGTH                                // joined_date
+        + TIMESTAMP_LENGTH;                                // joined_date
 }
 
 // Create vaccination camp
