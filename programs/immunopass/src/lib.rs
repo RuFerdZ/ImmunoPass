@@ -44,7 +44,7 @@ pub mod immunopass {
     
         // check if registration number is empry
         if registration_number.is_empty() {
-            return Err(ProgramError::InvalidArgument);
+            return Err(ErrorCode::RegistrationNumberEmpty.into());
         }
 
         vaccination_camp.owner = *author.key;
