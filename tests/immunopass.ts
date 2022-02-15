@@ -26,7 +26,7 @@ describe('immunopass', () => {
     var businessTelephone = "0771234567";
     var qualifications = "MBBS, MD";
 
-// integers of type i64 cant be passed as arguments to the contract
+    // integers of type i64 cant be passed as arguments to the contract
 
     await program.rpc.createDoctor(firstname, lastname, dateOfBirth, licenseNumber, licenceIssued_date, licenceExpiry_date, businessAddress, businessTelephone, qualifications, {
       accounts: {
@@ -49,11 +49,9 @@ describe('immunopass', () => {
     assert.equal(doctorCreated.businessAddress, businessAddress);
     assert.equal(doctorCreated.businessTelephone, businessTelephone);
     assert.equal(doctorCreated.qualifications, qualifications);
-    assert.ok(doctorCreated.joinedDate);
-
-
-    // console.log(doctorCreated);
+    assert.ok(doctorCreated.joinedDate);  
   });
+
 
   it('cannot create a doctor without a firstname', async () => {
     try{
@@ -85,6 +83,52 @@ describe('immunopass', () => {
       return;
     }
     assert.fail('The instruction should have failed with an empty firstname.');
+  });
+
+
+  it('shoud be able to create a vaccination camp', async () => {
+    
+    // create new keypair for a doctor
+    const camp = anchor.web3.Keypair.generate();
+
+    var registrationNumber = "MED001";
+    var name = "ABC Medical Center";
+    var phone = "07123456789";
+    var email = "abc.med@immunopass.io"
+    var web = "abc.med.com";
+    var openingTimes = "12";
+    var address = "No.1, Galle Road, Colombo";
+
+// integers of type i64 cant be passed as arguments to the contract
+
+    await program.rpc.createVaccinationCamp(registrationNumber, name, phone, email, web, openingTimes, address, {
+      accounts: {
+        vaccinationCamp: camp.publicKey,
+        author: program.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [camp],
+    });
+
+    // check if the doctor is created
+    const campCreated =await program.account.vaccinationCamp.fetch(camp.publicKey);
+
+    assert.equal(campCreated.registrationNumber, registrationNumber);
+    assert.equal(campCreated.name, name);
+    assert.equal(campCreated.phone, phone);
+    assert.equal(campCreated.email, email);
+    assert.equal(campCreated.web, web);
+    assert.equal(campCreated.openingTimes, openingTimes);
+    assert.equal(campCreated.address, address);
+    assert.ok(campCreated.joinedDate);
+
+    // timstamp to date
+    let unix_timestamp = campCreated.joinedDate;
+    var date = new Date(unix_timestamp * 1000);
+    var hours = date.getHours();
+    var minutes = "0" + date.getMinutes();
+    var seconds = "0" + date.getSeconds();
+    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
   });
 
 });
