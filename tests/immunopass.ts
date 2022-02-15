@@ -55,4 +55,36 @@ describe('immunopass', () => {
     // console.log(doctorCreated);
   });
 
+  it('cannot create a doctor without a firstname', async () => {
+    try{
+      // create new keypair for a doctor
+      const doctor = anchor.web3.Keypair.generate();
+
+      var firstname = "";
+      var lastname = "Fernando";
+      var dateOfBirth = "12";
+      var licenseNumber = "DOC001"
+      var licenceIssued_date = "12";
+      var licenceExpiry_date = "12";
+      var businessAddress = "No.1, Galle Road, Colombo";
+      var businessTelephone = "0771234567";
+      var qualifications = "MBBS, MD";
+
+      // integers of type i64 cant be passed as arguments to the contract
+
+      await program.rpc.createDoctor(firstname, lastname, dateOfBirth, licenseNumber, licenceIssued_date, licenceExpiry_date, businessAddress, businessTelephone, qualifications, {
+        accounts: {
+          doctor: doctor.publicKey,
+          author: program.provider.wallet.publicKey,
+          systemProgram: anchor.web3.SystemProgram.programId,
+        },
+        signers: [doctor],
+      });
+    } catch(error) {
+      assert.equal(error.msg, 'The first name should not be empty');
+      return;
+    }
+    assert.fail('The instruction should have failed with an empty firstname.');
+  });
+
 });
