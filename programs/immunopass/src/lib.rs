@@ -13,15 +13,17 @@ pub mod immunopass {
         let author: &Signer = &ctx.accounts.author;
         let joined_date: Clock = Clock::get().unwrap();
 
-        // check if first name and lastname are empry
-        if firstname.is_empty() || lastname.is_empty() {
-            return Err(ProgramError::InvalidArgument);
+        // validate first name
+        if firstname.is_empty() {
+            return Err(ErrorCode::FirstNameEmpty.into());
+        } else if firstname.chars().count() > 50 {
+            return Err(ErrorCode::FirstNameTooLong.into());
         }
 
         doctor.owner = *author.key;
         doctor.firstname = firstname;
         doctor.lastname = lastname;
-        doctor.date_of_birth = date_of_birth.parse().unwrap();;
+        doctor.date_of_birth = date_of_birth.parse().unwrap();
         doctor.license_number = license_number;
         doctor.licence_issued_date = licence_issued_date.parse().unwrap();
         doctor.licence_expiry_date = licence_expiry_date.parse().unwrap();
@@ -32,32 +34,49 @@ pub mod immunopass {
 
         Ok(())
     }
+
+    pub fn create_vaccination_camp(ctx: Context<CreateVaccinationCamp>, registration_number: String, name: String, phone: String, email: String, web: String, opening_times: String, address: String) -> ProgramResult {
+    
+        let vaccination_camp: &mut Account<VaccinationCamp> = &mut ctx.accounts.vaccination_camp;
+        let author: &Signer = &ctx.accounts.author;
+        let joined_date: Clock = Clock::get().unwrap();
+
+    
+        // check if registration number is empry
+        if registration_number.is_empty() {
+            return Err(ProgramError::InvalidArgument);
+        }
+
+        vaccination_camp.owner = *author.key;
+        vaccination_camp.registration_number = registration_number;
+        vaccination_camp.name = name;
+        vaccination_camp.phone = phone;
+        vaccination_camp.email = email;
+        vaccination_camp.web = web;
+        vaccination_camp.opening_times = opening_times;
+        vaccination_camp.address = address;
+        vaccination_camp.joined_date = joined_date.unix_timestamp;
+    
+        Ok(())
+    }
 }
-
-// program specific
-const DISCRIMINATOR_LENGTH: usize = 8;
-const STRING_LENGTH_PREFIX: usize = 4; 
-const PUBLIC_KEY_LENGTH: usize = 32;
-const TIMESTAMP_LENGTH: usize = 8;
-
-// other length constraints
-// since according to UTF-8 encoding, a character can take upto 1 to 4 bytes
-// we consider the max bite size as 4 therefore usize = characters * 4 bytes
-const NAME_LENGTH: usize = 50 * 4;             
-const LICENSE_NUMBER_LENGTH: usize = 50 * 4;  
-const REGISTRATION_NUMBER_LENGTH: usize = 50 * 4; 
-const ADDRESS_LENGTH: usize = 500 * 4; 
-const TELEPHONE_LENGTH: usize = 15 * 4; 
-const EMAIL_LENGTH: usize = 100 * 4; 
-const WEBSITE_LENGTH: usize = 100 * 4; 
-const QUALIFICATIONS_LENGTH: usize = 250 * 4; 
-// const TIMESLOTS_LENGTH: usize = 500 * 4;
 
 // Create doctor
 #[derive(Accounts)]
 pub struct CreateDoctor<'info> {
     #[account(init, payer = author, space = Doctor::LEN)]
     pub doctor: Account<'info, Doctor>,
+    #[account(mut)]
+    pub author: Signer<'info>,
+    #[account(address = system_program::ID)]
+    pub system_program: AccountInfo<'info>,
+}
+
+// Create vaccination camp
+#[derive(Accounts)]
+pub struct CreateVaccinationCamp<'info> {
+    #[account(init, payer = author, space = VaccinationCamp::LEN)]
+    pub vaccination_camp: Account<'info, VaccinationCamp>,
     #[account(mut)]
     pub author: Signer<'info>,
     #[account(address = system_program::ID)]
@@ -80,6 +99,39 @@ pub struct Doctor {
     pub joined_date: i64
 }
 
+// vaccination camp account
+#[account]
+pub struct VaccinationCamp {
+    pub owner: Pubkey,
+    pub registration_number: String,
+    pub name: String,
+    pub phone: String,
+    pub email: String,
+    pub web: String,
+    pub opening_times: String,
+    pub address: String,
+    pub joined_date: i64
+}
+
+// program specific
+const DISCRIMINATOR_LENGTH: usize = 8;
+const STRING_LENGTH_PREFIX: usize = 4; 
+const PUBLIC_KEY_LENGTH: usize = 32;
+const TIMESTAMP_LENGTH: usize = 8;
+
+// other length constraints
+// since according to UTF-8 encoding, a character can take upto 1 to 4 bytes
+// we consider the max bite size as 4 therefore usize = characters * 4 bytes
+const NAME_LENGTH: usize = 50 * 4;             
+const LICENSE_NUMBER_LENGTH: usize = 50 * 4;  
+const REGISTRATION_NUMBER_LENGTH: usize = 50 * 4; 
+const ADDRESS_LENGTH: usize = 500 * 4; 
+const TELEPHONE_LENGTH: usize = 15 * 4; 
+const EMAIL_LENGTH: usize = 100 * 4; 
+const WEBSITE_LENGTH: usize = 100 * 4; 
+const QUALIFICATIONS_LENGTH: usize = 250 * 4; 
+const TIMESLOTS_LENGTH: usize = 500 * 4;
+
 // doctor attribute length rules
 impl Doctor {
     const LEN: usize = DISCRIMINATOR_LENGTH
@@ -96,31 +148,6 @@ impl Doctor {
         + TIMESTAMP_LENGTH;                                // joined_date
 }
 
-// Create vaccination camp
-#[derive(Accounts)]
-pub struct CreateVaccinationCamp<'info> {
-    #[account(init, payer = author, space = VaccinationCamp::LEN)]
-    pub vaccination_camp: Account<'info, VaccinationCamp>,
-    #[account(mut)]
-    pub author: Signer<'info>,
-    #[account(address = system_program::ID)]
-    pub system_program: AccountInfo<'info>,
-}
-
-// vaccination camp account
-#[account]
-pub struct VaccinationCamp {
-    pub owner: Pubkey,
-    pub registration_number: String,
-    pub name: String,
-    pub phone: String,
-    pub email: String,
-    pub web: String,
-    pub opening_times: String,
-    pub address: String,
-    pub joined_date: i64
-}
-
 // vaccination camp attribute length rules
 impl VaccinationCamp {
     const LEN: usize = DISCRIMINATOR_LENGTH
@@ -130,7 +157,7 @@ impl VaccinationCamp {
         + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH             // phone
         + STRING_LENGTH_PREFIX + EMAIL_LENGTH                 // email
         + STRING_LENGTH_PREFIX + WEBSITE_LENGTH               // web
-        + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH             // opening_times
+        + STRING_LENGTH_PREFIX + TIMESLOTS_LENGTH             // opening_times
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH               // address
         + TIMESTAMP_LENGTH;                                   // joined_date
 }
