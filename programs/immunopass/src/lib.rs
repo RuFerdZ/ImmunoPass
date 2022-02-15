@@ -72,6 +72,14 @@ pub struct CreateDoctor<'info> {
     pub system_program: AccountInfo<'info>,
 }
 
+// update doctor
+#[derive(Accounts)]
+pub struct UpdateDoctor<'info> {
+    #[account(mut, has_one = author)]
+    pub doctor: Account<'info, Doctor>,
+    pub author: Signer<'info>,
+}
+
 // Create vaccination camp
 #[derive(Accounts)]
 pub struct CreateVaccinationCamp<'info> {
@@ -81,6 +89,14 @@ pub struct CreateVaccinationCamp<'info> {
     pub author: Signer<'info>,
     #[account(address = system_program::ID)]
     pub system_program: AccountInfo<'info>,
+}
+
+// update doctor
+#[derive(Accounts)]
+pub struct UpdateVaccinationCamp<'info> {
+    #[account(mut, has_one = author)]
+    pub vaccination_camp: Account<'info, VaccinationCamp>,
+    pub author: Signer<'info>,
 }
 
 // doctor account
