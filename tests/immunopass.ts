@@ -52,7 +52,7 @@ describe('immunopass', () => {
     assert.ok(doctorCreated.joinedDate);
 
 
-    console.log(doctorCreated);
+    // console.log(doctorCreated);
   });
 
 });
