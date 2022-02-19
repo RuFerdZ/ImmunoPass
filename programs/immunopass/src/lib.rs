@@ -150,19 +150,19 @@ pub struct VaccinationCamp {
     pub is_active: bool
 }
 
-// // passport holder account
-// #[account]
-// pub struct PassportHolder {
-//     pub owner: Pubkey,
-//     pub firstname: String,
-//     pub lastname: String,
-//     pub date_of_birth: i64,
-//     pub address: String,
-//     pub phone: String,
-//     pub place_of_birth: String,
-//     pub nic: String,
-//     pub is_active: bool
-// }
+// passport holder account
+#[account]
+pub struct PassportHolder {
+    pub owner: Pubkey,
+    pub firstname: String,
+    pub lastname: String,
+    pub date_of_birth: i64,
+    pub address: String,
+    pub phone: String,
+    pub place_of_birth: String,
+    pub nic: String,
+    pub is_active: bool
+}
 
 
 
