@@ -229,11 +229,13 @@ describe('immunopass', () => {
   it('can fetch all vaccination camps', async () => {
     const vaccinationCamps = await program.account.vaccinationCamp.all();
     assert.equal(vaccinationCamps.length, 1);
-  }); 
+  });
+
+  const holder = anchor.web3.Keypair.generate();
 
   it('can create passport holder', async () => {
     // create new keypair for a passport holder
-    const holder = anchor.web3.Keypair.generate();
+    // const holder = anchor.web3.Keypair.generate();
 
     var firstname = "Hasani";
     var lastname = "Dilhari";
@@ -251,7 +253,6 @@ describe('immunopass', () => {
       },
       signers: [holder],
     });
-
     // check if the doctor is created
     const createdHolder = await program.account.passportHolder.fetch(holder.publicKey);
 
@@ -267,7 +268,7 @@ describe('immunopass', () => {
 
   it('can create passport holder without a NIC number', async () => {
     // create new keypair for a passport holder
-    const holder = anchor.web3.Keypair.generate();
+    const holder02 = anchor.web3.Keypair.generate();
 
     var firstname = "Hasani";
     var lastname = "Dilhari";
@@ -279,15 +280,15 @@ describe('immunopass', () => {
 
     await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, address, phone, placeOfBirth, nic, {
       accounts: {
-        passportHolder: holder.publicKey,
+        passportHolder: holder02.publicKey,
         author: program.provider.wallet.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       },
-      signers: [holder],
+      signers: [holder02],
     });
 
     // check if the doctor is created
-    const createdHolder = await program.account.passportHolder.fetch(holder.publicKey);
+    const createdHolder = await program.account.passportHolder.fetch(holder02.publicKey);
 
     assert.equal(createdHolder.firstname, firstname);
     assert.equal(createdHolder.lastname, lastname);
@@ -299,4 +300,8 @@ describe('immunopass', () => {
     assert.ok(createdHolder.joinedDate);
   });
 
+  it('can fetch all passport holders', async () => {
+    const passportHolders = await program.account.passportHolder.all();
+    assert.equal(passportHolders.length, 2);
+  });
 });
