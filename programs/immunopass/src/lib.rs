@@ -63,32 +63,34 @@ pub mod immunopass {
         Ok(())
     }
 
-    pub fn create_passport_holder(ctx: Context<CreatePassportHolder>, firstname: String, lastname: String, date_of_birth: String, address: String, phone: String, placeOfBirth: String, nic: String) -> ProgramResult {
+    pub fn create_passport_holder(ctx: Context<CreatePassportHolder>, firstname: String, lastname: String, date_of_birth: String, address: String, phone: String, place_of_birth: String, nic: String) -> ProgramResult {
         
-            let passport_holder: &mut Account<PassportHolder> = &mut ctx.accounts.passport_holder;
-            let author: &Signer = &ctx.accounts.author;
-            let joined_date: Clock = Clock::get().unwrap();
-    
-            // check if first name is empty
-            if firstname.is_empty() {
-                return Err(ErrorCode::FirstNameEmpty.into());
-            } else if firstname.chars().count() > 50 {
-                return Err(ErrorCode::FirstNameTooLong.into());
-            }
-    
-            passport_holder.owner = *author.key;
-            passport_holder.firstname = firstname;
-            passport_holder.lastname = lastname;
-            passport_holder.date_of_birth = date_of_birth.parse().unwrap();
-            passport_holder.address = address;
-            passport_holder.phone = phone;
-            passport_holder.place_of_birth = placeOfBirth;
-            passport_holder.nic = nic;
-            passport_holder.joined_date = joined_date.unix_timestamp;
-            passport_holder.is_active = false;
-            
-            Ok(())
+        let passport_holder: &mut Account<PassportHolder> = &mut ctx.accounts.passport_holder;
+        let author: &Signer = &ctx.accounts.author;
+        let joined_date: Clock = Clock::get().unwrap();
+
+        passport_holder.owner = *author.key;
+        passport_holder.firstname = firstname;
+        passport_holder.lastname = lastname;
+        passport_holder.date_of_birth = date_of_birth.parse().unwrap();
+        passport_holder.address = address;
+        passport_holder.phone = phone;
+        passport_holder.place_of_birth = place_of_birth;
+        passport_holder.nic = nic;
+        passport_holder.joined_date = joined_date.unix_timestamp;
+        passport_holder.is_active = false;
+        
+        Ok(())
     }
+
+    // pub fn check_passport_holder_validity(ctx: Context<UpdatePassportHolder>) -> ProgramResult {
+    //     let passport_holder: &mut Account<PassportHolder> = &mut ctx.accounts.passport_holder;
+
+    //     // TODO: check if passport holder is valid
+    //     passport_holder.is_active = true;
+        
+    //     Ok(())
+    // }
 }
 
 // Create doctor
@@ -155,6 +157,14 @@ pub struct CreatePassportHolder<'info> {
     #[account(address = system_program::ID)]
     pub system_program: AccountInfo<'info>,
 }
+
+// // update passport holder
+// #[derive(Accounts)]
+// pub struct UpdatePassportHolder<'info> {
+//     #[account(mut)]
+//     pub passport_holder: Account<'info, PassportHolder>,
+//     pub author: Signer<'info>,
+// }
 
 // doctor account
 #[account]

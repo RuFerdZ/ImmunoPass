@@ -229,5 +229,74 @@ describe('immunopass', () => {
   it('can fetch all vaccination camps', async () => {
     const vaccinationCamps = await program.account.vaccinationCamp.all();
     assert.equal(vaccinationCamps.length, 1);
-  });   
+  }); 
+
+  it('can create passport holder', async () => {
+    // create new keypair for a passport holder
+    const holder = anchor.web3.Keypair.generate();
+
+    var firstname = "Hasani";
+    var lastname = "Dilhari";
+    var dateOfBirth = "870976800";
+    var address =  "No. 123, Nittambuwa, Gampaha";
+    var phone = "07123456789";
+    var placeOfBirth = "Gampaha";
+    var nic = "123456789V";
+
+    await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, address, phone, placeOfBirth, nic, {
+      accounts: {
+        passportHolder: holder.publicKey,
+        author: program.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [holder],
+    });
+
+    // check if the doctor is created
+    const createdHolder = await program.account.passportHolder.fetch(holder.publicKey);
+
+    assert.equal(createdHolder.firstname, firstname);
+    assert.equal(createdHolder.lastname, lastname);
+    assert.equal(createdHolder.dateOfBirth, dateOfBirth);
+    assert.equal(createdHolder.address, address);
+    assert.equal(createdHolder.phone, phone);
+    assert.equal(createdHolder.placeOfBirth, placeOfBirth);
+    assert.equal(createdHolder.nic, nic);
+    assert.ok(createdHolder.joinedDate);
+  });
+
+  it('can create passport holder without a NIC number', async () => {
+    // create new keypair for a passport holder
+    const holder = anchor.web3.Keypair.generate();
+
+    var firstname = "Hasani";
+    var lastname = "Dilhari";
+    var dateOfBirth = "870976800";
+    var address =  "No. 123, Nittambuwa, Gampaha";
+    var phone = "07123456789";
+    var placeOfBirth = "Gampaha";
+    var nic = "";
+
+    await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, address, phone, placeOfBirth, nic, {
+      accounts: {
+        passportHolder: holder.publicKey,
+        author: program.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [holder],
+    });
+
+    // check if the doctor is created
+    const createdHolder = await program.account.passportHolder.fetch(holder.publicKey);
+
+    assert.equal(createdHolder.firstname, firstname);
+    assert.equal(createdHolder.lastname, lastname);
+    assert.equal(createdHolder.dateOfBirth, dateOfBirth);
+    assert.equal(createdHolder.address, address);
+    assert.equal(createdHolder.phone, phone);
+    assert.equal(createdHolder.placeOfBirth, placeOfBirth);
+    assert.equal(createdHolder.nic, nic);
+    assert.ok(createdHolder.joinedDate);
+  });
+
 });
