@@ -241,7 +241,7 @@ impl PassportHolder {
         + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH         // phone
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH           // place_of_birth
         + STRING_LENGTH_PREFIX + NIC_LENGTH               // nic
-        + BOOLEAN_LENGTH;                                     // is_active
+        + BOOLEAN_LENGTH;                                 // is_active
 }
 
 #[error]
@@ -327,4 +327,22 @@ pub enum ErrorCode {
     DoctorNotRegisteredToVaccinationCamp,
     #[msg("The doctor is already registered to the vaccination camp")]
     DoctorAlreadyRegisteredToVaccinationCamp,
+
+    // passport holder errors
+    #[msg("The passport holder is not registered")]
+    PassportHolderNotFound,
+    #[msg("The passport holder is already registered")]
+    PassportHolderAlreadyExists,
+
+    // nic errors
+    #[msg("The nic should be less than 15 characters")]
+    NicTooLong,
+    // #[msg("The nic should not be empty")]
+    // NicEmpty,
+
+    // place of birth errors
+    #[msg("The place of birth should be less than 500 characters")]
+    PlaceOfBirthTooLong,
+    #[msg("The place of birth should not be empty")]
+    PlaceOfBirthEmpty,
 }
