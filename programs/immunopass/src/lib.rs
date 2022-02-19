@@ -118,6 +118,17 @@ pub struct CreateVaccinationCamp<'info> {
 //     pub author: Signer<'info>,
 // }
 
+// Create passport holder
+#[derive(Accounts)]
+pub struct CreatePassportHolder<'info> {
+    #[account(init, payer = author, space = PassportHolder::LEN)]
+    pub passport_holder: Account<'info, PassportHolder>,
+    #[account(mut)]
+    pub author: Signer<'info>,
+    #[account(address = system_program::ID)]
+    pub system_program: AccountInfo<'info>,
+}
+
 // doctor account
 #[account]
 pub struct Doctor {
@@ -164,8 +175,6 @@ pub struct PassportHolder {
     pub is_active: bool
 }
 
-
-
 // program specific
 const DISCRIMINATOR_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; 
@@ -186,6 +195,7 @@ const EMAIL_LENGTH: usize = 100 * 4;
 const WEBSITE_LENGTH: usize = 100 * 4; 
 const QUALIFICATIONS_LENGTH: usize = 250 * 4; 
 const TIMESLOTS_LENGTH: usize = 500 * 4;
+const NIC_LENGTH: usize = 15 * 4;
 
 // doctor attribute length rules
 impl Doctor {
@@ -216,6 +226,21 @@ impl VaccinationCamp {
         + STRING_LENGTH_PREFIX + TIMESLOTS_LENGTH             // opening_times
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH               // address
         + TIMESTAMP_LENGTH                                    // joined_date
+        + BOOLEAN_LENGTH;                                     // is_active
+}
+
+
+// passport holder attribute length rules
+impl PassportHolder {
+    const LEN: usize = DISCRIMINATOR_LENGTH
+        + PUBLIC_KEY_LENGTH                               // owner
+        + STRING_LENGTH_PREFIX + NAME_LENGTH              // firstname
+        + STRING_LENGTH_PREFIX + NAME_LENGTH              // lastname
+        + TIMESTAMP_LENGTH                                // date_of_birth
+        + STRING_LENGTH_PREFIX + ADDRESS_LENGTH           // address
+        + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH         // phone
+        + STRING_LENGTH_PREFIX + ADDRESS_LENGTH           // place_of_birth
+        + STRING_LENGTH_PREFIX + NIC_LENGTH               // nic
         + BOOLEAN_LENGTH;                                     // is_active
 }
 
