@@ -234,9 +234,6 @@ describe('immunopass', () => {
   const holder = anchor.web3.Keypair.generate();
 
   it('can create passport holder', async () => {
-    // create new keypair for a passport holder
-    // const holder = anchor.web3.Keypair.generate();
-
     var firstname = "Hasani";
     var lastname = "Dilhari";
     var dateOfBirth = "870976800";
@@ -265,6 +262,26 @@ describe('immunopass', () => {
     assert.equal(createdHolder.nic, nic);
     assert.ok(createdHolder.joinedDate);
   });
+
+  it('can verify the passport holder', async () => {
+
+    var nic = "123456789V";
+    // Update the Tweet.
+    await program.rpc.checkPassportHolderValidity( {
+      accounts: {
+        passportHolder: holder.publicKey,
+        author: program.provider.wallet.publicKey,
+      },
+    });
+
+    // Ensure the updated tweet has the updated data.
+    const verifiedHolder = await program.account.passportHolder.fetch(holder.publicKey);
+
+    assert.equal(verifiedHolder.nic, nic);
+    assert.ok(verifiedHolder.joinedDate);
+    assert.equal(verifiedHolder.isActive, true);
+  });
+
 
   it('can create passport holder without a NIC number', async () => {
     // create new keypair for a passport holder
