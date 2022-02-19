@@ -83,14 +83,14 @@ pub mod immunopass {
         Ok(())
     }
 
-    // pub fn check_passport_holder_validity(ctx: Context<UpdatePassportHolder>) -> ProgramResult {
-    //     let passport_holder: &mut Account<PassportHolder> = &mut ctx.accounts.passport_holder;
+    pub fn check_passport_holder_validity(ctx: Context<UpdatePassportHolder>) -> ProgramResult {
+        let passport_holder: &mut Account<PassportHolder> = &mut ctx.accounts.passport_holder;
 
-    //     // TODO: check if passport holder is valid
-    //     passport_holder.is_active = true;
+        // TODO: check if passport holder is valid
+        passport_holder.is_active = true;
         
-    //     Ok(())
-    // }
+        Ok(())
+    }
 }
 
 // Create doctor
@@ -158,13 +158,13 @@ pub struct CreatePassportHolder<'info> {
     pub system_program: AccountInfo<'info>,
 }
 
-// // update passport holder
-// #[derive(Accounts)]
-// pub struct UpdatePassportHolder<'info> {
-//     #[account(mut)]
-//     pub passport_holder: Account<'info, PassportHolder>,
-//     pub author: Signer<'info>,
-// }
+// update passport holder
+#[derive(Accounts)]
+pub struct UpdatePassportHolder<'info> {
+    #[account(mut)]
+    pub passport_holder: Account<'info, PassportHolder>,
+    pub author: Signer<'info>,
+}
 
 // doctor account
 #[account]
