@@ -95,7 +95,7 @@ describe('immunopass', () => {
     var name = "ABC Medical Center";
     var phone = "07123456789";
     var email = "abc.med@immunopass.io"
-    var web = "abc.med.com";
+    var website = "abc.med.com";
     var openingTimes = [
       {
        "day" :"monday",
@@ -130,7 +130,7 @@ describe('immunopass', () => {
 
 // integers of type i64 cant be passed as arguments to the contract
 
-    await program.rpc.createVaccinationCamp(registrationNumber, name, phone, email, web, JSON.stringify(openingTimes), address, {
+    await program.rpc.createVaccinationCamp(registrationNumber, name, phone, email, website, JSON.stringify(openingTimes), address, {
       accounts: {
         vaccinationCamp: camp.publicKey,
         author: program.provider.wallet.publicKey,
@@ -146,22 +146,23 @@ describe('immunopass', () => {
     assert.equal(campCreated.name, name);
     assert.equal(campCreated.phone, phone);
     assert.equal(campCreated.email, email);
-    assert.equal(campCreated.web, web);
+    assert.equal(campCreated.website, website);
     assert.equal(campCreated.openingTimes, JSON.stringify(openingTimes));
     assert.equal(campCreated.address, address);
     assert.ok(campCreated.joinedDate);
 
-    // timstamp to date
-    let unix_timestamp = campCreated.joinedDate;
-    var date = new Date(unix_timestamp * 1000);
-    var hours = date.getHours();
-    var minutes = "0" + date.getMinutes();
-    var seconds = "0" + date.getSeconds();
-    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+
+    // // timestamp to date
+    // let unix_timestamp = campCreated.joinedDate;
+    // var date = new Date(unix_timestamp * 1000);
+    // var hours = date.getHours();
+    // var minutes = "0" + date.getMinutes();
+    // var seconds = "0" + date.getSeconds();
+    // var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
   });
 
 
-  it('shoud be able to create a vaccination camp', async () => {
+  it('shoud not be able to create a vaccination camp', async () => {
     
     // create new keypair for a doctor
     const camp = anchor.web3.Keypair.generate();
@@ -170,7 +171,7 @@ describe('immunopass', () => {
     var name = "ABC Medical Center";
     var phone = "07123456789";
     var email = "abc.med@immunopass.io"
-    var web = "abc.med.com";
+    var website = "abc.med.com";
     var openingTimes = [
       {
        "day" :"monday",
@@ -205,7 +206,7 @@ describe('immunopass', () => {
 
 // integers of type i64 cant be passed as arguments to the contract
     try {
-      await program.rpc.createVaccinationCamp(registrationNumber, name, phone, email, web, JSON.stringify(openingTimes), address, {
+      await program.rpc.createVaccinationCamp(registrationNumber, name, phone, email, website, JSON.stringify(openingTimes), address, {
         accounts: {
           vaccinationCamp: camp.publicKey,
           author: program.provider.wallet.publicKey,
@@ -219,4 +220,14 @@ describe('immunopass', () => {
     }
     assert.fail('The instruction should have failed with an empty registration number.');
   });
+
+  it('can fetch all doctors', async () => {
+    const doctors = await program.account.doctor.all();
+    assert.equal(doctors.length, 1);
+  });   
+
+  it('can fetch all vaccination camps', async () => {
+    const vaccinationCamps = await program.account.vaccinationCamp.all();
+    assert.equal(vaccinationCamps.length, 1);
+  });   
 });

@@ -31,11 +31,12 @@ pub mod immunopass {
         doctor.business_telephone = business_telephone;
         doctor.qualifications = qualifications;
         doctor.joined_date = joined_date.unix_timestamp;
+        doctor.is_active = true;
 
         Ok(())
     }
 
-    pub fn create_vaccination_camp(ctx: Context<CreateVaccinationCamp>, registration_number: String, name: String, phone: String, email: String, web: String, opening_times: String, address: String) -> ProgramResult {
+    pub fn create_vaccination_camp(ctx: Context<CreateVaccinationCamp>, registration_number: String, name: String, phone: String, email: String, website: String, opening_times: String, address: String) -> ProgramResult {
     
         let vaccination_camp: &mut Account<VaccinationCamp> = &mut ctx.accounts.vaccination_camp;
         let author: &Signer = &ctx.accounts.author;
@@ -52,11 +53,13 @@ pub mod immunopass {
         vaccination_camp.name = name;
         vaccination_camp.phone = phone;
         vaccination_camp.email = email;
-        vaccination_camp.web = web;
+        vaccination_camp.website = website;
         vaccination_camp.opening_times = opening_times;
         vaccination_camp.address = address;
+       
         vaccination_camp.joined_date = joined_date.unix_timestamp;
-    
+        vaccination_camp.is_active = true;
+        
         Ok(())
     }
 }
@@ -72,21 +75,21 @@ pub struct CreateDoctor<'info> {
     pub system_program: AccountInfo<'info>,
 }
 
-// update doctor
-#[derive(Accounts)]
-pub struct UpdateDoctor<'info> {
-    #[account(mut, has_one = author)]
-    pub doctor: Account<'info, Doctor>,
-    pub author: Signer<'info>,
-}
+// // update doctor
+// #[derive(Accounts)]
+// pub struct UpdateDoctor<'info> {
+//     #[account(mut, has_one = author)]
+//     pub doctor: Account<'info, Doctor>,
+//     pub author: Signer<'info>,
+// }
 
-// delete doctor
-#[derive(Accounts)]
-pub struct DeleteDoctor<'info> {
-    #[account(mut, has_one = author, close = author)]
-    pub doctor: Account<'info, Doctor>,
-    pub author: Signer<'info>,
-}
+// // delete doctor
+// #[derive(Accounts)]
+// pub struct DeleteDoctor<'info> {
+//     #[account(mut, has_one = author, close = author)]
+//     pub doctor: Account<'info, Doctor>,
+//     pub author: Signer<'info>,
+// }
 
 // Create vaccination camp
 #[derive(Accounts)]
@@ -99,21 +102,21 @@ pub struct CreateVaccinationCamp<'info> {
     pub system_program: AccountInfo<'info>,
 }
 
-// update vaccination camp
-#[derive(Accounts)]
-pub struct UpdateVaccinationCamp<'info> {
-    #[account(mut, has_one = author)]
-    pub vaccination_camp: Account<'info, VaccinationCamp>,
-    pub author: Signer<'info>,
-}
+// // update vaccination camp
+// #[derive(Accounts)]
+// pub struct UpdateVaccinationCamp<'info> {
+//     #[account(mut, has_one = author)]
+//     pub vaccination_camp: Account<'info, VaccinationCamp>,
+//     pub author: Signer<'info>,
+// }
 
-// delete vaccination camp
-#[derive(Accounts)]
-pub struct DeleteVaccinationCamp<'info> {
-    #[account(mut, has_one = author, close = author)]
-    pub vaccination_camp: Account<'info, VaccinationCamp>,
-    pub author: Signer<'info>,
-}
+// // delete vaccination camp
+// #[derive(Accounts)]
+// pub struct DeleteVaccinationCamp<'info> {
+//     #[account(mut, has_one = author, close = author)]
+//     pub vaccination_camp: Account<'info, VaccinationCamp>,
+//     pub author: Signer<'info>,
+// }
 
 // doctor account
 #[account]
@@ -128,7 +131,8 @@ pub struct Doctor {
     pub business_address: String,
     pub business_telephone: String,
     pub qualifications: String,
-    pub joined_date: i64
+    pub joined_date: i64,
+    pub is_active: bool
 }
 
 // vaccination camp account
@@ -139,17 +143,36 @@ pub struct VaccinationCamp {
     pub name: String,
     pub phone: String,
     pub email: String,
-    pub web: String,
+    pub website: String,
     pub opening_times: String,
     pub address: String,
-    pub joined_date: i64
+    pub joined_date: i64,
+    pub is_active: bool
 }
+
+// // passport holder account
+// #[account]
+// pub struct PassportHolder {
+//     pub owner: Pubkey,
+//     pub firstname: String,
+//     pub lastname: String,
+//     pub date_of_birth: i64,
+//     pub address: String,
+//     pub phone: String,
+//     pub place_of_birth: String,
+//     pub nic: String,
+//     pub is_active: bool
+// }
+
+
 
 // program specific
 const DISCRIMINATOR_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; 
 const PUBLIC_KEY_LENGTH: usize = 32;
 const TIMESTAMP_LENGTH: usize = 8;
+const BOOLEAN_LENGTH: usize = 1;
+
 
 // other length constraints
 // since according to UTF-8 encoding, a character can take upto 1 to 4 bytes
@@ -177,7 +200,8 @@ impl Doctor {
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH           // business_address
         + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH         // business_telephone
         + STRING_LENGTH_PREFIX + QUALIFICATIONS_LENGTH    // qualifications 
-        + TIMESTAMP_LENGTH;                                // joined_date
+        + TIMESTAMP_LENGTH                                // joined_date
+        + BOOLEAN_LENGTH;                                 // is_active
 }
 
 // vaccination camp attribute length rules
@@ -191,7 +215,8 @@ impl VaccinationCamp {
         + STRING_LENGTH_PREFIX + WEBSITE_LENGTH               // web
         + STRING_LENGTH_PREFIX + TIMESLOTS_LENGTH             // opening_times
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH               // address
-        + TIMESTAMP_LENGTH;                                   // joined_date
+        + TIMESTAMP_LENGTH                                    // joined_date
+        + BOOLEAN_LENGTH;                                     // is_active
 }
 
 #[error]
