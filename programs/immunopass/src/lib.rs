@@ -1,3 +1,4 @@
+use std::os::raw::c_float;
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::system_program;
 
@@ -213,6 +214,21 @@ pub struct PassportHolder {
     pub is_active: bool
 }
 
+// vaccination record account
+#[account]
+pub struct VaccinationRecord {
+    pub created_date: i64,
+    pub vaccine: String,
+    pub notes: String,
+    pub age: i64,
+    pub weight: f64,
+    pub dosage: String,
+    pub batch_number: String,
+    pub doctor: Pubkey,
+    pub vaccination_camp: Pubkey,
+    pub passport_holder: Pubkey,
+}
+
 // program specific
 const DISCRIMINATOR_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; 
@@ -234,6 +250,10 @@ const WEBSITE_LENGTH: usize = 100 * 4;
 const QUALIFICATIONS_LENGTH: usize = 250 * 4; 
 const TIMESLOTS_LENGTH: usize = 500 * 4;
 const NIC_LENGTH: usize = 15 * 4;
+const VACCINE_LENGTH: usize = 100 * 4;
+const NOTES_LENGTH: usize = 500 * 4;
+const DOSAGE_LENGTH: usize = 100 * 4;
+const BATCH_NUMBER_LENGTH: usize = 100 * 4;
 
 // doctor attribute length rules
 impl Doctor {
@@ -282,6 +302,22 @@ impl PassportHolder {
         + TIMESTAMP_LENGTH                                // joined_date
         + BOOLEAN_LENGTH;                                 // is_active
 }
+
+// vaccination record attribute length rules
+impl VaccinationRecord {
+    const LEN: usize = DISCRIMINATOR_LENGTH
+        + TIMESTAMP_LENGTH                                // created_date
+        + STRING_LENGTH_PREFIX + VACCINE_LENGTH           // vaccine
+        + STRING_LENGTH_PREFIX + NOTES_LENGTH             // notes
+        + TIMESTAMP_LENGTH                                // age
+        + TIMESTAMP_LENGTH                                // weight
+        + STRING_LENGTH_PREFIX + DOSAGE_LENGTH            // dosage
+        + STRING_LENGTH_PREFIX + BATCH_NUMBER_LENGTH      // batch_number
+        + PUBLIC_KEY_LENGTH                               // doctor
+        + PUBLIC_KEY_LENGTH                               // vaccination_camp
+        + PUBLIC_KEY_LENGTH;                              // passport_holder
+}
+
 
 // types of entities in the system
 enum RecordType {
@@ -408,4 +444,20 @@ pub enum ErrorCode {
     PlaceOfBirthTooLong,
     #[msg("The place of birth should not be empty")]
     PlaceOfBirthEmpty,
+
+    // batch number errors
+    #[msg("The batch number should not be empty")]
+    BatchNumberEmpty,
+
+    // vaccination errors
+    #[msg("The vaccination field should not be empty")]
+    VaccinationEmpty,
+
+    // age errors
+    #[msg("The age should not be empty")]
+    AgeEmpty,
+
+    // weight errors
+    #[msg("The weight should not be empty")]
+    WeightEmpty,
 }
