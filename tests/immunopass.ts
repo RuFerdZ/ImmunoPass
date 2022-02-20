@@ -3,6 +3,7 @@ import { Program } from '@project-serum/anchor';
 import { Immunopass } from '../target/types/immunopass';
 import * as assert from "assert";
 import * as bs58 from "bs58";
+import doc = Mocha.reporters.doc;
 
 describe('immunopass', () => {
 
@@ -13,21 +14,23 @@ describe('immunopass', () => {
   const holder = anchor.web3.Keypair.generate();
   const doctor = anchor.web3.Keypair.generate();
   const vaccinationCamp = anchor.web3.Keypair.generate();
+  const vaccinationRecord = anchor.web3.Keypair.generate();
+
 
   it('shoud be able to create a doctor', async () => {
     
     // create new keypair for a doctor
     const doctor = anchor.web3.Keypair.generate();
 
-    var firstname = "Rusiru";
-    var lastname = "Fernando";
-    var dateOfBirth = "12";
-    var licenseNumber = "DOC001"
-    var licenceIssued_date = "12";
-    var licenceExpiry_date = "12";
-    var businessAddress = "No.1, Galle Road, Colombo";
-    var businessTelephone = "0771234567";
-    var qualifications = "MBBS, MD";
+    let firstname = "Rusiru";
+    let lastname = "Fernando";
+    let dateOfBirth = "12";
+    let licenseNumber = "DOC001"
+    let licenceIssued_date = "12";
+    let licenceExpiry_date = "12";
+    let businessAddress = "No.1, Galle Road, Colombo";
+    let businessTelephone = "0771234567";
+    let qualifications = "MBBS, MD";
 
     // integers of type i64 cant be passed as arguments to the contract
 
@@ -60,15 +63,15 @@ describe('immunopass', () => {
       // create new keypair for a doctor
       const doctor = anchor.web3.Keypair.generate();
 
-      var firstname = "";
-      var lastname = "Fernando";
-      var dateOfBirth = "12";
-      var licenseNumber = "DOC001"
-      var licenceIssued_date = "12";
-      var licenceExpiry_date = "12";
-      var businessAddress = "No.1, Galle Road, Colombo";
-      var businessTelephone = "0771234567";
-      var qualifications = "MBBS, MD";
+      let firstname = "";
+      let lastname = "Fernando";
+      let dateOfBirth = "12";
+      let licenseNumber = "DOC001"
+      let licenceIssued_date = "12";
+      let licenceExpiry_date = "12";
+      let businessAddress = "No.1, Galle Road, Colombo";
+      let businessTelephone = "0771234567";
+      let qualifications = "MBBS, MD";
 
       // integers of type i64 cant be passed as arguments to the contract
 
@@ -92,12 +95,12 @@ describe('immunopass', () => {
     // create new keypair for a doctor
     const camp = anchor.web3.Keypair.generate();
 
-    var registrationNumber = "MED001";
-    var name = "ABC Medical Center";
-    var phone = "07123456789";
-    var email = "abc.med@immunopass.io"
-    var website = "abc.med.com";
-    var openingTimes = [
+    let registrationNumber = "MED001";
+    let name = "ABC Medical Center";
+    let phone = "07123456789";
+    let email = "abc.med@immunopass.io"
+    let website = "abc.med.com";
+    let openingTimes = [
       {
        "day" :"monday",
        "time" : "4.00pm - 5.30pm"
@@ -127,7 +130,7 @@ describe('immunopass', () => {
        "time" : "Closed"
       }
     ];
-    var address = "No.1, Galle Road, Colombo";
+    let address = "No.1, Galle Road, Colombo";
 
 // integers of type i64 cant be passed as arguments to the contract
 
@@ -167,12 +170,12 @@ describe('immunopass', () => {
     // create new keypair for a doctor
     const camp = anchor.web3.Keypair.generate();
 
-    var registrationNumber = "";
-    var name = "ABC Medical Center";
-    var phone = "07123456789";
-    var email = "abc.med@immunopass.io"
-    var website = "abc.med.com";
-    var openingTimes = [
+    let registrationNumber = "";
+    let name = "ABC Medical Center";
+    let phone = "07123456789";
+    let email = "abc.med@immunopass.io"
+    let website = "abc.med.com";
+    let openingTimes = [
       {
        "day" :"monday",
        "time" : "4.00pm - 5.30pm"
@@ -202,7 +205,7 @@ describe('immunopass', () => {
        "time" : "Closed"
       }
     ];
-    var address = "No.1, Galle Road, Colombo";
+    let address = "No.1, Galle Road, Colombo";
 
 // integers of type i64 cant be passed as arguments to the contract
     try {
@@ -232,13 +235,13 @@ describe('immunopass', () => {
   });
 
   it('can create passport holder', async () => {
-    var firstname = "Hasani";
-    var lastname = "Dilhari";
-    var dateOfBirth = "870976800";
-    var address =  "No. 123, Nittambuwa, Gampaha";
-    var phone = "07123456789";
-    var placeOfBirth = "Gampaha";
-    var nic = "123456789V";
+    let firstname = "Hasani";
+    let lastname = "Dilhari";
+    let dateOfBirth = "870976800";
+    let address =  "No. 123, Nittambuwa, Gampaha";
+    let phone = "07123456789";
+    let placeOfBirth = "Gampaha";
+    let nic = "123456789V";
 
     await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, address, phone, placeOfBirth, nic, {
       accounts: {
@@ -263,7 +266,7 @@ describe('immunopass', () => {
 
   it('can verify the passport holder', async () => {
 
-    var nic = "123456789V";
+    let nic = "123456789V";
     // Update the Tweet.
     await program.rpc.checkPassportHolderValidity( {
       accounts: {
@@ -284,13 +287,13 @@ describe('immunopass', () => {
     // create new keypair for a passport holder
     const holder02 = anchor.web3.Keypair.generate();
 
-    var firstname = "Hasani";
-    var lastname = "Dilhari";
-    var dateOfBirth = "870976800";
-    var address =  "No. 123, Nittambuwa, Gampaha";
-    var phone = "07123456789";
-    var placeOfBirth = "Gampaha";
-    var nic = "";
+    let firstname = "Hasani";
+    let lastname = "Dilhari";
+    let dateOfBirth = "870976800";
+    let address =  "No. 123, Nittambuwa, Gampaha";
+    let phone = "07123456789";
+    let placeOfBirth = "Gampaha";
+    let nic = "";
 
     await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, address, phone, placeOfBirth, nic, {
       accounts: {
@@ -323,12 +326,12 @@ describe('immunopass', () => {
     // create new keypair for a passport holder
     const record = anchor.web3.Keypair.generate();
 
-    var vaccine = "BCG";
-    var notes = "Dose 1";
-    var age = "5";
-    var weight = "13";
-    var dosage = "10mg";
-    var batch_number = "BCG_123456789";
+    let vaccine = "BCG";
+    let notes = "Dose 1";
+    let age = "5";
+    let weight = "13";
+    let dosage = "10mg";
+    let batch_number = "BCG_123456789";
 
     await program.rpc.createVaccinationRecord(vaccine, notes, age, weight, dosage, batch_number, doctor.publicKey, vaccinationCamp.publicKey, holder.publicKey, {
       accounts: {
@@ -353,4 +356,57 @@ describe('immunopass', () => {
     assert.equal(createdRecord.passportHolder.toString(), holder.publicKey.toString());
     assert.ok(createdRecord.createdDate);
   });
+
+  it('can fetch all vaccination records', async () => {
+    const vaccinationRecords = await program.account.vaccinationRecord.all();
+    assert.equal(vaccinationRecords.length, 1);
+  });
+
+  it('can create verification records', async () => {
+    // create new keypair for a passport holder
+    const vRecord = anchor.web3.Keypair.generate();
+
+    let recordType = "vaccination";
+    let validatorType = "doctor";
+    let status = "Valid";
+    let notes = "No issues";
+
+    await program.rpc.createVerificationRecord(recordType, vaccinationRecord.publicKey, validatorType, doctor.publicKey, status, notes, {
+      accounts: {
+        verificationRecord: vRecord.publicKey,
+        author: program.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [vRecord],
+    });
+
+    // check if the doctor is created
+    const createdVerificationRecord = await program.account.verificationRecord.fetch(vRecord.publicKey);
+
+    assert.equal(createdVerificationRecord.recordType, recordType.toUpperCase());
+    assert.equal(createdVerificationRecord.record.toString(), vaccinationRecord.publicKey.toString());
+    assert.equal(createdVerificationRecord.validatorType, validatorType.toUpperCase());
+    assert.equal(createdVerificationRecord.validator.toString(), doctor.publicKey.toString());
+    assert.equal(createdVerificationRecord.status, status.toUpperCase());
+    assert.equal(createdVerificationRecord.notes, notes);
+    assert.ok(createdVerificationRecord.createdDate);
+  });
+
+  it('can fetch all verification records', async () => {
+    const verificationRecords = await program.account.verificationRecord.all();
+    assert.equal(verificationRecords.length, 1);
+  });
+
+  it ('can fetch a doctor by wallet address', async () => {
+    // TODO: doctor login
+  });
+
+  it ('can fetch a vaccination camp by wallet address', async () => {
+    // TODO: vaccination camp login
+  });
+
+  it ('can fetch a passport holder by wallet address', async () => {
+    // TODO: passport holder login
+  });
+
 });

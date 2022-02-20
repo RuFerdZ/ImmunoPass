@@ -1,4 +1,6 @@
-use std::os::raw::c_float;
+use borsh::{BorshDeserialize, BorshSerialize};
+use anchor_lang::{AnchorSerialize, AnchorDeserialize};
+use std::clone::Clone;
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::system_program;
 
@@ -96,7 +98,7 @@ pub mod immunopass {
     pub fn create_vaccination_record(ctx: Context<CreateVaccinationRecord>, vaccine: String, notes: String, age: String, weight: String, dosage: String, batch_number: String, doctor: Pubkey, vaccination_camp: Pubkey, passport_holder: Pubkey) -> ProgramResult {
 
         let vaccination_record: &mut Account<VaccinationRecord> = &mut ctx.accounts.vaccination_record;
-        let author: &Signer = &ctx.accounts.author;
+        // let author: &Signer = &ctx.accounts.author;
         let created_date: Clock = Clock::get().unwrap();
 
         vaccination_record.created_date = created_date.unix_timestamp;
@@ -109,6 +111,23 @@ pub mod immunopass {
         vaccination_record.doctor = doctor;
         vaccination_record.vaccination_camp = vaccination_camp;
         vaccination_record.passport_holder = passport_holder;
+
+        Ok(())
+    }
+
+    pub fn create_verification_record(ctx: Context<CreateVerificationRecord>, record_type: String, record: Pubkey, validator_type: String, validator: Pubkey, status: String, notes: String) -> ProgramResult {
+
+        let verification_record: &mut Account<VerificationRecord> = &mut ctx.accounts.verification_record;
+        // let author: &Signer = &ctx.accounts.author;
+        let created_date: Clock = Clock::get().unwrap();
+
+        verification_record.record_type = record_type.to_uppercase();
+        verification_record.record = record;
+        verification_record.validator_type = validator_type.to_uppercase();
+        verification_record.validator = validator;
+        verification_record.status = status.to_uppercase();
+        verification_record.notes = notes;
+        verification_record.created_date = created_date.unix_timestamp;
 
         Ok(())
     }
@@ -198,6 +217,17 @@ pub struct CreateVaccinationRecord<'info> {
     pub system_program: AccountInfo<'info>,
 }
 
+// Create verification record
+#[derive(Accounts)]
+pub struct CreateVerificationRecord<'info> {
+    #[account(init, payer = author, space = VerificationRecord::LEN)]
+    pub verification_record: Account<'info, VerificationRecord>,
+    #[account(mut)]
+    pub author: Signer<'info>,
+    #[account(address = system_program::ID)]
+    pub system_program: AccountInfo<'info>,
+}
+
 // doctor account
 #[account]
 pub struct Doctor {
@@ -245,6 +275,7 @@ pub struct PassportHolder {
     pub is_active: bool
 }
 
+
 // vaccination record account
 #[account]
 pub struct VaccinationRecord {
@@ -259,6 +290,20 @@ pub struct VaccinationRecord {
     pub vaccination_camp: Pubkey,
     pub passport_holder: Pubkey
 }
+
+// verification record account
+#[account]
+#[derive(Debug)]
+pub struct VerificationRecord {
+    pub record_type: String,
+    pub record: Pubkey,
+    pub validator_type: String,
+    pub validator: Pubkey,
+    pub status: String,
+    pub notes: String,
+    pub created_date: i64
+}
+
 
 // program specific
 const DISCRIMINATOR_LENGTH: usize = 8;
@@ -286,6 +331,10 @@ const NOTES_LENGTH: usize = 500 * 4;
 const DOSAGE_LENGTH: usize = 100 * 4;
 const BATCH_NUMBER_LENGTH: usize = 100 * 4;
 const WEIGHT_LENGTH: usize = 10 * 4;
+const RECORD_TYPE_LENGTH: usize = 30 * 4;
+const VALIDATOR_TYPE_LENGTH: usize = 30 * 4;
+const STATUS_LENGTH: usize = 30 * 4;
+
 
 // doctor attribute length rules
 impl Doctor {
@@ -350,30 +399,48 @@ impl VaccinationRecord {
         + PUBLIC_KEY_LENGTH;                              // passport_holder
 }
 
+// verification record attribute length rules
+impl VerificationRecord {
+    const LEN: usize = DISCRIMINATOR_LENGTH
+        + STRING_LENGTH_PREFIX + RECORD_TYPE_LENGTH        // record_type
+        + PUBLIC_KEY_LENGTH                                // record
+        + STRING_LENGTH_PREFIX + VALIDATOR_TYPE_LENGTH     // validator_type
+        + PUBLIC_KEY_LENGTH                                // validator
+        + STRING_LENGTH_PREFIX + STATUS_LENGTH             // status
+        + STRING_LENGTH_PREFIX + NOTES_LENGTH              // notes
+        + TIMESTAMP_LENGTH;                                // age
+
+}
 
 // types of entities in the system
-enum RecordType {
-    DOCTOR,
-    VACCINATION_CAMP,
-    PASSPORT_HOLDER,
-    VACCINATION,
-    OTHER
-}
+// #[derive(BorshDeserialize, u)]
+// #[derive(Debug)]
+// enum RecordType {
+//     Doctor,
+//     VaccinationCamp,
+//     PassportHolder,
+//     VaccinationRecord,
+//     Other
+// }
 
 // these are the types of users in the system
-enum Role {
-    DOCTOR,
-    VACCINATION_CAMP,
-    PASSPORT_HOLDER,
-    OTHER
-}
+// #[derive(BorshDeserialize, AnchorSerialize)]
+// #[derive(Debug)]
+// enum Role {
+//     Doctor,
+//     VaccinationCamp,
+//     PassportHolder,
+//     Other
+// }
 
 // entity validity status
-enum ValidationStatus {
-    VALID,
-    INVALID,
-    UNKNOWN
-}
+// #[derive(BorshDeserialize, AnchorSerialize)]
+// #[derive(Debug)]
+// enum VerificationStatus {
+//     Valid,
+//     Invalid,
+//     Unknown
+// }
 
 #[error]
 pub enum ErrorCode {
