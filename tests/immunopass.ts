@@ -11,6 +11,8 @@ describe('immunopass', () => {
   const program = anchor.workspace.Immunopass as Program<Immunopass>;
 
   const holder = anchor.web3.Keypair.generate();
+  const doctor = anchor.web3.Keypair.generate();
+  const vaccinationCamp = anchor.web3.Keypair.generate();
 
   it('shoud be able to create a doctor', async () => {
     
@@ -315,5 +317,40 @@ describe('immunopass', () => {
   it('can fetch all passport holders', async () => {
     const passportHolders = await program.account.passportHolder.all();
     assert.equal(passportHolders.length, 2);
+  });
+
+  it('can create vaccination records', async () => {
+    // create new keypair for a passport holder
+    const record = anchor.web3.Keypair.generate();
+
+    var vaccine = "BCG";
+    var notes = "Dose 1";
+    var age = "5";
+    var weight = "13";
+    var dosage = "10mg";
+    var batch_number = "BCG_123456789";
+
+    await program.rpc.createVaccinationRecord(vaccine, notes, age, weight, dosage, batch_number, doctor.publicKey, vaccinationCamp.publicKey, holder.publicKey, {
+      accounts: {
+        vaccinationRecord: record.publicKey,
+        author: program.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [record],
+    });
+
+    // check if the doctor is created
+    const createdRecord = await program.account.vaccinationRecord.fetch(record.publicKey);
+
+    assert.equal(createdRecord.vaccine, vaccine);
+    assert.equal(createdRecord.notes, notes);
+    assert.equal(createdRecord.age, age);
+    assert.equal(createdRecord.weight, weight);
+    assert.equal(createdRecord.dosage, dosage);
+    assert.equal(createdRecord.batchNumber, batch_number);
+    assert.equal(createdRecord.doctor.toString(), doctor.publicKey.toString());
+    assert.equal(createdRecord.vaccinationCamp.toString(), vaccinationCamp.publicKey.toString());
+    assert.equal(createdRecord.passportHolder.toString(), holder.publicKey.toString());
+    assert.ok(createdRecord.createdDate);
   });
 });
