@@ -1,4 +1,6 @@
-use std::os::raw::c_float;
+use borsh::{BorshDeserialize, BorshSerialize};
+use anchor_lang::{AnchorSerialize, AnchorDeserialize};
+use std::clone::Clone;
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::system_program;
 
@@ -96,7 +98,7 @@ pub mod immunopass {
     pub fn create_vaccination_record(ctx: Context<CreateVaccinationRecord>, vaccine: String, notes: String, age: String, weight: String, dosage: String, batch_number: String, doctor: Pubkey, vaccination_camp: Pubkey, passport_holder: Pubkey) -> ProgramResult {
 
         let vaccination_record: &mut Account<VaccinationRecord> = &mut ctx.accounts.vaccination_record;
-        let author: &Signer = &ctx.accounts.author;
+        // let author: &Signer = &ctx.accounts.author;
         let created_date: Clock = Clock::get().unwrap();
 
         vaccination_record.created_date = created_date.unix_timestamp;
@@ -198,6 +200,17 @@ pub struct CreateVaccinationRecord<'info> {
     pub system_program: AccountInfo<'info>,
 }
 
+// Create verification record
+#[derive(Accounts)]
+pub struct CreateVerificationRecord<'info> {
+    #[account(init, payer = author, space = VerificationRecord::LEN)]
+    pub verification_record: Account<'info, VerificationRecord>,
+    #[account(mut)]
+    pub author: Signer<'info>,
+    #[account(address = system_program::ID)]
+    pub system_program: AccountInfo<'info>,
+}
+
 // doctor account
 #[account]
 pub struct Doctor {
@@ -245,6 +258,7 @@ pub struct PassportHolder {
     pub is_active: bool
 }
 
+
 // vaccination record account
 #[account]
 pub struct VaccinationRecord {
@@ -262,17 +276,15 @@ pub struct VaccinationRecord {
 
 // verification record account
 #[account]
+#[derive(Debug)]
 pub struct VerificationRecord {
-    pub created_date: i64,
-    pub vaccine: String,
+    pub record_type: String,
+    pub record: Pubkey,
+    pub validator_type: String,
+    pub validator: Pubkey,
+    pub status: String,
     pub notes: String,
-    pub age: i64,
-    pub weight: String,
-    pub dosage: String,
-    pub batch_number: String,
-    pub doctor: Pubkey,
-    pub vaccination_camp: Pubkey,
-    pub passport_holder: Pubkey
+    pub created_date: i64
 }
 
 // program specific
@@ -367,28 +379,34 @@ impl VaccinationRecord {
 
 
 // types of entities in the system
-enum RecordType {
-    DOCTOR,
-    VACCINATION_CAMP,
-    PASSPORT_HOLDER,
-    VACCINATION,
-    OTHER
-}
+// #[derive(BorshDeserialize, u)]
+// #[derive(Debug)]
+// enum RecordType {
+//     Doctor,
+//     VaccinationCamp,
+//     PassportHolder,
+//     VaccinationRecord,
+//     Other
+// }
 
 // these are the types of users in the system
-enum Role {
-    DOCTOR,
-    VACCINATION_CAMP,
-    PASSPORT_HOLDER,
-    OTHER
-}
+// #[derive(BorshDeserialize, AnchorSerialize)]
+// #[derive(Debug)]
+// enum Role {
+//     Doctor,
+//     VaccinationCamp,
+//     PassportHolder,
+//     Other
+// }
 
 // entity validity status
-enum ValidationStatus {
-    VALID,
-    INVALID,
-    UNKNOWN
-}
+// #[derive(BorshDeserialize, AnchorSerialize)]
+// #[derive(Debug)]
+// enum VerificationStatus {
+//     Valid,
+//     Invalid,
+//     Unknown
+// }
 
 #[error]
 pub enum ErrorCode {
