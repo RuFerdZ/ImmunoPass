@@ -287,7 +287,6 @@ pub struct VerificationRecord {
     pub created_date: i64
 }
 
-
 // verification record attribute length rules
 impl VerificationRecord {
     const LEN: usize = DISCRIMINATOR_LENGTH
