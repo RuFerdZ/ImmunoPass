@@ -1,5 +1,7 @@
 # ImmunoPass
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ImmunoPass is a Decentralized Application (DApp) built upon the Solana Blockchain for its higher transaction speed and lower gas fees.
 
 ImmunoPass is a digital vaccination/Immunisation record-keeping and maintenance platform that focuses more on the ease of access, accuracy and integrity of vaccination data where the Vaccination Profile/Passport is owned by the user itself for privacy and is overlooked by the healthcare sector for validation and verification.
