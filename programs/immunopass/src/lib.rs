@@ -92,6 +92,26 @@ pub mod immunopass {
         
         Ok(())
     }
+
+    pub fn create_vaccination_record(ctx: Context<CreateVaccinationRecord>, vaccine: String, notes: String, age: String, weight: String, dosage: String, batch_number: String, doctor: Pubkey, vaccination_camp: Pubkey, passport_holder: Pubkey) -> ProgramResult {
+
+        let vaccination_record: &mut Account<VaccinationRecord> = &mut ctx.accounts.vaccination_record;
+        let author: &Signer = &ctx.accounts.author;
+        let created_date: Clock = Clock::get().unwrap();
+
+        vaccination_record.created_date = created_date.unix_timestamp;
+        vaccination_record.vaccine = vaccine;
+        vaccination_record.notes = notes;
+        vaccination_record.age = age.parse().unwrap();
+        vaccination_record.weight = weight;
+        vaccination_record.dosage = dosage;
+        vaccination_record.batch_number = batch_number;
+        vaccination_record.doctor = doctor;
+        vaccination_record.vaccination_camp = vaccination_camp;
+        vaccination_record.passport_holder = passport_holder;
+
+        Ok(())
+    }
 }
 
 // Create doctor
@@ -105,13 +125,13 @@ pub struct CreateDoctor<'info> {
     pub system_program: AccountInfo<'info>,
 }
 
-// // update doctor
-// #[derive(Accounts)]
-// pub struct UpdateDoctor<'info> {
-//     #[account(mut, has_one = author)]
-//     pub doctor: Account<'info, Doctor>,
-//     pub author: Signer<'info>,
-// }
+// update doctor
+#[derive(Accounts)]
+pub struct UpdateDoctor<'info> {
+    #[account(mut)]
+    pub doctor: Account<'info, Doctor>,
+    pub author: Signer<'info>,
+}
 
 // // delete doctor
 // #[derive(Accounts)]
@@ -132,13 +152,13 @@ pub struct CreateVaccinationCamp<'info> {
     pub system_program: AccountInfo<'info>,
 }
 
-// // update vaccination camp
-// #[derive(Accounts)]
-// pub struct UpdateVaccinationCamp<'info> {
-//     #[account(mut, has_one = author)]
-//     pub vaccination_camp: Account<'info, VaccinationCamp>,
-//     pub author: Signer<'info>,
-// }
+// update vaccination camp
+#[derive(Accounts)]
+pub struct UpdateVaccinationCamp<'info> {
+    #[account(mut)]
+    pub vaccination_camp: Account<'info, VaccinationCamp>,
+    pub author: Signer<'info>,
+}
 
 // // delete vaccination camp
 // #[derive(Accounts)]
@@ -165,6 +185,17 @@ pub struct UpdatePassportHolder<'info> {
     #[account(mut)]
     pub passport_holder: Account<'info, PassportHolder>,
     pub author: Signer<'info>,
+}
+
+// Create vaccination record
+#[derive(Accounts)]
+pub struct CreateVaccinationRecord<'info> {
+    #[account(init, payer = author, space = VaccinationRecord::LEN)]
+    pub vaccination_record: Account<'info, VaccinationRecord>,
+    #[account(mut)]
+    pub author: Signer<'info>,
+    #[account(address = system_program::ID)]
+    pub system_program: AccountInfo<'info>,
 }
 
 // doctor account
@@ -221,12 +252,12 @@ pub struct VaccinationRecord {
     pub vaccine: String,
     pub notes: String,
     pub age: i64,
-    pub weight: f64,
+    pub weight: String,
     pub dosage: String,
     pub batch_number: String,
     pub doctor: Pubkey,
     pub vaccination_camp: Pubkey,
-    pub passport_holder: Pubkey,
+    pub passport_holder: Pubkey
 }
 
 // program specific
@@ -254,6 +285,7 @@ const VACCINE_LENGTH: usize = 100 * 4;
 const NOTES_LENGTH: usize = 500 * 4;
 const DOSAGE_LENGTH: usize = 100 * 4;
 const BATCH_NUMBER_LENGTH: usize = 100 * 4;
+const WEIGHT_LENGTH: usize = 10 * 4;
 
 // doctor attribute length rules
 impl Doctor {
@@ -310,7 +342,7 @@ impl VaccinationRecord {
         + STRING_LENGTH_PREFIX + VACCINE_LENGTH           // vaccine
         + STRING_LENGTH_PREFIX + NOTES_LENGTH             // notes
         + TIMESTAMP_LENGTH                                // age
-        + TIMESTAMP_LENGTH                                // weight
+        + STRING_LENGTH_PREFIX + WEIGHT_LENGTH            // weight
         + STRING_LENGTH_PREFIX + DOSAGE_LENGTH            // dosage
         + STRING_LENGTH_PREFIX + BATCH_NUMBER_LENGTH      // batch_number
         + PUBLIC_KEY_LENGTH                               // doctor
