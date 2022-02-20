@@ -287,6 +287,20 @@ pub struct VerificationRecord {
     pub created_date: i64
 }
 
+
+// verification record attribute length rules
+impl VerificationRecord {
+    const LEN: usize = DISCRIMINATOR_LENGTH
+        + STRING_LENGTH_PREFIX + RECORD_TYPE_LENGTH        // record_type
+        + PUBLIC_KEY_LENGTH                                // record
+        + STRING_LENGTH_PREFIX + VALIDATOR_TYPE_LENGTH     // validator_type
+        + PUBLIC_KEY_LENGTH                                // validator
+        + STRING_LENGTH_PREFIX + STATUS_LENGTH             // status
+        + STRING_LENGTH_PREFIX + NOTES_LENGTH              // notes
+        + TIMESTAMP_LENGTH;                                // age
+
+}
+
 // program specific
 const DISCRIMINATOR_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; 
@@ -313,6 +327,10 @@ const NOTES_LENGTH: usize = 500 * 4;
 const DOSAGE_LENGTH: usize = 100 * 4;
 const BATCH_NUMBER_LENGTH: usize = 100 * 4;
 const WEIGHT_LENGTH: usize = 10 * 4;
+const RECORD_TYPE_LENGTH: usize = 30 * 4;
+const VALIDATOR_TYPE_LENGTH: usize = 30 * 4;
+const STATUS_LENGTH: usize = 30 * 4;
+
 
 // doctor attribute length rules
 impl Doctor {
