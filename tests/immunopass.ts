@@ -3,6 +3,7 @@ import { Program } from '@project-serum/anchor';
 import { Immunopass } from '../target/types/immunopass';
 import * as assert from "assert";
 import * as bs58 from "bs58";
+import doc = Mocha.reporters.doc;
 
 describe('immunopass', () => {
 
@@ -13,6 +14,8 @@ describe('immunopass', () => {
   const holder = anchor.web3.Keypair.generate();
   const doctor = anchor.web3.Keypair.generate();
   const vaccinationCamp = anchor.web3.Keypair.generate();
+  const vaccinationRecord = anchor.web3.Keypair.generate();
+
 
   it('shoud be able to create a doctor', async () => {
     
@@ -353,4 +356,45 @@ describe('immunopass', () => {
     assert.equal(createdRecord.passportHolder.toString(), holder.publicKey.toString());
     assert.ok(createdRecord.createdDate);
   });
+
+  it('can fetch all vaccination records', async () => {
+    const vaccinationRecords = await program.account.vaccinationRecord.all();
+    assert.equal(vaccinationRecords.length, 1);
+  });
+
+  it('can create verification records', async () => {
+    // create new keypair for a passport holder
+    const vRecord = anchor.web3.Keypair.generate();
+
+    var recordType = "vaccination";
+    var validatorType = "doctor";
+    var status = "Valid";
+    var notes = "No issues";
+
+    await program.rpc.createVerificationRecord(recordType, vaccinationRecord.publicKey, validatorType, doctor.publicKey, status, notes, {
+      accounts: {
+        verificationRecord: vRecord.publicKey,
+        author: program.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [vRecord],
+    });
+
+    // check if the doctor is created
+    const createdVerificationRecord = await program.account.verificationRecord.fetch(vRecord.publicKey);
+
+    assert.equal(createdVerificationRecord.recordType, recordType.toUpperCase());
+    assert.equal(createdVerificationRecord.record.toString(), vaccinationRecord.publicKey.toString());
+    assert.equal(createdVerificationRecord.validatorType, validatorType.toUpperCase());
+    assert.equal(createdVerificationRecord.validator.toString(), doctor.publicKey.toString());
+    assert.equal(createdVerificationRecord.status, status.toUpperCase());
+    assert.equal(createdVerificationRecord.notes, notes);
+    assert.ok(createdVerificationRecord.createdDate);
+  });
+
+  it('can fetch all verification records', async () => {
+    const verificationRecords = await program.account.verificationRecord.all();
+    assert.equal(verificationRecords.length, 1);
+  });
+
 });
