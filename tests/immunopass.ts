@@ -397,4 +397,16 @@ describe('immunopass', () => {
     assert.equal(verificationRecords.length, 1);
   });
 
+  it ('can fetch a doctor by wallet address', async () => {
+    // TODO: doctor login
+  });
+
+  it ('can fetch a vaccination camp by wallet address', async () => {
+    // TODO: vaccination camp login
+  });
+
+  it ('can fetch a passport holder by wallet address', async () => {
+    // TODO: passport holder login
+  });
+
 });
