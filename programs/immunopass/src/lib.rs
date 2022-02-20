@@ -114,6 +114,23 @@ pub mod immunopass {
 
         Ok(())
     }
+
+    pub fn create_verification_record(ctx: Context<CreateVerificationRecord>, record_type: String, record: Pubkey, validator_type: String, validator: Pubkey, status: String, notes: String) -> ProgramResult {
+
+        let verification_record: &mut Account<VerificationRecord> = &mut ctx.accounts.verification_record;
+        // let author: &Signer = &ctx.accounts.author;
+        let created_date: Clock = Clock::get().unwrap();
+
+        verification_record.record_type = record_type;
+        verification_record.record = record;
+        verification_record.validator_type = validator_type.to_uppercase();
+        verification_record.validator = validator;
+        verification_record.status = status.to_uppercase();
+        verification_record.notes = notes;
+        verification_record.created_date = created_date.unix_timestamp;
+
+        Ok(())
+    }
 }
 
 // Create doctor
