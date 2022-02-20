@@ -287,18 +287,6 @@ pub struct VerificationRecord {
     pub created_date: i64
 }
 
-// verification record attribute length rules
-impl VerificationRecord {
-    const LEN: usize = DISCRIMINATOR_LENGTH
-        + STRING_LENGTH_PREFIX + RECORD_TYPE_LENGTH        // record_type
-        + PUBLIC_KEY_LENGTH                                // record
-        + STRING_LENGTH_PREFIX + VALIDATOR_TYPE_LENGTH     // validator_type
-        + PUBLIC_KEY_LENGTH                                // validator
-        + STRING_LENGTH_PREFIX + STATUS_LENGTH             // status
-        + STRING_LENGTH_PREFIX + NOTES_LENGTH              // notes
-        + TIMESTAMP_LENGTH;                                // age
-
-}
 
 // program specific
 const DISCRIMINATOR_LENGTH: usize = 8;
@@ -394,6 +382,18 @@ impl VaccinationRecord {
         + PUBLIC_KEY_LENGTH;                              // passport_holder
 }
 
+// verification record attribute length rules
+impl VerificationRecord {
+    const LEN: usize = DISCRIMINATOR_LENGTH
+        + STRING_LENGTH_PREFIX + RECORD_TYPE_LENGTH        // record_type
+        + PUBLIC_KEY_LENGTH                                // record
+        + STRING_LENGTH_PREFIX + VALIDATOR_TYPE_LENGTH     // validator_type
+        + PUBLIC_KEY_LENGTH                                // validator
+        + STRING_LENGTH_PREFIX + STATUS_LENGTH             // status
+        + STRING_LENGTH_PREFIX + NOTES_LENGTH              // notes
+        + TIMESTAMP_LENGTH;                                // age
+
+}
 
 // types of entities in the system
 // #[derive(BorshDeserialize, u)]
