@@ -260,6 +260,21 @@ pub struct VaccinationRecord {
     pub passport_holder: Pubkey
 }
 
+// verification record account
+#[account]
+pub struct VerificationRecord {
+    pub created_date: i64,
+    pub vaccine: String,
+    pub notes: String,
+    pub age: i64,
+    pub weight: String,
+    pub dosage: String,
+    pub batch_number: String,
+    pub doctor: Pubkey,
+    pub vaccination_camp: Pubkey,
+    pub passport_holder: Pubkey
+}
+
 // program specific
 const DISCRIMINATOR_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; 
