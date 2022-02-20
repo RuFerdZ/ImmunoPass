@@ -283,6 +283,30 @@ impl PassportHolder {
         + BOOLEAN_LENGTH;                                 // is_active
 }
 
+// types of entities in the system
+enum RecordType {
+    DOCTOR,
+    VACCINATION_CAMP,
+    PASSPORT_HOLDER,
+    VACCINATION,
+    OTHER
+}
+
+// these are the types of users in the system
+enum Role {
+    DOCTOR,
+    VACCINATION_CAMP,
+    PASSPORT_HOLDER,
+    OTHER
+}
+
+// entity validity status
+enum ValidationStatus {
+    VALID,
+    INVALID,
+    UNKNOWN
+}
+
 #[error]
 pub enum ErrorCode {
     // first name errors

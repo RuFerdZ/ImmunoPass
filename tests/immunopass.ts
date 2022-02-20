@@ -8,8 +8,9 @@ describe('immunopass', () => {
 
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.Provider.env());
-
   const program = anchor.workspace.Immunopass as Program<Immunopass>;
+
+  const holder = anchor.web3.Keypair.generate();
 
   it('shoud be able to create a doctor', async () => {
     
@@ -52,7 +53,6 @@ describe('immunopass', () => {
     assert.ok(doctorCreated.joinedDate);  
   });
 
-
   it('cannot create a doctor without a firstname', async () => {
     try{
       // create new keypair for a doctor
@@ -84,7 +84,6 @@ describe('immunopass', () => {
     }
     assert.fail('The instruction should have failed with an empty firstname.');
   });
-
 
   it('shoud be able to create a vaccination camp', async () => {
     
@@ -161,7 +160,6 @@ describe('immunopass', () => {
     // var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
   });
 
-
   it('shoud not be able to create a vaccination camp', async () => {
     
     // create new keypair for a doctor
@@ -231,8 +229,6 @@ describe('immunopass', () => {
     assert.equal(vaccinationCamps.length, 1);
   });
 
-  const holder = anchor.web3.Keypair.generate();
-
   it('can create passport holder', async () => {
     var firstname = "Hasani";
     var lastname = "Dilhari";
@@ -281,7 +277,6 @@ describe('immunopass', () => {
     assert.ok(verifiedHolder.joinedDate);
     assert.equal(verifiedHolder.isActive, true);
   });
-
 
   it('can create passport holder without a NIC number', async () => {
     // create new keypair for a passport holder
