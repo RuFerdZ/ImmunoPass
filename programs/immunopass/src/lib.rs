@@ -121,7 +121,7 @@ pub mod immunopass {
         // let author: &Signer = &ctx.accounts.author;
         let created_date: Clock = Clock::get().unwrap();
 
-        verification_record.record_type = record_type;
+        verification_record.record_type = record_type.to_uppercase();
         verification_record.record = record;
         verification_record.validator_type = validator_type.to_uppercase();
         verification_record.validator = validator;
