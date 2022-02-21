@@ -287,8 +287,8 @@ describe('immunopass', () => {
     // create new keypair for a passport holder
     const holder02 = anchor.web3.Keypair.generate();
 
-    let firstname = "Hasani";
-    let lastname = "Dilhari";
+    let firstname = "Dilanka";
+    let lastname = "Harshani";
     let dateOfBirth = "870976800";
     let address =  "No. 123, Nittambuwa, Gampaha";
     let phone = "07123456789";
@@ -424,11 +424,22 @@ describe('immunopass', () => {
     ]);
 
     assert.equal(searchedVC.length, 1);
-    console.log(searchedVC[0]);
+    // console.log(searchedVC[0]);
   });
 
   it ('can fetch a passport holder by wallet address', async () => {
-    // TODO: passport holder login
+    // passport holder login
+    const searchedPH = await program.account.passportHolder.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: program.provider.wallet.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(searchedPH.length, 2);  // because we have created 2 passport holders above
+    // console.log(searchedPH);
   });
 
 });
