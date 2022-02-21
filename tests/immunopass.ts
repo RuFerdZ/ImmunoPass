@@ -20,7 +20,7 @@ describe('immunopass', () => {
   it('shoud be able to create a doctor', async () => {
     
     // create new keypair for a doctor
-    const doctor = anchor.web3.Keypair.generate();
+    // const doctor = anchor.web3.Keypair.generate();
 
     let firstname = "Rusiru";
     let lastname = "Fernando";
@@ -399,6 +399,19 @@ describe('immunopass', () => {
 
   it ('can fetch a doctor by wallet address', async () => {
     // TODO: doctor login
+    const searchedDoc = await program.account.doctor.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: program.provider.wallet.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(searchedDoc.length, 1);
+
+
+    console.log(searchedDoc[0]);
   });
 
   it ('can fetch a vaccination camp by wallet address', async () => {
