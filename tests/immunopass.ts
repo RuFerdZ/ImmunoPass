@@ -398,7 +398,7 @@ describe('immunopass', () => {
   });
 
   it ('can fetch a doctor by wallet address', async () => {
-    // TODO: doctor login
+    // doctor login
     const searchedDoc = await program.account.doctor.all([
       {
         memcmp: {
@@ -409,13 +409,22 @@ describe('immunopass', () => {
     ]);
 
     assert.equal(searchedDoc.length, 1);
-
-
-    console.log(searchedDoc[0]);
+    // console.log(searchedDoc[0]);
   });
 
   it ('can fetch a vaccination camp by wallet address', async () => {
-    // TODO: vaccination camp login
+    // vaccination camp login
+    const searchedVC = await program.account.vaccinationCamp.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: program.provider.wallet.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(searchedVC.length, 1);
+    console.log(searchedVC[0]);
   });
 
   it ('can fetch a passport holder by wallet address', async () => {
