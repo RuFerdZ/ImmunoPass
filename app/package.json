@@ -4,29 +4,24 @@
   "private": true,
   "dependencies": {
     "@project-serum/anchor": "^0.20.1",
-    "@solana/wallet-adapter-base": "^0.9.3",
-    "@solana/wallet-adapter-react": "^0.15.3",
-    "@solana/wallet-adapter-react-ui": "^0.9.5",
-    "@solana/wallet-adapter-wallets": "^0.15.2",
-    "@solana/web3.js": "^1.33.0",
-    "@testing-library/jest-dom": "^5.16.2",
+    "@solana/wallet-adapter-base": "^0.7.1",
+    "@solana/wallet-adapter-react": "^0.13.1",
+    "@solana/wallet-adapter-react-ui": "^0.6.1",
+    "@solana/wallet-adapter-wallets": "^0.11.3",
+    "@solana/web3.js": "^1.31.0",
+    "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-scripts": "5.0.0",
-    "stream": "^0.0.2",
-    "web-vitals": "^2.1.4",
-    "webpack": "^4.44.2"
+    "react-scripts": "4.0.3",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "build:testnet": "env-cmd -f .env.testnet react-scripts build",
-    "build:devnet": "env-cmd -f .env.devnet react-scripts build",
-    "build:mainnet": "env-cmd -f .env.mainnet react-scripts build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
