@@ -20,7 +20,7 @@ describe('immunopass', () => {
   it('shoud be able to create a doctor', async () => {
     
     // create new keypair for a doctor
-    const doctor = anchor.web3.Keypair.generate();
+    // const doctor = anchor.web3.Keypair.generate();
 
     let firstname = "Rusiru";
     let lastname = "Fernando";
@@ -287,8 +287,8 @@ describe('immunopass', () => {
     // create new keypair for a passport holder
     const holder02 = anchor.web3.Keypair.generate();
 
-    let firstname = "Hasani";
-    let lastname = "Dilhari";
+    let firstname = "Dilanka";
+    let lastname = "Harshani";
     let dateOfBirth = "870976800";
     let address =  "No. 123, Nittambuwa, Gampaha";
     let phone = "07123456789";
@@ -398,15 +398,48 @@ describe('immunopass', () => {
   });
 
   it ('can fetch a doctor by wallet address', async () => {
-    // TODO: doctor login
+    // doctor login
+    const searchedDoc = await program.account.doctor.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: program.provider.wallet.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(searchedDoc.length, 1);
+    // console.log(searchedDoc[0]);
   });
 
   it ('can fetch a vaccination camp by wallet address', async () => {
-    // TODO: vaccination camp login
+    // vaccination camp login
+    const searchedVC = await program.account.vaccinationCamp.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: program.provider.wallet.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(searchedVC.length, 1);
+    // console.log(searchedVC[0]);
   });
 
   it ('can fetch a passport holder by wallet address', async () => {
-    // TODO: passport holder login
+    // passport holder login
+    const searchedPH = await program.account.passportHolder.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: program.provider.wallet.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(searchedPH.length, 2);  // because we have created 2 passport holders above
+    // console.log(searchedPH);
   });
 
 });

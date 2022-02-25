@@ -3,9 +3,707 @@
   "name": "immunopass",
   "instructions": [
     {
-      "name": "initialize",
-      "accounts": [],
+      "name": "createDoctor",
+      "accounts": [
+        {
+          "name": "doctor",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "author",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "firstname",
+          "type": "string"
+        },
+        {
+          "name": "lastname",
+          "type": "string"
+        },
+        {
+          "name": "dateOfBirth",
+          "type": "string"
+        },
+        {
+          "name": "licenseNumber",
+          "type": "string"
+        },
+        {
+          "name": "licenceIssuedDate",
+          "type": "string"
+        },
+        {
+          "name": "licenceExpiryDate",
+          "type": "string"
+        },
+        {
+          "name": "businessAddress",
+          "type": "string"
+        },
+        {
+          "name": "businessTelephone",
+          "type": "string"
+        },
+        {
+          "name": "qualifications",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "createVaccinationCamp",
+      "accounts": [
+        {
+          "name": "vaccinationCamp",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "author",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "registrationNumber",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "phone",
+          "type": "string"
+        },
+        {
+          "name": "email",
+          "type": "string"
+        },
+        {
+          "name": "website",
+          "type": "string"
+        },
+        {
+          "name": "openingTimes",
+          "type": "string"
+        },
+        {
+          "name": "address",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "createPassportHolder",
+      "accounts": [
+        {
+          "name": "passportHolder",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "author",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "firstname",
+          "type": "string"
+        },
+        {
+          "name": "lastname",
+          "type": "string"
+        },
+        {
+          "name": "dateOfBirth",
+          "type": "string"
+        },
+        {
+          "name": "address",
+          "type": "string"
+        },
+        {
+          "name": "phone",
+          "type": "string"
+        },
+        {
+          "name": "placeOfBirth",
+          "type": "string"
+        },
+        {
+          "name": "nic",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "checkPassportHolderValidity",
+      "accounts": [
+        {
+          "name": "passportHolder",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "author",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
       "args": []
+    },
+    {
+      "name": "createVaccinationRecord",
+      "accounts": [
+        {
+          "name": "vaccinationRecord",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "author",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "vaccine",
+          "type": "string"
+        },
+        {
+          "name": "notes",
+          "type": "string"
+        },
+        {
+          "name": "age",
+          "type": "string"
+        },
+        {
+          "name": "weight",
+          "type": "string"
+        },
+        {
+          "name": "dosage",
+          "type": "string"
+        },
+        {
+          "name": "batchNumber",
+          "type": "string"
+        },
+        {
+          "name": "doctor",
+          "type": "publicKey"
+        },
+        {
+          "name": "vaccinationCamp",
+          "type": "publicKey"
+        },
+        {
+          "name": "passportHolder",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "createVerificationRecord",
+      "accounts": [
+        {
+          "name": "verificationRecord",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "author",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "recordType",
+          "type": "string"
+        },
+        {
+          "name": "record",
+          "type": "publicKey"
+        },
+        {
+          "name": "validatorType",
+          "type": "string"
+        },
+        {
+          "name": "validator",
+          "type": "publicKey"
+        },
+        {
+          "name": "status",
+          "type": "string"
+        },
+        {
+          "name": "notes",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Doctor",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "firstname",
+            "type": "string"
+          },
+          {
+            "name": "lastname",
+            "type": "string"
+          },
+          {
+            "name": "dateOfBirth",
+            "type": "i64"
+          },
+          {
+            "name": "licenseNumber",
+            "type": "string"
+          },
+          {
+            "name": "licenceIssuedDate",
+            "type": "i64"
+          },
+          {
+            "name": "licenceExpiryDate",
+            "type": "i64"
+          },
+          {
+            "name": "businessAddress",
+            "type": "string"
+          },
+          {
+            "name": "businessTelephone",
+            "type": "string"
+          },
+          {
+            "name": "qualifications",
+            "type": "string"
+          },
+          {
+            "name": "joinedDate",
+            "type": "i64"
+          },
+          {
+            "name": "isActive",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaccinationCamp",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "registrationNumber",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "phone",
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "type": "string"
+          },
+          {
+            "name": "website",
+            "type": "string"
+          },
+          {
+            "name": "openingTimes",
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "type": "string"
+          },
+          {
+            "name": "joinedDate",
+            "type": "i64"
+          },
+          {
+            "name": "isActive",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PassportHolder",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "firstname",
+            "type": "string"
+          },
+          {
+            "name": "lastname",
+            "type": "string"
+          },
+          {
+            "name": "dateOfBirth",
+            "type": "i64"
+          },
+          {
+            "name": "address",
+            "type": "string"
+          },
+          {
+            "name": "phone",
+            "type": "string"
+          },
+          {
+            "name": "placeOfBirth",
+            "type": "string"
+          },
+          {
+            "name": "nic",
+            "type": "string"
+          },
+          {
+            "name": "joinedDate",
+            "type": "i64"
+          },
+          {
+            "name": "isActive",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaccinationRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "createdDate",
+            "type": "i64"
+          },
+          {
+            "name": "vaccine",
+            "type": "string"
+          },
+          {
+            "name": "notes",
+            "type": "string"
+          },
+          {
+            "name": "age",
+            "type": "i64"
+          },
+          {
+            "name": "weight",
+            "type": "string"
+          },
+          {
+            "name": "dosage",
+            "type": "string"
+          },
+          {
+            "name": "batchNumber",
+            "type": "string"
+          },
+          {
+            "name": "doctor",
+            "type": "publicKey"
+          },
+          {
+            "name": "vaccinationCamp",
+            "type": "publicKey"
+          },
+          {
+            "name": "passportHolder",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerificationRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "recordType",
+            "type": "string"
+          },
+          {
+            "name": "record",
+            "type": "publicKey"
+          },
+          {
+            "name": "validatorType",
+            "type": "string"
+          },
+          {
+            "name": "validator",
+            "type": "publicKey"
+          },
+          {
+            "name": "status",
+            "type": "string"
+          },
+          {
+            "name": "notes",
+            "type": "string"
+          },
+          {
+            "name": "createdDate",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "FirstNameTooLong",
+      "msg": "The first name should be less than 50 characters"
+    },
+    {
+      "code": 6001,
+      "name": "FirstNameEmpty",
+      "msg": "The first name should not be empty"
+    },
+    {
+      "code": 6002,
+      "name": "LastNameTooLong",
+      "msg": "The last name should be less than 50 characters"
+    },
+    {
+      "code": 6003,
+      "name": "LastNameEmpty",
+      "msg": "The last name should not be empty"
+    },
+    {
+      "code": 6004,
+      "name": "LicenseNumberTooLong",
+      "msg": "The license number should be less than 50 characters"
+    },
+    {
+      "code": 6005,
+      "name": "LicenseNumberEmpty",
+      "msg": "The license number should not be empty"
+    },
+    {
+      "code": 6006,
+      "name": "RegistrationNumberTooLong",
+      "msg": "The registration number should be less than 50 characters"
+    },
+    {
+      "code": 6007,
+      "name": "RegistrationNumberEmpty",
+      "msg": "The registration number should not be empty"
+    },
+    {
+      "code": 6008,
+      "name": "AddressTooLong",
+      "msg": "The address should be less than 500 characters"
+    },
+    {
+      "code": 6009,
+      "name": "AddressEmpty",
+      "msg": "The address should not be empty"
+    },
+    {
+      "code": 6010,
+      "name": "TelephoneTooLong",
+      "msg": "The telephone number should be less than 15 characters"
+    },
+    {
+      "code": 6011,
+      "name": "TelephoneEmpty",
+      "msg": "The telephone number should not be empty"
+    },
+    {
+      "code": 6012,
+      "name": "TelephoneInvalid",
+      "msg": "The telephone number is invalid"
+    },
+    {
+      "code": 6013,
+      "name": "EmailTooLong",
+      "msg": "The email should be less than 100 characters"
+    },
+    {
+      "code": 6014,
+      "name": "EmailEmpty",
+      "msg": "The email should not be empty"
+    },
+    {
+      "code": 6015,
+      "name": "EmailInvalid",
+      "msg": "The email is invalid"
+    },
+    {
+      "code": 6016,
+      "name": "WebsiteTooLong",
+      "msg": "The website should be less than 100 characters"
+    },
+    {
+      "code": 6017,
+      "name": "WebsiteEmpty",
+      "msg": "The website should not be empty"
+    },
+    {
+      "code": 6018,
+      "name": "QualificationsTooLong",
+      "msg": "The qualifications should be less than 250 characters"
+    },
+    {
+      "code": 6019,
+      "name": "QualificationsEmpty",
+      "msg": "The qualifications should not be empty"
+    },
+    {
+      "code": 6020,
+      "name": "OpeningTimesTooLong",
+      "msg": "The opening times should be less than 500 characters"
+    },
+    {
+      "code": 6021,
+      "name": "OpeningTimesEmpty",
+      "msg": "The opening times should not be empty"
+    },
+    {
+      "code": 6022,
+      "name": "DoctorNotFound",
+      "msg": "The doctor is not registered"
+    },
+    {
+      "code": 6023,
+      "name": "DoctorAlreadyExists",
+      "msg": "The doctor is already registered"
+    },
+    {
+      "code": 6024,
+      "name": "VaccinationCampNotFound",
+      "msg": "The vaccination camp is not registered"
+    },
+    {
+      "code": 6025,
+      "name": "VaccinationCampAlreadyExists",
+      "msg": "The vaccination camp is already registered"
+    },
+    {
+      "code": 6026,
+      "name": "DoctorNotRegisteredToVaccinationCamp",
+      "msg": "The doctor is not registered to the vaccination camp"
+    },
+    {
+      "code": 6027,
+      "name": "DoctorAlreadyRegisteredToVaccinationCamp",
+      "msg": "The doctor is already registered to the vaccination camp"
+    },
+    {
+      "code": 6028,
+      "name": "PassportHolderNotFound",
+      "msg": "The passport holder is not registered"
+    },
+    {
+      "code": 6029,
+      "name": "PassportHolderAlreadyExists",
+      "msg": "The passport holder is already registered"
+    },
+    {
+      "code": 6030,
+      "name": "NicTooLong",
+      "msg": "The nic should be less than 15 characters"
+    },
+    {
+      "code": 6031,
+      "name": "PlaceOfBirthTooLong",
+      "msg": "The place of birth should be less than 500 characters"
+    },
+    {
+      "code": 6032,
+      "name": "PlaceOfBirthEmpty",
+      "msg": "The place of birth should not be empty"
+    },
+    {
+      "code": 6033,
+      "name": "BatchNumberEmpty",
+      "msg": "The batch number should not be empty"
+    },
+    {
+      "code": 6034,
+      "name": "VaccinationEmpty",
+      "msg": "The vaccination field should not be empty"
+    },
+    {
+      "code": 6035,
+      "name": "AgeEmpty",
+      "msg": "The age should not be empty"
+    },
+    {
+      "code": 6036,
+      "name": "WeightEmpty",
+      "msg": "The weight should not be empty"
     }
   ],
   "metadata": {
