@@ -371,9 +371,9 @@ describe('immunopass', () => {
     let status = "Valid";
     let notes = "No issues";
 
-    await program.rpc.createVerificationRecord(recordType, vaccinationRecord.publicKey, validatorType, doctor.publicKey, status, notes, {
+    await program.rpc.createValidationRecord(recordType, vaccinationRecord.publicKey, validatorType, doctor.publicKey, status, notes, {
       accounts: {
-        verificationRecord: vRecord.publicKey,
+        validationRecord: vRecord.publicKey,
         author: program.provider.wallet.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       },
@@ -381,7 +381,7 @@ describe('immunopass', () => {
     });
 
     // check if the doctor is created
-    const createdVerificationRecord = await program.account.verificationRecord.fetch(vRecord.publicKey);
+    const createdVerificationRecord = await program.account.validationRecord.fetch(vRecord.publicKey);
 
     assert.equal(createdVerificationRecord.recordType, recordType.toUpperCase());
     assert.equal(createdVerificationRecord.record.toString(), vaccinationRecord.publicKey.toString());
@@ -393,7 +393,7 @@ describe('immunopass', () => {
   });
 
   it('can fetch all verification records', async () => {
-    const verificationRecords = await program.account.verificationRecord.all();
+    const verificationRecords = await program.account.validationRecord.all();
     assert.equal(verificationRecords.length, 1);
   });
 
@@ -440,6 +440,93 @@ describe('immunopass', () => {
 
     assert.equal(searchedPH.length, 2);  // because we have created 2 passport holders above
     // console.log(searchedPH);
+  });
+
+  it('can validate vaccination records', async () => {
+    const record = anchor.web3.Keypair.generate();
+    const doctor01 = anchor.web3.Keypair.generate();
+    const vaccinationCamp01 = anchor.web3.Keypair.generate();
+    const holder01 = anchor.web3.Keypair.generate();
+
+    let signature = await program.provider.connection.requestAirdrop(doctor01.publicKey, 1000000000);
+    await program.provider.connection.confirmTransaction(signature);
+
+    signature = await program.provider.connection.requestAirdrop(vaccinationCamp01.publicKey, 1000000000);
+    await program.provider.connection.confirmTransaction(signature);
+
+    signature = await program.provider.connection.requestAirdrop(holder01.publicKey, 1000000000);
+    await program.provider.connection.confirmTransaction(signature);
+
+    let vaccine = "BCG";
+    let notes = "Dose 1";
+    let age = "5";
+    let weight = "13";
+    let dosage = "10mg";
+    let batch_number = "BCG_123456789";
+
+    await program.rpc.createVaccinationRecord(vaccine, notes, age, weight, dosage, batch_number, doctor01.publicKey, vaccinationCamp01.publicKey, holder01.publicKey, {
+      accounts: {
+        vaccinationRecord: record.publicKey,
+        author: doctor01.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [doctor01, record],
+    });
+
+    // create new keypair for a passport holder
+    const docRecord = anchor.web3.Keypair.generate();
+
+    let recordType = "vaccination";
+    let validatorType = "doctor";
+    let status = "Valid";
+    notes = "No issues";
+
+
+    await program.rpc.createValidationRecord(recordType, record.publicKey, validatorType, doctor01.publicKey, status, notes, {
+      accounts: {
+        validationRecord: docRecord.publicKey,
+        author: doctor01.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [doctor01, docRecord],
+    });
+
+
+    const vcRecord = anchor.web3.Keypair.generate();
+    validatorType = "vaccinationCamp";
+
+    await program.rpc.createValidationRecord(recordType, record.publicKey, validatorType, vaccinationCamp01.publicKey, status, notes, {
+      accounts: {
+        validationRecord: vcRecord.publicKey,
+        author: vaccinationCamp01.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [vaccinationCamp01, vcRecord],
+    });
+
+    validatorType = "passport holder";
+    const phRecord = anchor.web3.Keypair.generate();
+
+    await program.rpc.createValidationRecord(recordType, record.publicKey, validatorType, holder01.publicKey, status, notes, {
+      accounts: {
+        validationRecord: phRecord.publicKey,
+        author: holder01.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [holder01, phRecord],
+    });
+
+    // validation
+    // await program.rpc.checkVaccinationRecordValidity({
+    //   accounts: {
+    //     vaccinationRecord: record.publicKey,
+    //     docVerificationRecord: docRecord.publicKey,
+    //     phVerificationRecord: phRecord.publicKey,
+    //     vcVerificationRecord: vcRecord.publicKey,
+    //     author: doctor01.publicKey,
+    //   },
+    // });
+
   });
 
 });
