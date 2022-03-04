@@ -118,9 +118,41 @@ pub mod immunopass {
 
     pub fn create_validation_record(ctx: Context<CreateValidationRecord>, record_type: String, record: Pubkey, validator_type: String, validator: Pubkey, status: String, notes: String) -> ProgramResult {
 
+        let validator_types = vec!["doctor", "vaccination_camp", "passport_holder"];
+        let record_types = vec!["vaccination", "patient"];
+
         let validation_record: &mut Account<ValidationRecord> = &mut ctx.accounts.validation_record;
-        // let author: &Signer = &ctx.accounts.author;
+        let author: &Signer = &ctx.accounts.author;
         let created_date: Clock = Clock::get().unwrap();
+
+        // check if validator is provided
+        if validator.to_bytes().len() == 0 {
+            return Err(ErrorCode::ValidatorNotProvided.into());
+        }
+        // check if the validator is a valid type
+        if validator != *author.key {
+            return Err(ErrorCode::InvalidValidator.into());
+        }
+        // check if validator type is valid
+        if !validator_types.contains(&validator_type.to_lowercase().as_str()) {
+            return Err(ErrorCode::ValidatorNotFound.into());
+        }
+        // check if record type is valid
+        if !record_types.contains(&record_type.to_lowercase().as_str()) {
+            return Err(ErrorCode::RecordTypeNotFound.into());
+        }
+        // check if status is present
+        if status.is_empty() {
+            return Err(ErrorCode::StatusRequired.into());
+        }
+        // check if status is exceeds the max length
+        if status.len() > 30 {
+            return Err(ErrorCode::StatusTooLong.into());
+        }
+        // check if notes exceed max length
+        if notes.chars().count() > 500 {
+            return Err(ErrorCode::NotesTooLong.into());
+        }
 
         validation_record.record_type = record_type.to_uppercase();
         validation_record.record = record;
@@ -604,7 +636,24 @@ pub enum ErrorCode {
     // validator errors
     #[msg("The validator type is unknown")]
     ValidatorNotFound,
-    #[msg("The item type of validation is invalid")]
-    InvalidItemType,
+    #[msg("The record type is invalid")]
+    RecordTypeNotFound,
+    #[msg("The validator is invalid")]
+    InvalidValidator,
+    #[msg("The validator is not provided")]
+    ValidatorNotProvided,
+
+
+    // status not found
+    #[msg("The status is is required")]
+    StatusRequired,
+    #[msg("The status is too long")]
+    StatusTooLong,
+
+    // notes errors
+    #[msg("The notes should be less than 500 characters")]
+    NotesTooLong,
+    #[msg("The notes should not be empty")]
+    NotesEmpty,
 
 }

@@ -371,7 +371,7 @@ describe('immunopass', () => {
     let status = "Valid";
     let notes = "No issues";
 
-    await program.rpc.createValidationRecord(recordType, vaccinationRecord.publicKey, validatorType, doctor.publicKey, status, notes, {
+    await program.rpc.createValidationRecord(recordType, vaccinationRecord.publicKey, validatorType, program.provider.wallet.publicKey, status, notes, {
       accounts: {
         validationRecord: vRecord.publicKey,
         author: program.provider.wallet.publicKey,
@@ -386,7 +386,7 @@ describe('immunopass', () => {
     assert.equal(createdVerificationRecord.recordType, recordType.toUpperCase());
     assert.equal(createdVerificationRecord.record.toString(), vaccinationRecord.publicKey.toString());
     assert.equal(createdVerificationRecord.validatorType, validatorType.toUpperCase());
-    assert.equal(createdVerificationRecord.validator.toString(), doctor.publicKey.toString());
+    assert.equal(createdVerificationRecord.validator.toString(), program.provider.wallet.publicKey.toString());
     assert.equal(createdVerificationRecord.status, status.toUpperCase());
     assert.equal(createdVerificationRecord.notes, notes);
     assert.ok(createdVerificationRecord.createdDate);
@@ -493,7 +493,7 @@ describe('immunopass', () => {
 
 
     const vcRecord = anchor.web3.Keypair.generate();
-    validatorType = "vaccinationCamp";
+    validatorType = "vaccination_camp";
 
     await program.rpc.createValidationRecord(recordType, record.publicKey, validatorType, vaccinationCamp01.publicKey, status, notes, {
       accounts: {
@@ -504,7 +504,7 @@ describe('immunopass', () => {
       signers: [vaccinationCamp01, vcRecord],
     });
 
-    validatorType = "passport holder";
+    validatorType = "passport_holder";
     const phRecord = anchor.web3.Keypair.generate();
 
     await program.rpc.createValidationRecord(recordType, record.publicKey, validatorType, holder01.publicKey, status, notes, {
