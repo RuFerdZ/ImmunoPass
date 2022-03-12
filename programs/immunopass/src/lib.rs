@@ -96,6 +96,11 @@ pub mod immunopass {
     }
 
     pub fn create_vaccination_record(ctx: Context<CreateVaccinationRecord>, vaccine: String, notes: String, age: String, weight: String, dosage: String, batch_number: String, doctor: Pubkey, vaccination_camp: Pubkey, passport_holder: Pubkey) -> ProgramResult {
+        let author: &Signer = &ctx.accounts.author;
+
+        if doctor != *author.key {
+            return Err(ErrorCode::UnauthorizedVaccinationInitiation.into());
+        }
 
         // create new account
         let vaccination_record: &mut Account<VaccinationRecord> = &mut ctx.accounts.vaccination_record;
@@ -719,4 +724,7 @@ pub enum ErrorCode {
     #[msg("The notes should not be empty")]
     NotesEmpty,
 
+    // Authorization
+    #[msg("The user is not authorized to perform this action")]
+    UnauthorizedVaccinationInitiation,
 }
