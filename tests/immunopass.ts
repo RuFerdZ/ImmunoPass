@@ -333,7 +333,7 @@ describe('immunopass', () => {
     let dosage = "10mg";
     let batch_number = "BCG_123456789";
 
-    await program.rpc.createVaccinationRecord(vaccine, notes, age, weight, dosage, batch_number, doctor.publicKey, vaccinationCamp.publicKey, holder.publicKey, {
+    await program.rpc.createVaccinationRecord(vaccine, notes, age, weight, dosage, batch_number, program.provider.wallet.publicKey, vaccinationCamp.publicKey, holder.publicKey, {
       accounts: {
         vaccinationRecord: record.publicKey,
         author: program.provider.wallet.publicKey,
@@ -351,7 +351,7 @@ describe('immunopass', () => {
     assert.equal(createdRecord.weight, weight);
     assert.equal(createdRecord.dosage, dosage);
     assert.equal(createdRecord.batchNumber, batch_number);
-    assert.equal(createdRecord.doctor.toString(), doctor.publicKey.toString());
+    assert.equal(createdRecord.doctor.toString(), program.provider.wallet.publicKey.toString());
     assert.equal(createdRecord.vaccinationCamp.toString(), vaccinationCamp.publicKey.toString());
     assert.equal(createdRecord.passportHolder.toString(), holder.publicKey.toString());
     assert.ok(createdRecord.createdDate);
