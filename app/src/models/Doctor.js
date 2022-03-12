@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 
 export class Doctor {
+
     constructor (key) {
         this.key = key
         this.owner = null
@@ -26,11 +27,11 @@ export class Doctor {
     //     return author.slice(0,4) + '..' + author.slice(-4)
     // }
 
-    get created_at() {
+    get joinedAt() {
         return dayjs.unix(this.joinedDate).format('lll')
     }
 
-    get created_ago() {
+    get JoinedAgo() {
         return dayjs.unix(this.joinedDate).fromNow()
     }
 
