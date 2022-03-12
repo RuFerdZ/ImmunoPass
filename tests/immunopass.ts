@@ -238,12 +238,14 @@ describe('immunopass', () => {
     let firstname = "Hasani";
     let lastname = "Dilhari";
     let dateOfBirth = "870976800";
+    let gender = "FEMALE";
+    let title = "Miss. ";
     let address =  "No. 123, Nittambuwa, Gampaha";
     let phone = "07123456789";
     let placeOfBirth = "Gampaha";
     let nic = "123456789V";
 
-    await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, address, phone, placeOfBirth, nic, {
+    await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, gender, title, address, phone, placeOfBirth, nic, {
       accounts: {
         passportHolder: holder.publicKey,
         author: program.provider.wallet.publicKey,
@@ -290,12 +292,14 @@ describe('immunopass', () => {
     let firstname = "Dilanka";
     let lastname = "Harshani";
     let dateOfBirth = "870976800";
+    let gender = "FEMALE";
+    let title = "Miss. ";
     let address =  "No. 123, Nittambuwa, Gampaha";
     let phone = "07123456789";
     let placeOfBirth = "Gampaha";
     let nic = "";
 
-    await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, address, phone, placeOfBirth, nic, {
+    await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, gender, title, address, phone, placeOfBirth, nic, {
       accounts: {
         passportHolder: holder02.publicKey,
         author: program.provider.wallet.publicKey,
