@@ -31,7 +31,7 @@ export class PassportHolder {
     }
 
     get doctorDisplayName() {
-        if (this.title == null || this.title == '') {
+        if (this.title == null || this.title === '') {
             return this.firstname + ' ' + this.lastname
         }
         return this.title + this.firstname + ' ' + this.lastname
