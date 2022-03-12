@@ -97,9 +97,56 @@ pub mod immunopass {
 
     pub fn create_vaccination_record(ctx: Context<CreateVaccinationRecord>, vaccine: String, notes: String, age: String, weight: String, dosage: String, batch_number: String, doctor: Pubkey, vaccination_camp: Pubkey, passport_holder: Pubkey) -> ProgramResult {
 
+        // create new account
         let vaccination_record: &mut Account<VaccinationRecord> = &mut ctx.accounts.vaccination_record;
+
         // let author: &Signer = &ctx.accounts.author;
         let created_date: Clock = Clock::get().unwrap();
+
+        // check if vaccine is empty
+        if vaccine.is_empty() {
+            return Err(ErrorCode::VaccinationEmpty.into());
+        }
+
+        // check if age is empty
+        if age.is_empty() {
+            return Err(ErrorCode::AgeEmpty.into());
+        }
+
+        // check if weight is empty
+        if weight.is_empty() {
+            return Err(ErrorCode::WeightEmpty.into());
+        }
+
+        // check if dosage is empty
+        if dosage.is_empty() {
+            return Err(ErrorCode::DosageEmpty.into());
+        }
+
+        // check if batch number is empty
+        if batch_number.is_empty() {
+            return Err(ErrorCode::BatchNumberEmpty.into());
+        }
+
+        // check if batch number is less than 100 characters
+        if batch_number.len() > 100 {
+            return Err(ErrorCode::BatchNumberTooLong.into());
+        }
+
+        // check if doctor is present
+        if doctor.to_string().is_empty() {
+            return Err(ErrorCode::DoctorEmpty.into());
+        }
+
+        // check if vaccination camp is present
+        if vaccination_camp.to_string().is_empty() {
+            return Err(ErrorCode::VaccinationCampEmpty.into());
+        }
+
+        // check if passport holder is present
+        if passport_holder.to_string().is_empty() {
+            return Err(ErrorCode::PassportHolderEmpty.into());
+        }
 
         vaccination_record.created_date = created_date.unix_timestamp;
         vaccination_record.vaccine = vaccine;
@@ -111,7 +158,7 @@ pub mod immunopass {
         vaccination_record.doctor = doctor;
         vaccination_record.vaccination_camp = vaccination_camp;
         vaccination_record.passport_holder = passport_holder;
-        vaccination_record.status = "pending".to_uppercase();
+        vaccination_record.status = "completed".to_uppercase();
 
         Ok(())
     }
@@ -173,6 +220,8 @@ pub mod immunopass {
         let vc_verification_record: &mut Account<ValidationRecord> = &mut ctx.accounts.vc_verification_record;
         let ph_verification_record: &mut Account<ValidationRecord> = &mut ctx.accounts.ph_verification_record;
 
+
+
         if doc_verification_record.status == "invalid".to_uppercase() || vc_verification_record.status == "invalid".to_uppercase() || ph_verification_record.status == "invalid".to_uppercase() {
             vaccination_record.status = "invalid".to_uppercase();
         } else if doc_verification_record.status == "valid".to_uppercase() && vc_verification_record.status == "valid".to_uppercase() && ph_verification_record.status == "valid".to_uppercase() {
@@ -205,13 +254,13 @@ pub struct UpdateDoctor<'info> {
     pub author: Signer<'info>,
 }
 
-// // delete doctor
-// #[derive(Accounts)]
-// pub struct DeleteDoctor<'info> {
-//     #[account(mut, has_one = author, close = author)]
-//     pub doctor: Account<'info, Doctor>,
-//     pub author: Signer<'info>,
-// }
+// delete doctor
+#[derive(Accounts)]
+pub struct DeleteDoctor<'info> {
+    #[account(mut, close = author)]
+    pub doctor: Account<'info, Doctor>,
+    pub author: Signer<'info>,
+}
 
 // Create vaccination camp
 #[derive(Accounts)]
@@ -232,13 +281,13 @@ pub struct UpdateVaccinationCamp<'info> {
     pub author: Signer<'info>,
 }
 
-// // delete vaccination camp
-// #[derive(Accounts)]
-// pub struct DeleteVaccinationCamp<'info> {
-//     #[account(mut, has_one = author, close = author)]
-//     pub vaccination_camp: Account<'info, VaccinationCamp>,
-//     pub author: Signer<'info>,
-// }
+// delete vaccination camp
+#[derive(Accounts)]
+pub struct DeleteVaccinationCamp<'info> {
+    #[account(mut, close = author)]
+    pub vaccination_camp: Account<'info, VaccinationCamp>,
+    pub author: Signer<'info>,
+}
 
 // Create passport holder
 #[derive(Accounts)]
@@ -582,12 +631,16 @@ pub enum ErrorCode {
     OpeningTimesEmpty,
 
     // doctor errors
+    #[msg("The doctor cannot be empty")]
+    DoctorEmpty,
     #[msg("The doctor is not registered")]
     DoctorNotFound,
     #[msg("The doctor is already registered")]
     DoctorAlreadyExists,
 
     // vaccination camp errors
+    #[msg("The vaccination camp cannot be empty")]
+    VaccinationCampEmpty,
     #[msg("The vaccination camp is not registered")]
     VaccinationCampNotFound,
     #[msg("The vaccination camp is already registered")]
@@ -604,6 +657,8 @@ pub enum ErrorCode {
     PassportHolderNotFound,
     #[msg("The passport holder is already registered")]
     PassportHolderAlreadyExists,
+    #[msg("The passport holder cannot be empty")]
+    PassportHolderEmpty,
 
     // nic errors
     #[msg("The nic should be less than 15 characters")]
@@ -618,12 +673,20 @@ pub enum ErrorCode {
     PlaceOfBirthEmpty,
 
     // batch number errors
+    #[msg("The batch number should be less than 100 characters")]
+    BatchNumberTooLong,
     #[msg("The batch number should not be empty")]
     BatchNumberEmpty,
 
     // vaccination errors
     #[msg("The vaccination field should not be empty")]
     VaccinationEmpty,
+
+    // dosage errors
+    #[msg("The dosage should be less than 50 characters")]
+    DosageTooLong,
+    #[msg("The dosage should not be empty")]
+    DosageEmpty,
 
     // age errors
     #[msg("The age should not be empty")]
