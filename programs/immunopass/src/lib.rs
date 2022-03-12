@@ -66,8 +66,9 @@ pub mod immunopass {
         Ok(())
     }
 
-    pub fn create_passport_holder(ctx: Context<CreatePassportHolder>, firstname: String, lastname: String, date_of_birth: String, address: String, phone: String, place_of_birth: String, nic: String) -> ProgramResult {
-        
+    pub fn create_passport_holder(ctx: Context<CreatePassportHolder>, firstname: String, lastname: String, date_of_birth: String, gender: String, title: String, address: String, phone: String, place_of_birth: String, nic: String) -> ProgramResult {
+        let genders = vec!["FEMALE", "MALE", "OTHER"];
+
         let passport_holder: &mut Account<PassportHolder> = &mut ctx.accounts.passport_holder;
         let author: &Signer = &ctx.accounts.author;
         let joined_date: Clock = Clock::get().unwrap();
@@ -76,6 +77,16 @@ pub mod immunopass {
         passport_holder.firstname = firstname;
         passport_holder.lastname = lastname;
         passport_holder.date_of_birth = date_of_birth.parse().unwrap();
+
+        if gender.is_empty() {
+            passport_holder.gender = "NOT_SPECIFIED".parse().unwrap();
+        } else if !genders.contains(&gender.to_uppercase().as_str()) {
+            return Err(ErrorCode::InvalidGender.into());
+        } else {
+            passport_holder.gender = gender.to_uppercase();
+        }
+
+        passport_holder.title = title;
         passport_holder.address = address;
         passport_holder.phone = phone;
         passport_holder.place_of_birth = place_of_birth;
@@ -394,6 +405,8 @@ pub struct PassportHolder {
     pub firstname: String,
     pub lastname: String,
     pub date_of_birth: i64,
+    pub gender: String,
+    pub title: String,
     pub address: String,
     pub phone: String,
     pub place_of_birth: String,
@@ -461,6 +474,8 @@ const WEIGHT_LENGTH: usize = 10 * 4;
 const RECORD_TYPE_LENGTH: usize = 30 * 4;
 const VALIDATOR_TYPE_LENGTH: usize = 30 * 4;
 const STATUS_LENGTH: usize = 30 * 4;
+const TITLE_LENGTH: usize = 10 * 4;
+const GENDER_LENGTH: usize = 10 * 4;
 
 
 // doctor attribute length rules
@@ -503,6 +518,8 @@ impl PassportHolder {
         + STRING_LENGTH_PREFIX + NAME_LENGTH              // firstname
         + STRING_LENGTH_PREFIX + NAME_LENGTH              // lastname
         + TIMESTAMP_LENGTH                                // date_of_birth
+        + STRING_LENGTH_PREFIX + GENDER_LENGTH            // gender
+        + STRING_LENGTH_PREFIX + TITLE_LENGTH             // title
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH           // address
         + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH         // phone
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH           // place_of_birth
@@ -664,6 +681,10 @@ pub enum ErrorCode {
     PassportHolderAlreadyExists,
     #[msg("The passport holder cannot be empty")]
     PassportHolderEmpty,
+
+    // gender errors
+    #[msg("Invalid gender provided")]
+    InvalidGender,
 
     // nic errors
     #[msg("The nic should be less than 15 characters")]
