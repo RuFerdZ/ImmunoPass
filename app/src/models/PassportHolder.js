@@ -30,8 +30,8 @@ export class PassportHolder {
         return dayjs.unix(this.joinedDate).fromNow()
     }
 
-    get doctorDisplayName() {
-        if (this.title == null || this.title == '') {
+    get passportHolderDisplayName() {
+        if (this.title == null || this.title === '') {
             return this.firstname + ' ' + this.lastname
         }
         return this.title + this.firstname + ' ' + this.lastname
