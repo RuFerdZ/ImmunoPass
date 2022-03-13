@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-
+import { getDoctorByPubKey, getVaccinationCampByPubKey, getPassportHolderByPubKey } from '../api'
+ 
 export class VaccinationRecord {
 
     constructor (publicKey, account) {
@@ -40,5 +41,17 @@ export class VaccinationRecord {
 
     get createdAgo() {
         return dayjs.unix(this.createdDate).fromNow()
+    }
+
+    getDoctorDetails(wallet) {
+        return getDoctorByPubKey(wallet, this.doctorPublicKey)
+    }
+
+    getPassportHolderDetails(wallet) {
+        return getPassportHolderByPubKey(wallet, this.passportHolderPublicKey)
+    }
+
+    getVaccinationCampDetails(wallet) {
+        return getVaccinationCampByPubKey(wallet, this.vaccinationCampPublicKey)
     }
 }
