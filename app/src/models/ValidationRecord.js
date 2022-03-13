@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { getDoctorByPubKey, getVaccinationCampByPubKey, getPassportHolderByPubKey } from '../api'
+import { getDoctorByPubKey, getVaccinationCampByPubKey, getPassportHolderByPubKey, getVaccinationRecordByPubkey } from '../api'
 
 
 export class ValidationRecord {
@@ -44,5 +44,15 @@ export class ValidationRecord {
             return getVaccinationCampByPubKey(wallet, this.validatorPublicKey)
         } 
         return "UNKNOWN";
+    }
+
+    getRecordDetails(wallet) {
+        if (this.recordType === 'VACCINATION_RECORD') {
+            return getVaccinationRecordByPubkey(wallet, this.recordPublicKey)
+        } else if (this.recordType === 'PASSPORT_HOLDER') {
+            return getPassportHolderByPubKey(wallet, this.recordPublicKey)
+        } else {
+            return "UNKNOWN"
+        }
     }
 }

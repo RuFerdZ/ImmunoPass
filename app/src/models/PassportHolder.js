@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { getVaccinationRecordsOfPassportHolder } from './api';
 
 export class PassportHolder {
 
@@ -39,5 +40,9 @@ export class PassportHolder {
 
     get dateOfBirth() {
         return dayjs.unix(this.dateOfBirth).format('lll')
+    }
+
+    getVaccinationRecords(wallet){
+        return getVaccinationRecordsOfPassportHolder(wallet, this.publicKey)
     }
 }

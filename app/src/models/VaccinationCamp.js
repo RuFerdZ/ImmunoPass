@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { getAssignedVaccinationsForCamp } from '../api'
 
 export class VaccinationCamp {
 
@@ -26,5 +27,9 @@ export class VaccinationCamp {
 
     get JoinedAgo() {
         return dayjs.unix(this.joinedDate).fromNow()
+    }
+
+    getAssignedVaccinationRecords(wallet){
+        return getAssignedVaccinationsForCamp(wallet, this.publicKey)
     }
 }

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { getDoctorByPubKey, getVaccinationCampByPubKey, getPassportHolderByPubKey } from '../api'
+import { getDoctorByPubKey, getVaccinationCampByPubKey, getPassportHolderByPubKey, getValidationRecordsOfVaccination } from '../api'
  
 export class VaccinationRecord {
 
@@ -53,5 +53,9 @@ export class VaccinationRecord {
 
     getVaccinationCampDetails(wallet) {
         return getVaccinationCampByPubKey(wallet, this.vaccinationCampPublicKey)
+    }
+
+    getValidators(wallet) {
+        return getValidationRecordsOfVaccination(wallet, this.publicKey)
     }
 }
