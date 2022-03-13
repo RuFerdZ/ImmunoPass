@@ -1,19 +1,20 @@
 import dayjs from 'dayjs';
+import { getAssignedVaccinationsForCamp } from '../api'
 
 export class VaccinationCamp {
 
-    constructor (key) {
-        this.key = key
-        this.owner = null
-        this.registrationNumber = null
-        this.name = null
-        this.phone = null
-        this.email = null
-        this.website = null
-        this.openingTimes = null
-        this.address = null
-        this.joinedDate = null
-        this.isActive = null
+    constructor (publicKey, account) {
+        this.publicKey = publicKey
+        this.owner = account.owner
+        this.registrationNumber = account.registrationNumber
+        this.name = account.name
+        this.phone = account.phone
+        this.email = account.email
+        this.website = account.website
+        this.openingTimes = account.openingTimes
+        this.address = account.address
+        this.joinedDate = account.joinedDate
+        this.isActive = account.isActive
     }
 
     get publicKey() {
@@ -26,5 +27,9 @@ export class VaccinationCamp {
 
     get JoinedAgo() {
         return dayjs.unix(this.joinedDate).fromNow()
+    }
+
+    getAssignedVaccinationRecords(wallet){
+        return getAssignedVaccinationsForCamp(wallet, this.publicKey)
     }
 }

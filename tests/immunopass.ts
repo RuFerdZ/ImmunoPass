@@ -15,6 +15,7 @@ describe('immunopass', () => {
   const doctor = anchor.web3.Keypair.generate();
   const vaccinationCamp = anchor.web3.Keypair.generate();
   const vaccinationRecord = anchor.web3.Keypair.generate();
+  const record = anchor.web3.Keypair.generate();
 
 
   it('shoud be able to create a doctor', async () => {
@@ -55,7 +56,25 @@ describe('immunopass', () => {
     assert.equal(doctorCreated.businessAddress, businessAddress);
     assert.equal(doctorCreated.businessTelephone, businessTelephone);
     assert.equal(doctorCreated.qualifications, qualifications);
-    assert.ok(doctorCreated.joinedDate);  
+    assert.ok(doctorCreated.joinedDate);
+
+    // console.log(doctorCreated);
+  });
+
+  it ('can fetch a doctor by license number', async () => {
+    // doctor login
+    const searchedDoc = await program.account.doctor.all([
+      {
+        memcmp: {
+          offset: 8 +
+              32 +
+              4,
+          bytes: bs58.encode(Buffer.from("DOC001")),
+        }
+      }
+    ]);
+
+    assert.equal(searchedDoc.length, 1);
   });
 
   it('cannot create a doctor without a firstname', async () => {
@@ -132,7 +151,7 @@ describe('immunopass', () => {
     ];
     let address = "No.1, Galle Road, Colombo";
 
-// integers of type i64 cant be passed as arguments to the contract
+    // integers of type i64 cant be passed as arguments to the contract
 
     await program.rpc.createVaccinationCamp(registrationNumber, name, phone, email, website, JSON.stringify(openingTimes), address, {
       accounts: {
@@ -154,15 +173,6 @@ describe('immunopass', () => {
     assert.equal(campCreated.openingTimes, JSON.stringify(openingTimes));
     assert.equal(campCreated.address, address);
     assert.ok(campCreated.joinedDate);
-
-
-    // // timestamp to date
-    // let unix_timestamp = campCreated.joinedDate;
-    // var date = new Date(unix_timestamp * 1000);
-    // var hours = date.getHours();
-    // var minutes = "0" + date.getMinutes();
-    // var seconds = "0" + date.getSeconds();
-    // var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
   });
 
   it('shoud not be able to create a vaccination camp', async () => {
@@ -361,6 +371,19 @@ describe('immunopass', () => {
     assert.ok(createdRecord.createdDate);
   });
 
+  it ('can fetch vaccination records of passport holder', async () => {
+    const records = await program.account.vaccinationRecord.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: holder.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(records.length, 1);
+  });
+
   it('can fetch all vaccination records', async () => {
     const vaccinationRecords = await program.account.vaccinationRecord.all();
     assert.equal(vaccinationRecords.length, 1);
@@ -428,11 +451,9 @@ describe('immunopass', () => {
     ]);
 
     assert.equal(searchedVC.length, 1);
-    // console.log(searchedVC[0]);
   });
 
   it ('can fetch a passport holder by wallet address', async () => {
-    // passport holder login
     const searchedPH = await program.account.passportHolder.all([
       {
         memcmp: {
@@ -442,12 +463,11 @@ describe('immunopass', () => {
       }
     ]);
 
-    assert.equal(searchedPH.length, 2);  // because we have created 2 passport holders above
-    // console.log(searchedPH);
+    assert.equal(searchedPH.length, 2);
   });
 
   it('can validate vaccination records', async () => {
-    const record = anchor.web3.Keypair.generate();
+
     const doctor01 = anchor.web3.Keypair.generate();
     const vaccinationCamp01 = anchor.web3.Keypair.generate();
     const holder01 = anchor.web3.Keypair.generate();
@@ -533,4 +553,43 @@ describe('immunopass', () => {
 
   });
 
+
+  it ('can fetch a validation records of a vaccination record', async () => {
+    const records = await program.account.validationRecord.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: record.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(records.length, 3);  // because we have created 3 validation records above
+  });
+
+  it ('can fetch a vaccinations records of a vaccination camp', async () => {
+    const vaccinations = await program.account.vaccinationRecord.all([
+      {
+        memcmp: {
+          offset: 8 + 32 + 32,
+          bytes: vaccinationCamp.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(vaccinations.length, 1);  // because we have created 1 vaccination record above
+  });
+
+  it ('can fetch a vaccinations records of a doctor', async () => {
+    const vaccinations = await program.account.vaccinationRecord.all([
+      {
+        memcmp: {
+          offset: 8 + 32,
+          bytes: doctor.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(vaccinations.length, 0);  // because we have created 0 vaccination record above
+  });
 });

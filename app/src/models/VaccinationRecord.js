@@ -1,21 +1,22 @@
 import dayjs from 'dayjs';
-
+import { getDoctorByPubKey, getVaccinationCampByPubKey, getPassportHolderByPubKey, getValidationRecordsOfVaccination } from '../api'
+ 
 export class VaccinationRecord {
 
-    constructor (key) {
-        this.key = key
-        this.owner = null
-        this.createdDate = null
-        this.vaccine = null
-        this.notes = null
-        this.age = null
-        this.weight = null
-        this.dosage = null
-        this.batchNumber = null
-        this.doctor = null
-        this.vaccinationCamp = null
-        this.passportHolder = null
-        this.status = null
+    constructor (publicKey, account) {
+        this.publicKey = publicKey
+        this.owner = account.owner
+        this.createdDate = account.createdDate
+        this.vaccine = account.vaccine
+        this.notes = account.notes
+        this.age = account.age
+        this.weight = account.weight
+        this.dosage = account.dosage
+        this.batchNumber = account.batchNumber
+        this.doctor = account.doctor
+        this.vaccinationCamp = account.vaccinationCamp
+        this.passportHolder = account.passportHolder
+        this.status = account.status
     }
 
     get publicKey() {
@@ -40,5 +41,21 @@ export class VaccinationRecord {
 
     get createdAgo() {
         return dayjs.unix(this.createdDate).fromNow()
+    }
+
+    getDoctorDetails(wallet) {
+        return getDoctorByPubKey(wallet, this.doctorPublicKey)
+    }
+
+    getPassportHolderDetails(wallet) {
+        return getPassportHolderByPubKey(wallet, this.passportHolderPublicKey)
+    }
+
+    getVaccinationCampDetails(wallet) {
+        return getVaccinationCampByPubKey(wallet, this.vaccinationCampPublicKey)
+    }
+
+    getValidators(wallet) {
+        return getValidationRecordsOfVaccination(wallet, this.publicKey)
     }
 }

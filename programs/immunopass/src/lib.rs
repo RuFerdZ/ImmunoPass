@@ -182,7 +182,7 @@ pub mod immunopass {
     pub fn create_validation_record(ctx: Context<CreateValidationRecord>, record_type: String, record: Pubkey, validator_type: String, validator: Pubkey, status: String, notes: String) -> ProgramResult {
 
         let validator_types = vec!["doctor", "vaccination_camp", "passport_holder"];
-        let record_types = vec!["vaccination", "patient"];
+        let record_types = vec!["vaccination", "passport_holder"];
 
         let validation_record: &mut Account<ValidationRecord> = &mut ctx.accounts.validation_record;
         let author: &Signer = &ctx.accounts.author;
@@ -370,10 +370,10 @@ pub struct VerifyVaccinationRecord<'info> {
 #[account]
 pub struct Doctor {
     pub owner: Pubkey,
+    pub license_number: String,
     pub firstname: String,
     pub lastname: String,
     pub date_of_birth: i64,
-    pub license_number: String,
     pub licence_issued_date: i64,
     pub licence_expiry_date: i64,
     pub business_address: String,
@@ -419,6 +419,9 @@ pub struct PassportHolder {
 // vaccination record account
 #[account]
 pub struct VaccinationRecord {
+    pub passport_holder: Pubkey,
+    pub doctor: Pubkey,
+    pub vaccination_camp: Pubkey,
     pub created_date: i64,
     pub vaccine: String,
     pub notes: String,
@@ -426,9 +429,6 @@ pub struct VaccinationRecord {
     pub weight: String,
     pub dosage: String,
     pub batch_number: String,
-    pub doctor: Pubkey,
-    pub vaccination_camp: Pubkey,
-    pub passport_holder: Pubkey,
     pub status: String
 }
 
@@ -436,8 +436,8 @@ pub struct VaccinationRecord {
 #[account]
 #[derive(Debug)]
 pub struct ValidationRecord {
-    pub record_type: String,      // this says what type of item will get validated
     pub record: Pubkey,           // this holds the public key reference for the item that is been validated
+    pub record_type: String,      // this says what type of item will get validated
     pub validator_type: String,   // this says the role of the validator
     pub validator: Pubkey,        // this holds the public key reference for the validator
     pub status: String,           // this holds the status of the validation
@@ -482,10 +482,10 @@ const GENDER_LENGTH: usize = 10 * 4;
 impl Doctor {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH                               // owner
+        + STRING_LENGTH_PREFIX + LICENSE_NUMBER_LENGTH    // license_number
         + STRING_LENGTH_PREFIX + NAME_LENGTH              // firstname
         + STRING_LENGTH_PREFIX + NAME_LENGTH              // lastname
         + TIMESTAMP_LENGTH                                // date_of_birth
-        + STRING_LENGTH_PREFIX + LICENSE_NUMBER_LENGTH    // license_number
         + TIMESTAMP_LENGTH                                // licence_issued_date
         + TIMESTAMP_LENGTH                                // licence_expiry_date
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH           // business_address
@@ -531,23 +531,25 @@ impl PassportHolder {
 // vaccination record attribute length rules
 impl VaccinationRecord {
     const LEN: usize = DISCRIMINATOR_LENGTH
+        + PUBLIC_KEY_LENGTH                               // passport_holder
+        + PUBLIC_KEY_LENGTH                               // doctor
+        + PUBLIC_KEY_LENGTH                               // vaccination_camp
         + TIMESTAMP_LENGTH                                // created_date
         + STRING_LENGTH_PREFIX + VACCINE_LENGTH           // vaccine
         + STRING_LENGTH_PREFIX + NOTES_LENGTH             // notes
         + TIMESTAMP_LENGTH                                // age
         + STRING_LENGTH_PREFIX + WEIGHT_LENGTH            // weight
         + STRING_LENGTH_PREFIX + DOSAGE_LENGTH            // dosage
-        + STRING_LENGTH_PREFIX + BATCH_NUMBER_LENGTH      // batch_number
-        + PUBLIC_KEY_LENGTH                               // doctor
-        + PUBLIC_KEY_LENGTH                               // vaccination_camp
-        + PUBLIC_KEY_LENGTH;                              // passport_holder
+        + STRING_LENGTH_PREFIX + BATCH_NUMBER_LENGTH;     // batch_number
+
+
 }
 
 // validation record attribute length rules
 impl ValidationRecord {
     const LEN: usize = DISCRIMINATOR_LENGTH
-        + STRING_LENGTH_PREFIX + RECORD_TYPE_LENGTH        // record_type
         + PUBLIC_KEY_LENGTH                                // record
+        + STRING_LENGTH_PREFIX + RECORD_TYPE_LENGTH        // record_type
         + STRING_LENGTH_PREFIX + VALIDATOR_TYPE_LENGTH     // validator_type
         + PUBLIC_KEY_LENGTH                                // validator
         + STRING_LENGTH_PREFIX + STATUS_LENGTH             // status

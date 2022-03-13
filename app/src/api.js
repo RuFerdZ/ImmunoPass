@@ -7,6 +7,10 @@ import { VaccinationCamp } from '../src/models/VaccinationCamp';
 import { PassportHolder } from '../src/models/PassportHolder';
 import { VaccinationRecord } from '../src/models/VaccinationRecord';
 import { ValidationRecord } from '../src/models/ValidationRecord';
+import * as bs58 from "bs58";
+import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
+
+const { SystemProgram, Keypair } = web3;
 
 async function getProvider(wallet) {
     const connection = new Connection(network.local, opts.preflightCommitment);
@@ -14,59 +18,429 @@ async function getProvider(wallet) {
     return provider;
 }
 
-async function createDoctor(wallet, Doctor) {
+
+// DOCTOR ENDPOINTS
+
+export async function createDoctor(wallet, doctor) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+    
+    doctor.publicKey = Keypair.generate();
+
+    try {
+        await program.rpc.createDoctor(
+            doctor.firstname, 
+            doctor.lastname, 
+            doctor.dateOfBirth, 
+            doctor.licenseNumber, 
+            doctor.licenseIssuedDate, 
+            doctor.licenseExpiryDate, 
+            doctor.businessAddress, 
+            doctor.businessTelephone, 
+            doctor.qualifications,
+            {
+                accounts: {
+                    doctor: doctor.publicKey,
+                    author: provider.wallet.publicKey,
+                    systemProgram: SystemProgram.programId,
+
+                },
+                signers: [doctor]
+            });
+    } catch (err) {
+        console.log("Error in creating new doctor. - " + err);
+        return null;
+    }
+
+    return getDoctorByPubKey(wallet, doctor.publicKey);
+}
+
+export async function getDoctorByPubKey(wallet, pubKey) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+    try {
+        const doctor = await program.account.doctor.fetch(pubKey);
+        return new Doctor(doctor.publicKey, doctor.account);
+    } catch (err) {
+        console.log("Error in getting doctor by public key. - " + err);
+        return null;
+    }
+}
+
+export async function getDoctorByLicenseNumber(wallet, licenseNumber) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+    try {
+        const doctor = await program.account.doctor.all(
+            [
+                {
+                  memcmp: {
+                    offset: 8 +
+                    32 +
+                    4,
+                    bytes: bs58.encode(Buffer.from(licenseNumber)),
+                  }
+                }
+              ]
+        )
+        return new Doctor(doctor[0].publicKey, doctor[0].account);
+    } catch (err) {
+        console.log("Error in getting doctor by license number. - " + err);
+        return null;
+    }
+}
+
+export async function getDoctorByWalletAddress(wallet) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+    try {
+        const doctor = await program.account.doctor.all(
+            [
+                {
+                  memcmp: {
+                    offset: 8,
+                    bytes: program.provider.wallet.publicKey.toBase58(),
+                  }
+                }
+              ]
+        )
+        return new Doctor(doctor[0].publicKey, doctor[0].account);
+    } catch (err) {
+        console.log("Error in getting doctor by wallet address. - " + err);
+        return null;
+    }
+}
+
+export async function initiateVaccinationRecord(wallet, vaccinationRecord) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    vaccinationRecord.publicKey = Keypair.generate();
+
+    const doctor = await getDoctorByWalletAddress(wallet);
+    if (doctor != null) {
+        try {
+            await program.rpc.createVaccinationRecord(
+                vaccinationRecord.vaccine, 
+                vaccinationRecord.notes, 
+                vaccinationRecord.age, 
+                vaccinationRecord.weight, 
+                vaccinationRecord.dosage, 
+                vaccinationRecord.batchNumber, 
+                provider.wallet.publicKey, 
+                vaccinationRecord.vaccinationCamp, 
+                vaccinationRecord.passportHolder, 
+                {
+                    accounts: {
+                        vaccinationRecord: vaccinationRecord.publicKey,
+                        author:  provider.wallet.publicKey,
+                        systemProgram: SystemProgram.programId,
+                    },
+                    signers: [vaccinationRecord],
+                });
+        } catch (err) {
+            console.log("Error in initiating vaccination record. - " + err);
+            return null;
+        }
+    } else {
+        return null;
+    }
+
+    return await getVaccinationRecordByPubkey(wallet, vaccinationRecord.publicKey);
+}
+
+export async function getAssignedVaccinationsForDoctor(wallet, pubKey) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    try{
+        const vaccinations = await program.account.vaccinationRecord.all(
+            [
+                {
+                  memcmp: {
+                    offset: 8 +
+                    32,
+                    bytes: pubKey.toBase58(),
+                  }
+                }
+              ]
+        )
+        return vaccinations.map(vaccination => new VaccinationRecord(vaccination.publicKey, vaccination.account));
+    } catch (err) {
+        console.log("Error in getting vaccination records of a doctor. - " + err);
+    }
+    return null;
+}
+
+
+
+// VACCINATION CAMP ENDPOINTS
+
+export async function createVaccinationCamp(wallet, vaccinationCamp) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    vaccinationCamp.publicKey = Keypair.generate();
+
+    try {
+        await program.rpc.createVaccinationCamp(
+            vaccinationCamp.registrationNumber, 
+            vaccinationCamp.name, 
+            vaccinationCamp.phone, 
+            vaccinationCamp.email, 
+            vaccinationCamp.website, 
+            JSON.stringify(vaccinationCamp.openingTimes), 
+            vaccinationCamp.address, {
+            accounts: {
+              vaccinationCamp: vaccinationCamp.publicKey,
+              author: provider.wallet.publicKey,
+              systemProgram: SystemProgram.programId,
+            },
+            signers: [vaccinationCamp],
+          });
+          return await getVaccinationCampByPubKey(wallet, vaccinationCamp.publicKey);
+    } catch (err) {
+        console.log("Error in creating vaccination camp. - " + err);
+        return null;
+    }
+}
+
+export async function getVaccinationCampByPubKey(wallet, pubKey) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    try {
+        const vaccinationCamp = await program.account.vaccinationCamp.fetch(pubKey);
+        return new VaccinationCamp(vaccinationCamp.publicKey, vaccinationCamp.account);
+    } catch (err) {
+        console.log("Error in getting vaccination camp by public key. - " + err);
+    }
+    return null;
+}
+
+export async function getAssignedVaccinationsForCamp(wallet, pubKey) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    try{
+        const vaccinations = await program.account.vaccinationRecord.all(
+            [
+                {
+                  memcmp: {
+                    offset: 8 +
+                    32 +
+                    32,
+                    bytes: pubKey.toBase58(),
+                  }
+                }
+              ]
+        )
+        return vaccinations.map(vaccination => new VaccinationRecord(vaccination.publicKey, vaccination.account));
+    } catch (err) {
+        console.log("Error in getting vaccination records of a vaccination camp. - " + err);
+    }
+    return null;
+}
+
+
+
+
+// PASSPORT HOLDER ENDPOINTS
+
+export async function createPassportHolder(wallet, passportHolder) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    passportHolder.publicKey = Keypair.generate();
+
+    try {
+        await program.rpc.createPassportHolder(
+            passportHolder.firstname, 
+            passportHolder.lastname, 
+            passportHolder.dateOfBirth, 
+            passportHolder.gender, 
+            passportHolder.title, 
+            passportHolder.address, 
+            passportHolder.phone, 
+            passportHolder.placeOfBirth, 
+            passportHolder.nic, 
+            {
+                accounts: {
+                    passportHolder: passportHolder.publicKey,
+                    author: provider.wallet.publicKey,
+                    systemProgram: SystemProgram.programId,
+                },
+                signers: [passportHolder],
+          }); 
+
+          return await getPassportHolderByPubKey(wallet, passportHolder.publicKey);
+    } catch (err) {
+        console.log("Error in creating passport holder. - " + err);
+        return null;
+    }
 
 }
 
-async function createVaccinationCamp() {
+export async function getPassportHolderByPubKey(wallet, pubKey) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
 
+    try {
+        const passportHolder = await program.account.passportHolder.fetch(pubKey);
+        return new PassportHolder(passportHolder.publicKey, passportHolder.account);
+    } catch (err) {
+        console.log("Error in getting passport holder by public key. - " + err);
+    }
+    return null;
 }
 
-async function createPassportHolder() {
 
+
+// VALIDATION ENDPOINTS
+
+export async function validatePassportHolder(wallet, validationRecord) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    validationRecord.publicKey = Keypair.generate();
+    validationRecord.recordType = "passport_holder";
+
+    if (validationRecord.validator === provider.wallet.publicKey) {
+
+        try {
+            await program.rpc.createValidationRecord(
+                validationRecord.recordType, 
+                validationRecord.record, 
+                validationRecord.validatorType, 
+                validationRecord.validator, 
+                validationRecord.status, 
+                validationRecord.notes, {
+                accounts: {
+                validationRecord: validationRecord.publicKey,
+                author: provider.wallet.publicKey,
+                systemProgram: SystemProgram.programId,
+                },
+                signers: [validationRecord],
+            });
+
+            return await getValidationRecordByPublicKey(wallet, validationRecord.publicKey);
+        } catch (err) {
+            console.log("Error in validating passport holder. - " + err);
+            return null;
+        }
+    } else {
+        console.log("invalid validator")
+        return null;
+    }
 }
 
-async function validatePassportHolder() {
+export async function validateVaccination(wallet, validationRecord) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
 
+    validationRecord.publicKey = Keypair.generate();
+    validationRecord.recordType = "vaccination";
+
+    if (validationRecord.validator === provider.wallet.publicKey) {
+
+        try {
+            await program.rpc.createValidationRecord(
+                validationRecord.recordType, 
+                validationRecord.record, 
+                validationRecord.validatorType, 
+                validationRecord.validator, 
+                validationRecord.status, 
+                validationRecord.notes, {
+                    accounts: {
+                        validationRecord: validationRecord.publicKey,
+                        author: provider.wallet.publicKey,
+                        systemProgram: SystemProgram.programId,
+                    },
+                    signers: [validationRecord],
+            });
+
+            return await getValidationRecordByPublicKey(wallet, validationRecord.publicKey);
+        } catch (err) {
+            console.log("Error in validating passport holder. - " + err);
+            return null;
+        }
+    } else {
+        console.log("invalid validator")
+        return null;
+    }
+}
+
+export async function getValidationRecordByPublicKey(wallet, pubKey) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    try {
+        const validationRecord = await program.account.validationRecord.fetch(pubKey);
+        return new ValidationRecord(validationRecord.publicKey, validationRecord.account);
+    } catch (err) {
+        console.log("Error in getting validation record by public key. - " + err);
+    }
+    return null;
+}
+
+export async function getValidationRecordsOfRecord(wallet, pubKey) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    try{
+        const records = await program.account.validationRecord.all(
+            [
+                {
+                  memcmp: {
+                    offset: 8,
+                    bytes: pubKey.toBase58(),
+                  }
+                }
+              ]
+        )
+        return records.map(record => new ValidationRecord(record.publicKey, record.account));
+    } catch (err) {
+        console.log("Error in getting validation records of a record. - " + err);
+    }
+    return null;
 }
 
 
-async function initiateVaccinationRecord() {
+// VACCINATION RECORD ENDPOINTS
 
+export async function getVaccinationRecordByPubkey(wallet, pubKey) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    try {
+        const vaccination = await program.account.vaccinationRecord.fetch(pubKey);
+        return new VaccinationRecord(vaccination.publicKey, vaccination.account);
+    } catch (err) {
+        console.log("Error in getting vaccination record by public key. - " + err);
+    }
+    return null;
 }
 
-async function validateVaccination() {
+export async function getVaccinationRecordsOfPassportHolder(wallet, pubKey) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
 
+    try{
+        const records = await program.account.vaccinationRecord.all(
+            [
+                {
+                  memcmp: {
+                    offset: 8,
+                    bytes: pubKey.toBase58(),
+                  }
+                }
+              ]
+        )
+        return records.map(record => new VaccinationRecord(record.publicKey, record.account));
+    } catch (err) {
+        console.log("Error in getting vaccination records of passport holder. - " + err);
+    }
+    return null;
 }
 
-async function getDoctor() {
 
-}
-
-async function getPassportHolder() {
-
-}
-
-async function getVaccinationCamp() {
-
-}
-
-async function getVaccinationRecord() {
-
-}
-
-async function getValidationRecord() {
-
-}
-
-async function getVaccinationRecordsOfPassportHolder() {
-
-}
-
-async function getValidationRecordsOfVaccination() {
-
-}
-
-async function getValidationRecordsOfPassportHolder() {
-
-}

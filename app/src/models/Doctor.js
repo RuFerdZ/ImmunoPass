@@ -2,20 +2,20 @@ import dayjs from 'dayjs';
 
 export class Doctor {
 
-    constructor (key) {
-        this.key = key
-        this.owner = null
-        this.firstname = null
-        this.lastname = null
-        this.dateOfBirth = null
-        this.licenseNumber = null
-        this.licenseIssuedDate = null
-        this.licenseExpiryDate = null
-        this.businessAddress = null
-        this.businessTelephone = null
-        this.qualifications = null
-        this.joinedDate = null
-        this.isActive = null    
+    constructor (publicKey, account) {
+        this.publicKey = publicKey
+        this.owner = account.owner
+        this.firstname = account.firstname
+        this.lastname = account.lastname
+        this.dateOfBirth = account.dateOfBirth
+        this.licenseNumber = account.licenseNumber
+        this.licenseIssuedDate = account.licenseIssuedDate
+        this.licenseExpiryDate = account.licenseExpiryDate
+        this.businessAddress = account.businessAddress
+        this.businessTelephone = account.businessTelephone
+        this.qualifications = account.qualifications
+        this.joinedDate = account.joinedDate
+        this.isActive =  account.isActive    
     }
 
     get publicKey() {
@@ -37,5 +37,17 @@ export class Doctor {
 
     get doctorDisplayName() {
         return 'Dr. ' + this.firstname + ' ' + this.lastname
+    }
+
+    get dateOfBirth() {
+        return dayjs.unix(this.dateOfBirth).format('lll')
+    }
+
+    get licenseExpiryDate() {
+        return dayjs.unix(this.licenseExpiryDate).format('lll')
+    }
+
+    get licenseIssuedDate() {
+        return dayjs.unix(this.licenseIssuedDate).format('lll')
     }
 }

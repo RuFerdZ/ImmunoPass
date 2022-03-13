@@ -1,16 +1,18 @@
 import dayjs from 'dayjs';
+import { getDoctorByPubKey, getVaccinationCampByPubKey, getPassportHolderByPubKey, getVaccinationRecordByPubkey } from '../api'
+
 
 export class ValidationRecord {
 
-    constructor (key) {
-        this.key = key
-        this.recordType = null
-        this.record = null
-        this.validatorType = null
-        this.validator = null
-        this.status = null
-        this.notes = null
-        this.createdDate = null
+    constructor (publicKey, account) {
+        this.publicKey = publicKey
+        this.recordType = account.recordType
+        this.record = account.record
+        this.validatorType = account.validatorType
+        this.validator = account.validator
+        this.status = account.status
+        this.notes = account.notes
+        this.createdDate = account.createdDate
     }
 
     get publicKey() {
@@ -31,5 +33,26 @@ export class ValidationRecord {
 
     get createdAgo() {
         return dayjs.unix(this.createdDate).fromNow()
+    }
+
+    getValidatorDetails(wallet) {
+        if (this.validatorType === 'DOCTOR') {
+            return getDoctorByPubKey(wallet, this.validatorPublicKey)
+        } else if (this.validatorType === 'PASSPORT_HOLDER') {
+            return getPassportHolderByPubKey(wallet, this.validatorPublicKey)
+        } else if (this.validatorType === 'VACCINATION_CAMP') {
+            return getVaccinationCampByPubKey(wallet, this.validatorPublicKey)
+        } 
+        return "UNKNOWN";
+    }
+
+    getRecordDetails(wallet) {
+        if (this.recordType === 'VACCINATION_RECORD') {
+            return getVaccinationRecordByPubkey(wallet, this.recordPublicKey)
+        } else if (this.recordType === 'PASSPORT_HOLDER') {
+            return getPassportHolderByPubKey(wallet, this.recordPublicKey)
+        } else {
+            return "UNKNOWN"
+        }
     }
 }
