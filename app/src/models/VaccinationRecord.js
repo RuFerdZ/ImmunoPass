@@ -2,20 +2,20 @@ import dayjs from 'dayjs';
 
 export class VaccinationRecord {
 
-    constructor (key) {
+    constructor (key, account) {
         this.key = key
-        this.owner = null
-        this.createdDate = null
-        this.vaccine = null
-        this.notes = null
-        this.age = null
-        this.weight = null
-        this.dosage = null
-        this.batchNumber = null
-        this.doctor = null
-        this.vaccinationCamp = null
-        this.passportHolder = null
-        this.status = null
+        this.owner = account.owner
+        this.createdDate = account.createdDate
+        this.vaccine = account.vaccine
+        this.notes = account.notes
+        this.age = account.age
+        this.weight = account.weight
+        this.dosage = account.dosage
+        this.batchNumber = account.batchNumber
+        this.doctor = account.doctor
+        this.vaccinationCamp = account.vaccinationCamp
+        this.passportHolder = account.passportHolder
+        this.status = account.status
     }
 
     get publicKey() {

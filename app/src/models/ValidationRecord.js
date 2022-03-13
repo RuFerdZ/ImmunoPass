@@ -2,15 +2,15 @@ import dayjs from 'dayjs';
 
 export class ValidationRecord {
 
-    constructor (key) {
+    constructor (key, account) {
         this.key = key
-        this.recordType = null
-        this.record = null
-        this.validatorType = null
-        this.validator = null
-        this.status = null
-        this.notes = null
-        this.createdDate = null
+        this.recordType = account.recordType
+        this.record = account.record
+        this.validatorType = account.validatorType
+        this.validator = account.validator
+        this.status = account.status
+        this.notes = account.notes
+        this.createdDate = account.createdDate
     }
 
     get publicKey() {

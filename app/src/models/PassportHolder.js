@@ -2,20 +2,20 @@ import dayjs from 'dayjs';
 
 export class PassportHolder {
 
-    constructor (key) {
+    constructor (key, account) {
         this.key = key
-        this.owner = null
-        this.firstname = null
-        this.lastname = null
-        this.dateOfBirth = null
-        this.gender = null
-        this.title = null
-        this.address = null
-        this.phone = null
-        this.placeOfBirth = null
-        this.nic = null
-        this.joinedDate = null
-        this.isActive = null
+        this.owner = account.owner
+        this.firstname = account.firstname
+        this.lastname = account.lastname
+        this.dateOfBirth = account.dateOfBirth
+        this.gender = account.gender
+        this.title = account.title
+        this.address = account.address
+        this.phone = account.phone
+        this.placeOfBirth = account.placeOfBirth
+        this.nic = account.nic
+        this.joinedDate = account.joinedDate
+        this.isActive = account.isActive
     }
 
     get publicKey() {
@@ -35,5 +35,9 @@ export class PassportHolder {
             return this.firstname + ' ' + this.lastname
         }
         return this.title + this.firstname + ' ' + this.lastname
+    }
+
+    get dateOfBirth() {
+        return dayjs.unix(this.dateOfBirth).format('lll')
     }
 }
