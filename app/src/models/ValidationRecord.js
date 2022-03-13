@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 
 export class ValidationRecord {
 
-    constructor (key, account) {
-        this.key = key
+    constructor (publicKey, account) {
+        this.publicKey = publicKey
         this.recordType = account.recordType
         this.record = account.record
         this.validatorType = account.validatorType

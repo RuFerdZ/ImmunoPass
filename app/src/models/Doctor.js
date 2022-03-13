@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 
 export class Doctor {
 
-    constructor (key, account) {
-        this.key = key
+    constructor (publicKey, account) {
+        this.publicKey = publicKey
         this.owner = account.owner
         this.firstname = account.firstname
         this.lastname = account.lastname

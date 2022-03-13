@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 
 export class VaccinationRecord {
 
-    constructor (key, account) {
-        this.key = key
+    constructor (publicKey, account) {
+        this.publicKey = publicKey
         this.owner = account.owner
         this.createdDate = account.createdDate
         this.vaccine = account.vaccine
