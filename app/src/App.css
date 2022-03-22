@@ -13,26 +13,45 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.main-center-container {
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  margin: 10rem 0 5rem 0;
+}
+
+.main-center-container-sm {
+  justify-content: center;
+  align-items: center;
+  margin: 5px 0 0 0;
+}
+
+.page-link {
+  text-decoration: none !important;
+  margin-bottom: 50px;
+}
+
+.role-selection {
+ justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap; 
+  justify-content: space-evenly;
+}
+
+.app-name {
+  font-size: 5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.wallet-container {
+  display: flex;
+  justify-content: center;
+}
+
+.dashboard-header{
+  width: 100%;
+  background-color: #5d9ba0;
   color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
