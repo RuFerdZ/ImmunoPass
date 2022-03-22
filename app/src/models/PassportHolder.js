@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { getVaccinationRecordsOfPassportHolder } from './api';
+import { getVaccinationRecordsOfPassportHolder } from '../api';
 
 export class PassportHolder {
 
@@ -20,7 +20,11 @@ export class PassportHolder {
     }
 
     get publicKey() {
-        return this.key.toBase58()
+        return this.publicKey.toBase58()
+    }
+
+    set publicKey(publicKey) {
+        this.publicKey = publicKey
     }
 
     get joinedAt() {

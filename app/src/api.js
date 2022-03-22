@@ -294,6 +294,29 @@ export async function getPassportHolderByPubKey(wallet, pubKey) {
     return null;
 }
 
+export async function getPassportHolderByWalletAddress(wallet) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+    try {
+        const passportHolder = await program.account.passportHolder.all(
+            [
+                {
+                  memcmp: {
+                    offset: 8,
+                    bytes: program.provider.wallet.publicKey.toBase58(),
+                  }
+                }
+              ]
+        )
+        console.log(passportHolder[0]);
+        console.log("public key - " + passportHolder[0].publicKey);
+        return passportHolder[0];
+    } catch (err) {
+        console.log("Error in getting passport holder by wallet address. - " + err);
+    }
+    return null;
+}
+
 
 
 // VALIDATION ENDPOINTS

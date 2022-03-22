@@ -16,7 +16,7 @@ export class ValidationRecord {
     }
 
     get publicKey() {
-        return this.key.toBase58()
+        return this.publicKey.toBase58()
     }
 
     get validatorPublicKey() {

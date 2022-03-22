@@ -1,134 +1,34 @@
 import './App.css';
-import { useState } from 'react';
-import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
-import {
-  Program, Provider, web3
-} from '@project-serum/anchor';
-import idl from './idl.json';
-import { getPhantomWallet, getSolflareWallet, getSolletWallet } from '@solana/wallet-adapter-wallets';
-import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import VaccinationCampLogin from './pages/vaccination_camp/VaccinationCampLogin';
+import PassportHolderLogin from './pages/passport_holder/PassportHolderLogin';
+import DoctorLogin from './pages/doctor/DoctorLogin';
+import VaccinationCampDashboard from './pages/vaccination_camp/VaccinationCampDashboard';
+import PassportHolderDashboard from './pages/passport_holder/PassportHolderDashboard';
+import DoctorDashboard from './pages/doctor/DoctorDashboard';
+
+
+import LandingPage from './pages/LandingPage'
+import AdminDashboard from './pages/admin/AdminDashboard';
+
 require('@solana/wallet-adapter-react-ui/styles.css');
 
-const wallets = [
-  getPhantomWallet(),
-  getSolflareWallet(),
-  getSolletWallet()
-]
-/* const network = clusterApiUrl('devnet'); */
-const network = "http://127.0.0.1:8899";
-const { SystemProgram, Keypair } = web3;
-const baseAccount = Keypair.generate();
-const opts = {
-  preflightCommitment: "processed"
+export default function App() {
+  return (  
+    <div className="App">
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" element={<LandingPage />} />
+          <Route exact path="/doctor/login" element={<DoctorLogin />} />
+          <Route exact path="/passportHolder/login" element={<PassportHolderLogin />} />
+          <Route exact path="/vaccinationCamp/login" element={<VaccinationCampLogin />} />
+          <Route exact path="/admin" element={<AdminDashboard />} />
+          <Route exact path="/doctor/dashboard" element={<DoctorDashboard />} />
+          <Route exact path="/passportHolder/dashboard" element={<PassportHolderDashboard />} />
+          <Route exact path="/vaccinationCamp/dashboard" element={<VaccinationCampDashboard />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  );
 }
-const programID = new PublicKey(idl.metadata.address);
-
-function App() {
-  const [value, setValue] = useState('');
-  const [dataList, setDataList] = useState([]);
-  const [input, setInput] = useState('');
-  const wallet = useWallet()
-
-  async function getProvider() {
-    /* create the provider and return it to the caller */
-    /* network set to local network for now */
-    const connection = new Connection(network, opts.preflightCommitment);
-
-    const provider = new Provider(
-      connection, wallet, opts.preflightCommitment,
-    );
-    return provider;
-  }
-
-  async function initialize() {
-    const provider = await getProvider();
-    /* create the program interface combining the idl, program ID, and provider */
-    const program = new Program(idl, programID, provider);
-    try {
-      /* interact with the program via rpc */
-      await program.rpc.initialize("Hello World", {
-        accounts: {
-          baseAccount: baseAccount.publicKey,
-          user: provider.wallet.publicKey,
-          systemProgram: SystemProgram.programId,
-        },
-        signers: [baseAccount]
-      });
-
-      const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
-      console.log('account: ', account);
-      setValue(account.data.toString());
-      setDataList(account.dataList);
-    } catch (err) {
-      console.log("Transaction error: ", err);
-    }
-  }
-
-  async function update() {
-    if (!input) return
-    const provider = await getProvider();
-    const program = new Program(idl, programID, provider);
-    await program.rpc.update(input, {
-      accounts: {
-        baseAccount: baseAccount.publicKey
-      }
-    });
-
-    const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
-    console.log('account: ', account);
-    setValue(account.data.toString());
-    setDataList(account.dataList);
-    setInput('');
-  }
-
-  if(!wallet.connected) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop:'100px' }}>
-        <WalletMultiButton />
-      </div>
-    )
-  } else {
-    return (
-      <div className='App'>
-        <div>
-          {
-            !value && (<button onClick={initialize}>Intialize</button>)
-          }
-
-          {
-            value ? (
-              <div>
-                jfjfjfj hfhhfhf
-                <h2>Current value: {value}</h2>
-                <input 
-                  placeholder='Add new data'
-                  onChange={e => setInput(e.target.value)}
-                  value={input}
-                />
-                <button onClick={update}>Add Data</button>
-              </div>
-            ) : (
-              <h3>Please Initialize</h3>
-            )
-          }
-          {
-            dataList.map((d, i) => <h4 key={i}>{d}</h4>)
-          }
-        </div>
-      </div>  
-    )
-  }
-}
-
-const AppWithProvider = () => (
-  <ConnectionProvider endpoint={network}>
-    <WalletProvider wallets={wallets} autoConnect>
-      <WalletModalProvider>
-        <App />
-      </WalletModalProvider>
-    </WalletProvider>
-  </ConnectionProvider>
-)
-
-export default AppWithProvider;
