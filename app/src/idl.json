@@ -143,6 +143,14 @@
           "type": "string"
         },
         {
+          "name": "gender",
+          "type": "string"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
           "name": "address",
           "type": "string"
         },
@@ -323,6 +331,10 @@
             "type": "publicKey"
           },
           {
+            "name": "licenseNumber",
+            "type": "string"
+          },
+          {
             "name": "firstname",
             "type": "string"
           },
@@ -333,10 +345,6 @@
           {
             "name": "dateOfBirth",
             "type": "i64"
-          },
-          {
-            "name": "licenseNumber",
-            "type": "string"
           },
           {
             "name": "licenceIssuedDate",
@@ -439,6 +447,14 @@
             "type": "i64"
           },
           {
+            "name": "gender",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
             "name": "address",
             "type": "string"
           },
@@ -471,6 +487,18 @@
         "kind": "struct",
         "fields": [
           {
+            "name": "passportHolder",
+            "type": "publicKey"
+          },
+          {
+            "name": "doctor",
+            "type": "publicKey"
+          },
+          {
+            "name": "vaccinationCamp",
+            "type": "publicKey"
+          },
+          {
             "name": "createdDate",
             "type": "i64"
           },
@@ -499,18 +527,6 @@
             "type": "string"
           },
           {
-            "name": "doctor",
-            "type": "publicKey"
-          },
-          {
-            "name": "vaccinationCamp",
-            "type": "publicKey"
-          },
-          {
-            "name": "passportHolder",
-            "type": "publicKey"
-          },
-          {
             "name": "status",
             "type": "string"
           }
@@ -523,12 +539,12 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "recordType",
-            "type": "string"
-          },
-          {
             "name": "record",
             "type": "publicKey"
+          },
+          {
+            "name": "recordType",
+            "type": "string"
           },
           {
             "name": "validatorType",
@@ -722,96 +738,101 @@
     },
     {
       "code": 6033,
+      "name": "InvalidGender",
+      "msg": "Invalid gender provided"
+    },
+    {
+      "code": 6034,
       "name": "NicTooLong",
       "msg": "The nic should be less than 15 characters"
     },
     {
-      "code": 6034,
+      "code": 6035,
       "name": "PlaceOfBirthTooLong",
       "msg": "The place of birth should be less than 500 characters"
     },
     {
-      "code": 6035,
+      "code": 6036,
       "name": "PlaceOfBirthEmpty",
       "msg": "The place of birth should not be empty"
     },
     {
-      "code": 6036,
+      "code": 6037,
       "name": "BatchNumberTooLong",
       "msg": "The batch number should be less than 100 characters"
     },
     {
-      "code": 6037,
+      "code": 6038,
       "name": "BatchNumberEmpty",
       "msg": "The batch number should not be empty"
     },
     {
-      "code": 6038,
+      "code": 6039,
       "name": "VaccinationEmpty",
       "msg": "The vaccination field should not be empty"
     },
     {
-      "code": 6039,
+      "code": 6040,
       "name": "DosageTooLong",
       "msg": "The dosage should be less than 50 characters"
     },
     {
-      "code": 6040,
+      "code": 6041,
       "name": "DosageEmpty",
       "msg": "The dosage should not be empty"
     },
     {
-      "code": 6041,
+      "code": 6042,
       "name": "AgeEmpty",
       "msg": "The age should not be empty"
     },
     {
-      "code": 6042,
+      "code": 6043,
       "name": "WeightEmpty",
       "msg": "The weight should not be empty"
     },
     {
-      "code": 6043,
+      "code": 6044,
       "name": "ValidatorNotFound",
       "msg": "The validator type is unknown"
     },
     {
-      "code": 6044,
+      "code": 6045,
       "name": "RecordTypeNotFound",
       "msg": "The record type is invalid"
     },
     {
-      "code": 6045,
+      "code": 6046,
       "name": "InvalidValidator",
       "msg": "The validator is invalid"
     },
     {
-      "code": 6046,
+      "code": 6047,
       "name": "ValidatorNotProvided",
       "msg": "The validator is not provided"
     },
     {
-      "code": 6047,
+      "code": 6048,
       "name": "StatusRequired",
       "msg": "The status is is required"
     },
     {
-      "code": 6048,
+      "code": 6049,
       "name": "StatusTooLong",
       "msg": "The status is too long"
     },
     {
-      "code": 6049,
+      "code": 6050,
       "name": "NotesTooLong",
       "msg": "The notes should be less than 500 characters"
     },
     {
-      "code": 6050,
+      "code": 6051,
       "name": "NotesEmpty",
       "msg": "The notes should not be empty"
     },
     {
-      "code": 6051,
+      "code": 6052,
       "name": "UnauthorizedVaccinationInitiation",
       "msg": "The user is not authorized to perform this action"
     }
