@@ -40,7 +40,7 @@ export default function WalletConnection() {
     <ConnectionProvider endpoint={network.local}>
         <WalletProvider wallets={wallets}>
             <WalletModalProvider>
-                <VaccinationCampDashboard />        
+                <VaccinationCampLogin />        
             </WalletModalProvider>
         </WalletProvider>
     </ConnectionProvider>   

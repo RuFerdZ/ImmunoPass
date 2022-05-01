@@ -11,6 +11,7 @@ import DoctorDashboard from './pages/doctor/DoctorDashboard';
 
 import LandingPage from './pages/LandingPage'
 import AdminDashboard from './pages/admin/AdminDashboard';
+import { AdminLogin } from './pages/admin/AdminLogin';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 
@@ -21,12 +22,13 @@ export default function App() {
         <Routes>
           <Route exact path="/" element={<LandingPage />} />
           <Route exact path="/doctor/login" element={<DoctorLogin />} />
-          <Route exact path="/passportHolder/login" element={<PassportHolderLogin />} />
-          <Route exact path="/vaccinationCamp/login" element={<VaccinationCampLogin />} />
-          <Route exact path="/admin" element={<AdminDashboard />} />
+          <Route exact path="/passport-holder/login" element={<PassportHolderLogin />} />
+          <Route exact path="/vaccination-camp/login" element={<VaccinationCampLogin />} />
+          <Route exact path="/admin/login" element={<AdminLogin />} />
+          <Route exact path="/admin/dashboard" element={<AdminDashboard />} />
           <Route exact path="/doctor/dashboard" element={<DoctorDashboard />} />
-          <Route exact path="/passportHolder/dashboard" element={<PassportHolderDashboard />} />
-          <Route exact path="/vaccinationCamp/dashboard" element={<VaccinationCampDashboard />} />
+          <Route exact path="/passport-holder/dashboard" element={<PassportHolderDashboard />} />
+          <Route exact path="/vaccination-camp/dashboard" element={<VaccinationCampDashboard />} />
         </Routes>
       </BrowserRouter>
     </div>

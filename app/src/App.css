@@ -14,8 +14,9 @@
 }
 
 .main-center-container {
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center; */
+  flex-direction: column;
+  /* align-items: center; */
   margin: 10rem 0 5rem 0;
 }
 
@@ -30,10 +31,12 @@
   margin-bottom: 50px;
 }
 
+
 .role-selection {
  justify-content: center;
   align-items: center;
   display: flex;
+  flex-direction: column;
   width: 100%;
   flex-wrap: wrap; 
   justify-content: space-evenly;
@@ -54,4 +57,12 @@
   width: 100%;
   background-color: #5d9ba0;
   color: white;
+}
+
+.user-profile-table th,td{
+  text-align: left;
+}
+
+TableHead {
+  background-color: #5d9ba0 !important;
 }

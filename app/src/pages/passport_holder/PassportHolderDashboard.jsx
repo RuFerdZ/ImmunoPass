@@ -71,6 +71,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
 }
@@ -84,7 +85,7 @@ const rows = [
 ];
 
 
-export default function PassportHolderDashboard(props) {
+export default function PassportHolderDashboard() {
 
   const wallet = useWallet();
   const [ passportHolder, setPassportHolder ] = useState([]);
@@ -101,21 +102,23 @@ export default function PassportHolderDashboard(props) {
   const handleCloseVaccinee = () => setOpenVaccine(false);
 
   useEffect(() => {
+    // console.log('wallet address -', wallet.publicKey);
     loadPH()
     loadVaccines()
   }, []);
+
 
   const loadPH = async () => {
     const ph = await getPassportHolderByWalletAddress(wallet);
     setPassportHolder(ph);
   }
-  console.log("passport holder - " , passportHolder)
+  // console.log("passport holder - " , passportHolder)
 
   const loadVaccines = async () => {
     const vaccines = await getVaccinationRecordsOfPassportHolder(wallet, passportHolder.publicKey);
     setVaccines(vaccines);
   }
-  console.log("vaccines - " , vaccines)
+  // console.log("vaccines - " , vaccines)
 
   const getDateFormatted = (timestamp) => {
     var options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -133,7 +136,7 @@ export default function PassportHolderDashboard(props) {
     }
   }
 
-  if (passportHolder === null) {
+  if (passportHolder === undefined) {
   return (
     
       <UserNotFound />
@@ -188,34 +191,34 @@ export default function PassportHolderDashboard(props) {
                   <Typography gutterBottom variant="h5" component="div">
                     Welcome {passportHolder?.account?.firstname} {passportHolder?.account?.lastname}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" align='left'>
-                    <table>
-                    <tr>
-                      <td>Date of Birth: </td>
+                  <table className='user-profile-table'>
+                    <tbody>
+                      <tr>
+                        <td>Date of Birth: </td>
                         <td>{getDateFormatted(passportHolder?.account?.dateOfBirth)}</td>
-                    </tr>
-                    <tr>
-                      <td>Place of Birth: </td>
-                        <td>{passportHolder?.account?.placeOfBirth}</td>
-                    </tr>
-                    <tr>
-                      <td>Address: </td>
-                        <td>{passportHolder?.account?.address}</td>
-                    </tr>
-                    <tr>
-                      <td>NIC: </td>
-                        <td>{passportHolder?.account?.nic}</td>
-                    </tr>
-                    <tr>
-                      <td>Contact Number: </td>
-                        <td>{passportHolder?.account?.phone}</td>
-                    </tr>
-                    <tr>
-                      <td>Date joined: </td>
-                        <td>{getDateFormatted(passportHolder?.account?.joinedDate)}</td>
-                    </tr>
-                    </table>
-                  </Typography>
+                      </tr>
+                      <tr>
+                        <td>Place of Birth: </td>
+                          <td>{passportHolder?.account?.placeOfBirth}</td>
+                      </tr>
+                      <tr>
+                        <td>Address: </td>
+                          <td>{passportHolder?.account?.address}</td>
+                      </tr>
+                      <tr>
+                        <td>NIC: </td>
+                          <td>{passportHolder?.account?.nic}</td>
+                      </tr>
+                      <tr>
+                        <td>Contact Number: </td>
+                          <td>{passportHolder?.account?.phone}</td>
+                      </tr>
+                      <tr>
+                        <td>Date joined: </td>
+                          <td>{getDateFormatted(passportHolder?.account?.joinedDate)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </CardContent>
                 <CardActions>
                   <Button size="small" onClick={handleOpen}>Show QR</Button>

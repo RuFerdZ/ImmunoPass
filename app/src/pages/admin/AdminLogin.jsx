@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getPhantomWallet, getSolflareWallet, getSolletWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { network } from '../../config';
-import DoctorDashboard from './DoctorDashboard';
-import AdminDashboard from '../admin/AdminDashboard';
+import AdminDashboard from './AdminDashboard';
+// import { useNavigate } from 'react-router';
+
 
 const wallets = [
   getPhantomWallet(),
@@ -12,29 +13,35 @@ const wallets = [
   getSolletWallet()
 ]
 
-export function DoctorLogin() {
+export function AdminLogin() {
 
   const wallet = useWallet();
+  // const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   if (wallet.connected) {
+  //     navigate('/passport-holder/dashboard')
+  //   }
+  // },[wallet.connected]);
 
   if (!wallet.connected) {
     return (
       <div className="main-center-container">
         <div>
-            Doctor Login To Continue
+            Admin Login To Continue
         </div>
         <div className="wallet-container">
             <WalletMultiButton />
         </div>
     </div>
     )
-  } else {
+  }else{
     return (
-      <DoctorDashboard wallet={wallet} />
-      // <AdminDashboard />
+      <>
+        <AdminDashboard />
+      </>
     )
   }
-
-  
 }
 
 
@@ -43,7 +50,7 @@ export default function WalletConnection() {
     <ConnectionProvider endpoint={network.local}>
         <WalletProvider wallets={wallets}>
             <WalletModalProvider>
-                <DoctorLogin />        
+                <AdminLogin />        
             </WalletModalProvider>
         </WalletProvider>
     </ConnectionProvider>   

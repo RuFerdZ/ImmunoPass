@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getPhantomWallet, getSolflareWallet, getSolletWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { network } from '../../config';
 import PassportHolderDashboard from './PassportHolderDashboard';
-import { Switch, Route, Redirect } from 'react-router-dom';
+// import { useNavigate } from 'react-router';
 
 
 const wallets = [
@@ -16,6 +16,13 @@ const wallets = [
 export  function PassportHolderLogin() {
 
   const wallet = useWallet();
+  // const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   if (wallet.connected) {
+  //     navigate('/passport-holder/dashboard')
+  //   }
+  // },[wallet.connected]);
 
   if (!wallet.connected) {
     return (
@@ -28,13 +35,13 @@ export  function PassportHolderLogin() {
         </div>
     </div>
     )
-  } else {
+  }else{
     return (
-      <PassportHolderDashboard />
+      <>
+        <PassportHolderDashboard />
+      </>
     )
   }
-
-  
 }
 
 
