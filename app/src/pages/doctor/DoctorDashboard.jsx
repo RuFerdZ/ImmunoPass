@@ -3,86 +3,130 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { getDoctorByWalletAddress } from '../../api'
 import UserNotFound from '../UserNotFound'
-import { styled } from '@mui/material/styles';
+
+import Icon from "awesome-react-icons";
 
 
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import { useWallet } from '@solana/wallet-adapter-react';
+
 import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Button from '@mui/material/Button';
+
+import { Link } from "react-router-dom";
 
 
-import QRCode from "react-qr-code";
+function createData(
+  name: string,
+  calories: number,
+  fat: number,
+  carbs: number,
+  protein: number,
+  price: number,
+) {
+  return {
+    name,
+    calories,
+    fat,
+    carbs,
+    protein,
+    price,
+    history: [
+      {
+        date: '2020-01-05',
+        customerId: '11091700',
+        amount: 3,
+      },
+      {
+        date: '2020-01-02',
+        customerId: 'Anonymous',
+        amount: 1,
+      },
+    ],
+  };
+}
 
-// import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
-import { useWallet } from '@solana/wallet-adapter-react';
-// import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+function Row(props: { row: ReturnType<typeof createData> }) {
+  const { row } = props;
+  const [open, setOpen] = React.useState(false);
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
-// table configuration
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
-}));
-
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+  return (
+    <React.Fragment>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {row.name}
+        </TableCell>
+        <TableCell align="right">{row.calories}</TableCell>
+        <TableCell align="right">{row.fat}</TableCell>
+        <TableCell align="right">{row.carbs}</TableCell>
+        <TableCell align="right">{row.protein}</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                History
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Customer</TableCell>
+                    <TableCell align="right">Amount</TableCell>
+                    <TableCell align="right">Total price ($)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.history.map((historyRow) => (
+                    <TableRow key={historyRow.date}>
+                      <TableCell component="th" scope="row">
+                        {historyRow.date}
+                      </TableCell>
+                      <TableCell>{historyRow.customerId}</TableCell>
+                      <TableCell align="right">{historyRow.amount}</TableCell>
+                      <TableCell align="right">
+                        {Math.round(historyRow.amount * row.price * 100) / 100}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
 }
 
 const rows = [
-  createData('13-09-2022', 'Sinopharm', 'SN12390881451', '5 kg', 'VALID'),
-  createData('02-11-2021', 'Pfizer', 'PF9089031841', '3 shots', 'VALID'),
-  createData('11-09-2022', 'Astrazenaca', 'AZ09124901nxX', '20 g', 'PENDING'),
-  createData('18-09-2022', 'Moderna', 'MD92141515MM', '3 km', 'INVALID'),
-  createData('10-09-2022', 'BioNTech', 'BT1240980989015', '7 Watts', 'VALID'),
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
+  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
+  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
+  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
 ];
-
 
 
 export default function DoctorDashboard(props) {
@@ -91,160 +135,113 @@ export default function DoctorDashboard(props) {
   const [ doctor, setDoctor ] = useState([]);
   const [ vaccines, setVaccines ] = useState([]);
 
-  // QR modal settings
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  // vaccine model settings
-  const [openVaccine, setOpenVaccine] = React.useState(false);
-  const handleOpenVaccine = () => setOpenVaccine(true);
-  const handleCloseVaccinee = () => setOpenVaccine(false);
-
   useEffect(() => {
-    // console.log('wallet address -', wallet.publicKey);
     loadDoctor()
-  }, []);
+  }, [wallet]);
 
   const loadDoctor = async () => {
     const doc = await getDoctorByWalletAddress(wallet);
-    setDoctor(doc);
-    // console.log(doc)
+    setDoctor(doc.account);
+    console.log(doc)
   }
 
-
+  
   const getDateFormatted = (timestamp) => {
     var options = { year: 'numeric', month: 'long', day: 'numeric' };
     const date = new Date(timestamp * 1000);
     return date.toLocaleDateString('en-US', options);
   }
 
-  const getStatus = (status) => {
-    if (status === 'VALID') {
-      return <span style={{color: 'green', border: '1px solid'}}>{status}</span>
-    } else if (status === 'INVALID') {
-      return <span style={{color: 'red', border: '1px solid'}}>{status}</span>
-    } else {
-      return <span style={{color: 'orange', border: '1px solid'}}>{status}</span>
-    }
-  }
-
-  if (doctor === undefined) {
+  if (doctor === undefined || doctor === null || doctor.length === 0) {
     return (
         <UserNotFound />
     );
   } else {
     return (
-      <div>
-          {/* qr model */}
-      <Modal
-        keepMounted
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="keep-mounted-modal-title"
-        aria-describedby="keep-mounted-modal-description"
-      >
-        <Box sx={style}>
-            <QRCode value={String(doctor?.publicKey)} />
-            <Typography variant="body1" color="text.primary" align='center'>SCAN ME</Typography>
-        </Box>
-      </Modal>
+        <div className='doc-dashboard'>
+            <div className='doc-dashboard-header'>
+              <h1 className='doc-dashboard-title'>Doctor Dashboard</h1>
+            </div>
 
+            
+            <div className='doc-dashboard-body'>
 
-        {/* vaccine model */}
-      <Modal
-        keepMounted
-        open={openVaccine}
-        onClose={handleCloseVaccinee}
-        aria-labelledby="keep-mounted-modal-title"
-        aria-describedby="keep-mounted-modal-description"
-      >
-        <Box sx={style}>
-            <Typography variant="body1" color="text.primary" align='center'>Vaccine Data</Typography>
-        </Box>
-      </Modal>
+              <div className='doc-dashboard-body-row1'>
+                <div className='doc-dashboard-body-row1-col1'>
+                  <div className='doc-dashboard-body-row1-col1-content'>
+                    <div className="doctor-welcome">
+                      <h1>Welcome Dr. {doctor.firstname} {doctor.lastname}</h1>
+                    </div>
+                    <div className="doctor-info">
+                      <h3 className="doc-info-label">Your Information</h3>
+                      <p>
+                        <span className='doctor-info-label'>License Number:</span> {doctor.licenseNumber}
+                      </p>
+                      <p>
+                        <span className='doctor-info-label'>License Issued Date:</span> {getDateFormatted(doctor.licenceIssuedDate)}
+                      </p>
+                      <p>
+                        <span className='doctor-info-label'>License Issued Date:</span> {getDateFormatted(doctor.licenceExpiryDate)}
+                      </p>
+                      <p>
+                        <span className='doctor-info-label'>Business Phone:</span> {doctor.businessTelephone}
+                      </p>
+                      <p>
+                        <span className='doctor-info-label'>Business Address:</span> {doctor.businessAddress}
+                      </p>
+                      <p>
+                        <span className='doctor-info-label'>Qualifications:</span> {doctor.qualifications}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-      <Grid container spacing={0}>
-      <div className='dashboard-header'>
-        <h1>Dashboard</h1>
-        </div>
+                <div className='doc-dashboard-body-row1-col2'>
+                <div className='doc-dashboard-body-row1-col2-content'>
+                    <div className="doctor-actions">
+                      <h1>Actions</h1>
+                    </div>
+                    <div className="doctor-info">
+                     
 
-        <Grid item xs={4}>
-          {/* <Item>xs=8</Item> */}
-          <Card sx={{ maxWidth: 450 }}>
-            <CardMedia
-              component="img"
-              alt="banner"
-              height="300vh"
-              image="https://www.kindpng.com/picc/m/445-4452069_doctor-graphic-hd-png-download.png"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Welcome Dr. {doctor?.account?.firstname} {doctor?.account?.lastname}
-              </Typography>
-              <table className='user-profile-table'>
-                <tbody>
-                  <tr>
-                    <td>Licence Number: </td>
-                    <td>{doctor?.account?.licenseNumber}</td>
-                  </tr>
-                  <tr>
-                    <td>Business Address: </td>
-                      <td>{doctor?.account?.businessAddress}</td>
-                  </tr>
-                  <tr>
-                    <td>Business Telephone: </td>
-                      <td>{doctor?.account?.businessTelephone}</td>
-                  </tr>
-                  <tr>
-                    <td>Qualification: </td>
-                      <td>{doctor?.account?.qualifications}</td>
-                  </tr>
+                      <Link to="/doctor/initiate-vaccination" className="page-link">
+                        <Button variant="contained">Initiate Vaccination</Button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
 
-                </tbody>
-              </table>
-            </CardContent>
-            <CardActions>
-              <Button size="small" onClick={handleOpen}>Show QR</Button>
-              <Button size="small">Update Profile</Button>
-            </CardActions>
-        </Card>
-        </Grid>
-        <Grid item xs={8}>
-          {/* <Item>xs=4</Item> */}
-          <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Date of Vaccination</StyledTableCell>
-                <StyledTableCell align="left">Vaccine</StyledTableCell>
-                <StyledTableCell align="left">Batch Number</StyledTableCell>
-                <StyledTableCell align="left">Dosage</StyledTableCell>
-                <StyledTableCell align="left">Status</StyledTableCell>
-                <StyledTableCell align="left"></StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <StyledTableRow key={row.name}>
-                  <StyledTableCell component="th" scope="row">
-                    {row.name}
-                  </StyledTableCell>
-                  <StyledTableCell align="left">{row.calories}</StyledTableCell>
-                  <StyledTableCell align="left">{row.fat}</StyledTableCell>
-                  <StyledTableCell align="left">{row.carbs}</StyledTableCell>
-                  <StyledTableCell align="left">{getStatus(row.protein)}</StyledTableCell>
-                  <StyledTableCell align="left"><Button size="small" onClick={handleOpenVaccine}>View Record</Button></StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        </Grid>
-      </Grid>
+                <div className='doc-dashboard-body-row1-col3'>
+                  
+                </div>
+              </div>
 
-    
-  </div>
+              
+            </div>
+            <div className="data-table">
+              <TableContainer component={Paper}>
+                <Table aria-label="collapsible table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell />
+                      <TableCell>Dessert (100g serving)</TableCell>
+                      <TableCell align="right">Calories</TableCell>
+                      <TableCell align="right">Fat&nbsp;(g)</TableCell>
+                      <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+                      <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row) => (
+                      <Row key={row.name} row={row} />
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+            
+      </div>
+      
     );
   }
 }
