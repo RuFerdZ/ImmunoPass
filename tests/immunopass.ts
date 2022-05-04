@@ -19,7 +19,7 @@ describe('immunopass', () => {
 
 
   it('shoud be able to create a doctor', async () => {
-    
+
     // create new keypair for a doctor
     // const doctor = anchor.web3.Keypair.generate();
 
@@ -110,7 +110,7 @@ describe('immunopass', () => {
   });
 
   it('shoud be able to create a vaccination camp', async () => {
-    
+
     // create new keypair for a doctor
     const camp = anchor.web3.Keypair.generate();
 
@@ -176,7 +176,7 @@ describe('immunopass', () => {
   });
 
   it('shoud not be able to create a vaccination camp', async () => {
-    
+
     // create new keypair for a doctor
     const camp = anchor.web3.Keypair.generate();
 
@@ -237,7 +237,7 @@ describe('immunopass', () => {
   it('can fetch all doctors', async () => {
     const doctors = await program.account.doctor.all();
     assert.equal(doctors.length, 1);
-  });   
+  });
 
   it('can fetch all vaccination camps', async () => {
     const vaccinationCamps = await program.account.vaccinationCamp.all();
@@ -265,7 +265,6 @@ describe('immunopass', () => {
     });
     // check if the doctor is created
     const createdHolder = await program.account.passportHolder.fetch(holder.publicKey);
-
     assert.equal(createdHolder.firstname, firstname);
     assert.equal(createdHolder.lastname, lastname);
     assert.equal(createdHolder.dateOfBirth, dateOfBirth);
@@ -591,5 +590,20 @@ describe('immunopass', () => {
     ]);
 
     assert.equal(vaccinations.length, 0);  // because we have created 0 vaccination record above
+  });
+
+  it ('can fetch a passport holder by nic', async () => {
+
+    const records = await program.account.passportHolder.all([
+      {
+        memcmp: {
+          offset: 8 + 32 + 4,
+          bytes:  bs58.encode(Buffer.from('123456789V')),
+        }
+      }
+    ]);
+
+    console.log(records);
+    assert.equal(records.length, 3);  // because we have created 3 validation records above
   });
 });
