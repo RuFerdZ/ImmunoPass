@@ -324,7 +324,7 @@ export async function createPassportHolder(wallet, passportHolder) {
 export async function getPassportHolderByPubKey(wallet, pubKey) {
     const provider = await getProvider(wallet);
     const program = new Program(workspace.programIdl, workspace.programID, provider);
-
+    console.log(pubKey)
     try {
         const passportHolder = await program.account.passportHolder.fetch(pubKey);
         console.log(passportHolder);
@@ -358,6 +358,50 @@ export async function getPassportHolderByWalletAddress(wallet) {
     return null;
 }
 
+export async function getPassportHolderByOtherPublicKey(wallet, pubkey) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+    try {
+        const passportHolder = await program.account.passportHolder.all(
+            [
+                {
+                  memcmp: {
+                    offset: 8,
+                    bytes: program.provider.pubkey.toBase58(),
+                  }
+                }
+              ]
+        )
+        console.log(passportHolder[0]);
+        // console.log("public key - " + passportHolder[0].publicKey);
+        return passportHolder[0];
+    } catch (err) {
+        console.log("Error in getting other passport holder by wallet address. - " + err);
+    }
+    return null;
+}
+
+
+export async function getPassportHolderByNIC(wallet, nic) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    try {
+        const records = await program.account.passportHolder.all([
+            {
+              memcmp: {
+                offset: 8 + 32 + 4,
+                bytes:  bs58.encode(Buffer.from(nic)),
+              }
+            }
+          ]);
+        console.log(records[0]);
+        return records[0];
+    } catch (err) {
+        console.log("Error in getting passport holder by NIC. - " + err);
+    }
+    return null;
+}
 
 
 // VALIDATION ENDPOINTS
