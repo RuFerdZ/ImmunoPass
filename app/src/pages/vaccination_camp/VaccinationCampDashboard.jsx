@@ -108,8 +108,8 @@ export default function VaccinationCampDashboard() {
 
   const loadVC = async () => {
     const vc = await getVaccinationCampByWalletAddress(wallet);
-    setVaccinationCamp(vc);
-    console.log(vc)
+    setVaccinationCamp(vc?.account);
+    console.log(vc?.account)
   }
 
 
@@ -136,87 +136,61 @@ export default function VaccinationCampDashboard() {
     );
   } else {
     return (
-      <div>
-          {/* qr model */}
-      <Modal
-        keepMounted
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="keep-mounted-modal-title"
-        aria-describedby="keep-mounted-modal-description"
-      >
-        <Box sx={style}>
-            <QRCode value={String(vaccinationCamp?.publicKey)} />
-            <Typography variant="body1" color="text.primary" align='center'>SCAN ME</Typography>
-        </Box>
-      </Modal>
+      <div className='doc-dashboard'>
+      <div className='doc-dashboard-header'>
+        <h1 className='doc-dashboard-title'>Vaccination Camp Dashboard</h1>
+      </div>
 
+      
+      <div className='doc-dashboard-body'>
 
-        {/* vaccine model */}
-      <Modal
-        keepMounted
-        open={openVaccine}
-        onClose={handleCloseVaccinee}
-        aria-labelledby="keep-mounted-modal-title"
-        aria-describedby="keep-mounted-modal-description"
-      >
-        <Box sx={style}>
-            <Typography variant="body1" color="text.primary" align='center'>Vaccine Data</Typography>
-        </Box>
-      </Modal>
+        <div className='doc-dashboard-body-row1'>
+          <div className='doc-dashboard-body-row1-col1'>
+            <div className='doc-dashboard-body-row1-col1-content'>
+              <div className="doctor-welcome">
+                <h1>{vaccinationCamp.name}</h1>
+              </div>
+              <div className="doctor-info">
+                <h3 className="doc-info-label">Your Information</h3>
+                <p>
+                  <span className='doctor-info-label'>Registration Number:</span> {vaccinationCamp.registrationNumber}
+                </p>
+                <p>
+                  <span className='doctor-info-label'>Phone:</span> {vaccinationCamp.phone}
+                </p>
+                <p>
+                  <span className='doctor-info-label'>Address:</span> {vaccinationCamp.address}
+                </p>
+                <p>
+                  <span className='doctor-info-label'>Email:</span>  <a className="website-link" href={'mailto:' + vaccinationCamp.email} target='_blank'> {vaccinationCamp.email}</a> 
+                </p>
+                <p>
+                  <span className='doctor-info-label'>Website:</span> <a className="website-link" href={vaccinationCamp.website} target='_blank'> {vaccinationCamp.website}</a>
+                </p>
+                <p>
+                  <span className='doctor-info-label'>Joined Date:</span> {getDateFormatted(vaccinationCamp.joinedDate)}
+                </p>
+              </div>
+            </div>
+          </div>
 
-      <Grid container spacing={0}>
-      <div className='dashboard-header'>
-        <h1>Dashboard</h1>
+          <div className='doc-dashboard-body-row1-col2'>
+          <div className='doc-dashboard-body-row1-col2-content'>
+              <div className="doctor-actions">
+                <h1>Statistics</h1>
+              </div>
+              <div className="patient-info">
+               
+                
+              </div>
+            </div>
+          </div>
         </div>
 
-        <Grid item xs={4}>
-          {/* <Item>xs=8</Item> */}
-          <Card sx={{ maxWidth: 450 }}>
-            <CardMedia
-              component="img"
-              alt="banner"
-              height="300vh"
-              image="https://thumbs.dreamstime.com/b/medical-center-building-icon-circle-flat-white-vector-illustration-web-95328333.jpg"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Welcome {vaccinationCamp?.account?.name}
-              </Typography>
-              <table className='user-profile-table'>
-                <tbody>
-                  <tr>
-                    <td>Registration Number: </td>
-                    <td>{vaccinationCamp?.account?.registrationNumber}</td>
-                  </tr>
-                  <tr>
-                    <td>Address: </td>
-                      <td>{vaccinationCamp?.account?.address}</td>
-                  </tr>
-                  <tr>
-                    <td>Telephone: </td>
-                      <td>{vaccinationCamp?.account?.phone}</td>
-                  </tr>
-                  <tr>
-                    <td>Email: </td>
-                      <td>{vaccinationCamp?.account?.email}</td>
-                  </tr>
-                  <tr>
-                    <td>Website: </td>
-                      <td><a href={vaccinationCamp?.account?.website} target='_blank'> {vaccinationCamp?.account?.website} </a></td>
-                  </tr>
-                </tbody>
-              </table>
-            </CardContent>
-            <CardActions>
-              <Button size="small" onClick={handleOpen}>Show QR</Button>
-              <Button size="small">Update Profile</Button>
-            </CardActions>
-        </Card>
-        </Grid>
-        <Grid item xs={8}>
-          {/* <Item>xs=4</Item> */}
-          <TableContainer component={Paper}>
+        
+      </div>
+      <div className="data-table">
+        <TableContainer component={Paper}>
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
               <TableRow>
@@ -243,12 +217,12 @@ export default function VaccinationCampDashboard() {
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
-        </Grid>
-      </Grid>
+        </TableContainer> 
+      </div>
+</div>
 
     
-  </div>
+ 
     );
   }
 }

@@ -435,6 +435,10 @@
             "type": "publicKey"
           },
           {
+            "name": "nic",
+            "type": "string"
+          },
+          {
             "name": "firstname",
             "type": "string"
           },
@@ -464,10 +468,6 @@
           },
           {
             "name": "placeOfBirth",
-            "type": "string"
-          },
-          {
-            "name": "nic",
             "type": "string"
           },
           {

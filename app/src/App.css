@@ -66,3 +66,129 @@
 TableHead {
   background-color: #5d9ba0 !important;
 }
+
+
+.doc-dashboard {
+  background-color: #000000;
+  margin: 0px;
+  height: 100%;
+}
+
+.doc-dashboard-title{
+  padding: 20px;
+  color: white;
+  font-size: 3rem;
+  font-weight: 400;
+  margin: 0px;
+}
+
+.doc-dashboard-body-row1{
+  flex-direction: row;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 30px;
+}
+
+.doc-dashboard-body-row1-col1,.doc-dashboard-body-row1-col2,.doc-dashboard-body-row1-col3{
+  /* height: 250px; */
+  width: 30%;
+  background-color: #191c24;
+  border-radius: 10px;
+}
+
+.doctor-welcome {
+  color: #08d259;
+  font-weight: 300;
+}
+
+.doc-info-label {
+  color: white;
+  font-weight: 500;
+}
+
+.doctor-info {
+  color: #8b807e;
+  text-align: left;
+  padding-left: 50px;
+}
+
+.data-table {
+  padding: 2%;
+}
+
+.doctor-actions{
+  color: white;
+}
+
+.search-patient {
+  width: 90%;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoNeJzJdqGD_fqnfD3Mx8nkIfzr23GRQ4uv1siNhcN4oBAAer-pIgBmn83hE4pJrlK_Vg&usqp=CAU');
+  background-position: 10px 10px; 
+  background-size: 22px 22px;
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+}
+
+.load-patient{
+  margin-top: 10px !important;
+}
+
+.detail-patient{
+  width: 90%;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  padding: 12px 20px 12px 40px;
+  margin-top: 10px !important;
+  margin-bottom: 20px;
+}
+
+.patient-content, .vaccination-info{
+  color: #8b807e;
+  text-align: left;
+  padding-left: 10%;  
+}
+
+.create-record{
+  padding-bottom: 10%;
+}
+
+.chart-body{
+  padding: 5% !important;
+  background-color: #191c24;
+}
+
+.legend{
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+  /* uppercase text */
+  text-transform: uppercase; 
+  /* line spacing */
+  letter-spacing: .1em;
+  text-align: left;
+  padding-left: 10%;
+}
+
+.approved {
+  color:#9ccc65 ;
+}
+
+.pending{
+  color: #42a5f5;
+}
+
+.rejected {
+  color: #ff7043;
+}
+
+.website-link{
+  color: wheat;
+}

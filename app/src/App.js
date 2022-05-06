@@ -7,6 +7,7 @@ import DoctorLogin from './pages/doctor/DoctorLogin';
 import VaccinationCampDashboard from './pages/vaccination_camp/VaccinationCampDashboard';
 import PassportHolderDashboard from './pages/passport_holder/PassportHolderDashboard';
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
+import InitiateVaccinations from './pages/doctor/InitiateVaccinations';
 
 
 import LandingPage from './pages/LandingPage'
@@ -21,14 +22,16 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path="/" element={<LandingPage />} />
-          <Route exact path="/doctor/login" element={<DoctorLogin />} />
-          <Route exact path="/passport-holder/login" element={<PassportHolderLogin />} />
-          <Route exact path="/vaccination-camp/login" element={<VaccinationCampLogin />} />
-          <Route exact path="/admin/login" element={<AdminLogin />} />
+          <Route exact path="/doctor/home" element={<DoctorLogin />} />
+          <Route exact path="/passport-holder/home" element={<PassportHolderLogin />} />
+          <Route exact path="/vaccination-camp/home" element={<VaccinationCampLogin />} />
+          <Route exact path="/admin/home" element={<AdminLogin />} />
           <Route exact path="/admin/dashboard" element={<AdminDashboard />} />
           <Route exact path="/doctor/dashboard" element={<DoctorDashboard />} />
+          <Route exact path="/doctor/initiate-vaccination" element={<InitiateVaccinations />} />
           <Route exact path="/passport-holder/dashboard" element={<PassportHolderDashboard />} />
           <Route exact path="/vaccination-camp/dashboard" element={<VaccinationCampDashboard />} />
+          <Route exact path="/admin/dashboard" element={<AdminLogin />} />
         </Routes>
       </BrowserRouter>
     </div>

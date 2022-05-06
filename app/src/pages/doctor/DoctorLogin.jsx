@@ -1,10 +1,14 @@
-import React from 'react';
+import React,  { useEffect } from 'react';
 import { getPhantomWallet, getSolflareWallet, getSolletWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { network } from '../../config';
 import DoctorDashboard from './DoctorDashboard';
 import AdminDashboard from '../admin/AdminDashboard';
+import { useNavigate } from 'react-router';
+
+
+
 
 const wallets = [
   getPhantomWallet(),
@@ -14,7 +18,19 @@ const wallets = [
 
 export function DoctorLogin() {
 
+
+
   const wallet = useWallet();
+
+
+  
+// const navigate = useNavigate();
+
+//   useEffect(() => {
+//     if (wallet.connected) {
+//       navigate('/doctor/dashboard')
+//     }
+//   },[wallet.connected]);
 
   if (!wallet.connected) {
     return (
@@ -29,12 +45,11 @@ export function DoctorLogin() {
     )
   } else {
     return (
-      <DoctorDashboard wallet={wallet} />
       // <AdminDashboard />
+      <DoctorDashboard wallet={wallet} />
+
     )
   }
-
-  
 }
 
 

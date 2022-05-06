@@ -402,6 +402,7 @@ pub struct VaccinationCamp {
 #[account]
 pub struct PassportHolder {
     pub owner: Pubkey,
+    pub nic: String,
     pub firstname: String,
     pub lastname: String,
     pub date_of_birth: i64,
@@ -410,7 +411,6 @@ pub struct PassportHolder {
     pub address: String,
     pub phone: String,
     pub place_of_birth: String,
-    pub nic: String,
     pub joined_date: i64,
     pub is_active: bool
 }
@@ -515,6 +515,7 @@ impl VaccinationCamp {
 impl PassportHolder {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH                               // owner
+        + STRING_LENGTH_PREFIX + NIC_LENGTH               // nic
         + STRING_LENGTH_PREFIX + NAME_LENGTH              // firstname
         + STRING_LENGTH_PREFIX + NAME_LENGTH              // lastname
         + TIMESTAMP_LENGTH                                // date_of_birth
@@ -523,7 +524,6 @@ impl PassportHolder {
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH           // address
         + STRING_LENGTH_PREFIX + TELEPHONE_LENGTH         // phone
         + STRING_LENGTH_PREFIX + ADDRESS_LENGTH           // place_of_birth
-        + STRING_LENGTH_PREFIX + NIC_LENGTH               // nic
         + TIMESTAMP_LENGTH                                // joined_date
         + BOOLEAN_LENGTH;                                 // is_active
 }
