@@ -141,7 +141,7 @@ export default function DoctorDashboard(props) {
 
   const loadDoctor = async () => {
     const doc = await getDoctorByWalletAddress(wallet);
-    setDoctor(doc.account);
+    setDoctor(doc?.account);
     console.log(doc)
   }
 
