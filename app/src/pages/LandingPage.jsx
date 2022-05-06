@@ -7,13 +7,13 @@ function LandingPage() {
             {/* <div className="app-name">ImmunoPass</div> */}
 
             <div className="role-selection"> 
-                <Link to="/passport-holder/login" className="page-link">
+                <Link to="/passport-holder/home" className="page-link">
                     <Button variant='contained'>Passport Holder Login</Button>
                 </Link>
-                <Link to="/doctor/login" className="page-link">
+                <Link to="/doctor/home" className="page-link">
                     <Button variant='contained'>Doctor Login</Button>
                 </Link>
-                <Link to="/vaccination-camp/login" className="page-link">
+                <Link to="/vaccination-camp/home" className="page-link">
                     <Button variant='contained'>Vaccination Camp Login</Button>
                 </Link>
                 <Link to="/validate/vaccination" className="page-link">

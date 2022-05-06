@@ -5,6 +5,13 @@ import { getPassportHolderByWalletAddress, getVaccinationRecordsOfPassportHolder
 import UserNotFound from '../UserNotFound'
 import { styled } from '@mui/material/styles';
 
+import {
+  Chart,
+  PieSeries,
+  Title
+} from '@devexpress/dx-react-chart-material-ui';
+  
+
 
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -22,6 +29,7 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import { Link } from "react-router-dom";
 
 
 import QRCode from "react-qr-code";
@@ -45,7 +53,7 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  border: '2px solid #191c24',
   boxShadow: 24,
   p: 4,
 };
@@ -53,7 +61,7 @@ const style = {
 // table configuration
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: '#191c24',
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -84,11 +92,17 @@ const rows = [
   createData('10-09-2022', 'BioNTech', 'BT1240980989015', '7 Watts', 'VALID'),
 ];
 
+const data = [
+  { argument:'Pending', value:10 },
+  { argument:'Rejected', value:40 },
+  { argument:'Approved', value:70 },
+];
+
 
 export default function PassportHolderDashboard() {
 
   const wallet = useWallet();
-  const [ passportHolder, setPassportHolder ] = useState([]);
+  const [ passportHolder, setPassportHolder ] = useState({});
   const [ vaccines, setVaccines ] = useState([]);
 
   // QR modal settings
@@ -110,7 +124,8 @@ export default function PassportHolderDashboard() {
 
   const loadPH = async () => {
     const ph = await getPassportHolderByWalletAddress(wallet);
-    setPassportHolder(ph);
+    console.log(ph?.account)
+    setPassportHolder(ph?.account);
   }
   // console.log("passport holder - " , passportHolder)
 
@@ -136,132 +151,125 @@ export default function PassportHolderDashboard() {
     }
   }
 
-  if (passportHolder === undefined) {
+  if (passportHolder === undefined || passportHolder === null || passportHolder.length === 0) {
   return (
     
       <UserNotFound />
   );
   } else {
     return (
-      <div>
-
-        {/* qr model */}
-         <Modal
-            keepMounted
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="keep-mounted-modal-title"
-            aria-describedby="keep-mounted-modal-description"
-          >
-            <Box sx={style}>
-                <QRCode value={String(passportHolder?.publicKey)} />
-                <Typography variant="body1" color="text.primary" align='center'>SCAN ME</Typography>
-            </Box>
-          </Modal>
-
-
-           {/* vaccine model */}
-          <Modal
-            keepMounted
-            open={openVaccine}
-            onClose={handleCloseVaccinee}
-            aria-labelledby="keep-mounted-modal-title"
-            aria-describedby="keep-mounted-modal-description"
-          >
-            <Box sx={style}>
-                <Typography variant="body1" color="text.primary" align='center'>Vaccine Data</Typography>
-            </Box>
-          </Modal>
-
-          <Grid container spacing={0}>
-          <div className='dashboard-header'>
-            <h1>Dashboard</h1>
+      <div className='doc-dashboard'>
+            <div className='doc-dashboard-header'>
+              <h1 className='doc-dashboard-title'>User Dashboard</h1>
             </div>
 
-            <Grid item xs={4}>
-              {/* <Item>xs=8</Item> */}
-              <Card sx={{ maxWidth: 450 }}>
-                <CardMedia
-                  component="img"
-                  alt="banner"
-                  height="300vh"
-                  image="https://www.verywellhealth.com/thmb/lvU_kVMVODMHcE87uoBd4T_iPk8=/500x350/filters:no_upscale():max_bytes(150000):strip_icc()/GettyImages-1221259525-29c595c924ed4f9d8d20307413a1df99.jpg"
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Welcome {passportHolder?.account?.firstname} {passportHolder?.account?.lastname}
-                  </Typography>
-                  <table className='user-profile-table'>
-                    <tbody>
-                      <tr>
-                        <td>Date of Birth: </td>
-                        <td>{getDateFormatted(passportHolder?.account?.dateOfBirth)}</td>
-                      </tr>
-                      <tr>
-                        <td>Place of Birth: </td>
-                          <td>{passportHolder?.account?.placeOfBirth}</td>
-                      </tr>
-                      <tr>
-                        <td>Address: </td>
-                          <td>{passportHolder?.account?.address}</td>
-                      </tr>
-                      <tr>
-                        <td>NIC: </td>
-                          <td>{passportHolder?.account?.nic}</td>
-                      </tr>
-                      <tr>
-                        <td>Contact Number: </td>
-                          <td>{passportHolder?.account?.phone}</td>
-                      </tr>
-                      <tr>
-                        <td>Date joined: </td>
-                          <td>{getDateFormatted(passportHolder?.account?.joinedDate)}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </CardContent>
-                <CardActions>
-                  <Button size="small" onClick={handleOpen}>Show QR</Button>
-                  <Button size="small">Update Profile</Button>
-                </CardActions>
-            </Card>
-            </Grid>
-            <Grid item xs={8}>
-              {/* <Item>xs=4</Item> */}
-              <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell>Date of Vaccination</StyledTableCell>
-                    <StyledTableCell align="left">Vaccine</StyledTableCell>
-                    <StyledTableCell align="left">Batch Number</StyledTableCell>
-                    <StyledTableCell align="left">Dosage</StyledTableCell>
-                    <StyledTableCell align="left">Status</StyledTableCell>
-                    <StyledTableCell align="left"></StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row) => (
-                    <StyledTableRow key={row.name}>
-                      <StyledTableCell component="th" scope="row">
-                        {row.name}
-                      </StyledTableCell>
-                      <StyledTableCell align="left">{row.calories}</StyledTableCell>
-                      <StyledTableCell align="left">{row.fat}</StyledTableCell>
-                      <StyledTableCell align="left">{row.carbs}</StyledTableCell>
-                      <StyledTableCell align="left">{getStatus(row.protein)}</StyledTableCell>
-                      <StyledTableCell align="left"><Button size="small" onClick={handleOpenVaccine}>View Record</Button></StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            </Grid>
-          </Grid>
+            
+            <div className='doc-dashboard-body'>
 
-        
+              <div className='doc-dashboard-body-row1'>
+                <div className='doc-dashboard-body-row1-col1'>
+                  <div className='doc-dashboard-body-row1-col1-content'>
+                    <div className="doctor-welcome">
+                      <h1>Welcome {passportHolder.title} {passportHolder.firstname} {passportHolder.lastname}</h1>
+                    </div>
+                    <div className="doctor-info">
+                      <h3 className="doc-info-label">Your Information</h3>
+                      <p>
+                        <span className='doctor-info-label'>Identification Number:</span> {passportHolder.nic}
+                      </p>
+                      
+                      <p>
+                        <span className='doctor-info-label'>Gender:</span> {passportHolder.gender}
+                      </p>
+                      <p>
+                        <span className='doctor-info-label'>Phone:</span> {passportHolder.phone}
+                      </p>
+                      <p>
+                        <span className='doctor-info-label'>Address:</span> {passportHolder.address}
+                      </p>
+                      <p>
+                        <span className='doctor-info-label'>Date of Birth:</span> {getDateFormatted(passportHolder.dateOfBirth)}
+                      </p>
+                      <p>
+                        <span className='doctor-info-label'>Place of Birth:</span> {passportHolder.placeOfBirth}
+                      </p>
+                      <p>
+                        <span className='doctor-info-label'>Joined Date:</span> {getDateFormatted(passportHolder.joinedDate)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className='doc-dashboard-body-row1-col2'>
+                <div className='doc-dashboard-body-row1-col2-content'>
+                    <div className="doctor-actions">
+                      <h1>Statistics</h1>
+                    </div>
+                    <div className="patient-info">
+                     
+                      <div className="legend">
+                        <li className="approved">Approved</li> 
+                        <li className="pending">Pending </li>
+                        <li className="rejected">Rejected</li>
+                      </div>
+                      <Paper className="chart-patient">
+                        <Chart
+                          data={data}
+                          backgroundColor='#191c24'
+                          className="chart-body"
+                        >
+                          <PieSeries valueField="value" 
+                            argumentField="argument" 
+                            innerRadius={0.6} />
+                          {/* <Title text="Studies per day"/> */}
+                        </Chart>
+                      </Paper>
+                    </div>
+                  </div>
+                </div>
+{/* 
+                <div className='doc-dashboard-body-row1-col3'>
+                  
+                </div> */}
+              </div>
+
+              
+            </div>
+            <div className="data-table">
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell>Date of Vaccination</StyledTableCell>
+                      <StyledTableCell align="left">Vaccine</StyledTableCell>
+                      <StyledTableCell align="left">Batch Number</StyledTableCell>
+                      <StyledTableCell align="left">Dosage</StyledTableCell>
+                      <StyledTableCell align="left">Status</StyledTableCell>
+                      <StyledTableCell align="left"></StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row) => (
+                      <StyledTableRow key={row.name}>
+                        <StyledTableCell component="th" scope="row">
+                          {row.name}
+                        </StyledTableCell>
+                        <StyledTableCell align="left">{row.calories}</StyledTableCell>
+                        <StyledTableCell align="left">{row.fat}</StyledTableCell>
+                        <StyledTableCell align="left">{row.carbs}</StyledTableCell>
+                        <StyledTableCell align="left">{getStatus(row.protein)}</StyledTableCell>
+                        <StyledTableCell align="left"><Button size="small" onClick={handleOpenVaccine}>View Record</Button></StyledTableCell>
+                      </StyledTableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer> 
+            </div>
+            
       </div>
-      
+           
+            
+       
     )
   }
 }

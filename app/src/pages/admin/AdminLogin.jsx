@@ -4,7 +4,6 @@ import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-ad
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { network } from '../../config';
 import AdminDashboard from './AdminDashboard';
-// import { useNavigate } from 'react-router';
 
 
 const wallets = [
@@ -16,13 +15,6 @@ const wallets = [
 export function AdminLogin() {
 
   const wallet = useWallet();
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (wallet.connected) {
-  //     navigate('/passport-holder/dashboard')
-  //   }
-  // },[wallet.connected]);
 
   if (!wallet.connected) {
     return (
@@ -37,9 +29,7 @@ export function AdminLogin() {
     )
   }else{
     return (
-      <>
         <AdminDashboard />
-      </>
     )
   }
 }
