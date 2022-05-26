@@ -45,8 +45,8 @@ export function DoctorLogin() {
     )
   } else {
     return (
-      // <AdminDashboard />
-      <DoctorDashboard wallet={wallet} />
+      <AdminDashboard />
+      // <DoctorDashboard wallet={wallet} />
 
     )
   }
