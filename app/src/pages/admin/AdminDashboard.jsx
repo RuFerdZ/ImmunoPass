@@ -82,16 +82,17 @@ export default function AdminDashboard(){
         let doctorRequest = {
             firstname: firstname,
             lastname: lastname,
-            dateOfBirth: dateOfBirth,
+            dateOfBirth: getTimestamp(dateOfBirth),
             licenseNumber: licenseNumber,
-            licenseIssuedDate: licenseIssuedDate,
-            licenseExpiryDate: licenseExpiryDate,
+            licenseIssuedDate: getTimestamp(licenseIssuedDate),
+            licenseExpiryDate: getTimestamp(licenseExpiryDate),
             businessAddress: businessAddress,
             businessTelephone: businessTelephone,
             qualifications: qualifications,
         }
+        console.log(doctorRequest)
         const doctor = await createDoctor(wallet, doctorRequest);
-        console.log("doctor - " , doctor)
+        // console.log("doctor - " , doctor)
     }
 
     const createPassportHolderAccount = async (e) => {
@@ -99,7 +100,7 @@ export default function AdminDashboard(){
         let passportHolderRequest = {
             firstname: firstname,
             lastname: lastname,
-            dateOfBirth: dateOfBirth,
+            dateOfBirth: getTimestamp(dateOfBirth),
             gender: gender,
             title: title,
             address: address,
@@ -107,9 +108,9 @@ export default function AdminDashboard(){
             placeOfBirth: birthplace,
             nic: nic
         }
-
+        // console.log(passportHolderRequest)
         const passportHolder = await createPassportHolder(wallet, passportHolderRequest);
-        console.log("passport holder - " , passportHolder)
+        // console.log("passport holder - " , passportHolder)
     }
 
     const createVaccinationCampAccount = async (e) => {
@@ -126,6 +127,12 @@ export default function AdminDashboard(){
 
         const vaccinationCamp = await createVaccinationCamp(wallet, vaccinationCampRequest);
         console.log("vaccination camp - " , vaccinationCamp)
+    }
+
+    const getTimestamp = (date) => {
+        const dt = new Date(date)
+        const timestamp = (dt.getTime()/1000).toString();
+        return timestamp;
     }
 
 
