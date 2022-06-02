@@ -90,9 +90,8 @@ export default function AdminDashboard(){
             businessTelephone: businessTelephone,
             qualifications: qualifications,
         }
-        console.log(doctorRequest)
         const doctor = await createDoctor(wallet, doctorRequest);
-        // console.log("doctor - " , doctor)
+        console.log("doctor - " , doctor)
     }
 
     const createPassportHolderAccount = async (e) => {
@@ -108,9 +107,9 @@ export default function AdminDashboard(){
             placeOfBirth: birthplace,
             nic: nic
         }
-        // console.log(passportHolderRequest)
+
         const passportHolder = await createPassportHolder(wallet, passportHolderRequest);
-        // console.log("passport holder - " , passportHolder)
+        console.log("passport holder - " , passportHolder)
     }
 
     const createVaccinationCampAccount = async (e) => {
@@ -148,55 +147,75 @@ export default function AdminDashboard(){
             <div>
                 <h1>Admin Dashboard</h1>
                 
-                <div className="doctor-add-section">
+                <div className="doctor-add-section p-3">
                     <form onSubmit={createDoctorAccount}>
                         <h3>Doctor</h3>
                         {/* add input fields owner, license_number, firstname, lastname, date_of_birth, license_issued_date, license_expiry_date, business_address, business_telephone, qualifications*/}
-                        <div className="ph-add-section-input-fields">
-                            <div className="ph-add-section-input-fields-owner">
-                                <label>Owner</label>
-                                <input type="text" name="owner" placeholder="Owner" value={owner} onChange={e => setOwner(e.target.value)}/>
+                        <div>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Owner</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="owner" placeholder="Enter Owner" value={owner} onChange={e => setOwner(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="ph-add-section-input-fields-license-number">
-                                <label>License Number</label>
-                                <input type="text" name="license_number" placeholder="License Number" value={licenseNumber} onChange={e => setLicenceNumber(e.target.value)} />
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">License Number</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="license_number" placeholder="License Number" value={licenseNumber} onChange={e => setLicenceNumber(e.target.value)} />
+                                </div>
                             </div>
-                            <div className="ph-add-section-input-fields-firstname">
-                                <label>First Name</label>
-                                <input type="text" name="firstname" placeholder="First Name" value={firstname} onChange={e => setFirstname(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">First Name</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="firstname" placeholder="First Name" value={firstname} onChange={e => setFirstname(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="ph-add-section-input-fields-lastname">
-                                <label>Last Name</label>
-                                <input type="text" name="lastname" placeholder="Last Name" value={lastname} onChange={e => setLastname(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Last Name</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="lastname" placeholder="Last Name" value={lastname} onChange={e => setLastname(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="ph-add-section-input-fields-date-of-birth">
-                                <label>Date of Birth</label>
-                                <input type="date" name="date_of_birth" placeholder="Date of Birth" value={dateOfBirth} onChange={e => setDateOfBirth(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Date of Birth</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="date" name="date_of_birth" placeholder="Date of Birth" value={dateOfBirth} onChange={e => setDateOfBirth(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="ph-add-section-input-fields-license-issued-date">
-                                <label>License Issued Date</label>
-                                <input type="date" name="license_issued_date" placeholder="License Issued Date" value={licenseIssuedDate} onChange={e => setLicenseIssuedDate(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">License Issued Date</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="date" name="license_issued_date" placeholder="License Issued Date" value={licenseIssuedDate} onChange={e => setLicenseIssuedDate(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="ph-add-section-input-fields-license-expiry-date">
-                                <label>License Expiry Date</label>
-                                <input type="date" name="license_expiry_date" placeholder="License Expiry Date" value={licenseExpiryDate} onChange={e => setLicenseExpiryDate(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">License Expiry Date</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="date" name="license_expiry_date" placeholder="License Expiry Date" value={licenseExpiryDate} onChange={e => setLicenseExpiryDate(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="ph-add-section-input-fields-business-address">
-                                <label>Business Address</label>
-                                <input type="text" name="business_address" placeholder="Business Address" value={businessAddress} onChange={e => setBusinessAddress(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Business Address</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="business_address" placeholder="Business Address" value={businessAddress} onChange={e => setBusinessAddress(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="ph-add-section-input-fields-business-telephone">
-                                <label>Business Telephone</label>
-                                <input type="text" name="business_telephone" placeholder="Business Telephone" value={businessTelephone} onChange={e => setBusinessTelephone(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Business Telephone</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="business_telephone" placeholder="Business Telephone" value={businessTelephone} onChange={e => setBusinessTelephone(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="ph-add-section-input-fields-qualifications">
-                                <label>Qualifications</label>
-                                <input type="text" name="qualifications" placeholder="Qualifications" value={qualifications} onChange={e => setQualifications(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Qualifications</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="qualifications" placeholder="Qualifications" value={qualifications} onChange={e => setQualifications(e.target.value)}/>
+                                </div>
                             </div>
                         </div>
                         <div className="ph-add-section-buttons">
-                            <button type='submit'>Add</button>
-                            <button type="reset">Reset</button>
+                            <button className="button-secondary mr-3" type='submit'>Add</button>
+                            <button className="button-secondary" type="reset">Reset</button>
                         </div>
                     </form>
                 </div>
@@ -264,46 +283,62 @@ export default function AdminDashboard(){
                     </form>
                 </div>
     
-                <div className="vc-add-section">
+                <div className="vc-add-section p-3">
                     {/* add input fields owner, registration_number, name, phone, email, website, opening_times, address */}
                     <form onSubmit={createVaccinationCampAccount}>
                         <h3>Vaccination Center</h3>
                         <div className="vc-add-section-input-fields">
-                            <div className="vc-add-section-input-fields-owner">
-                                <label>Owner</label>
-                                <input type="text" name="owner" placeholder="Owner" value={owner} onChange={e => setOwner(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Owner</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="owner" placeholder="Owner" value={owner} onChange={e => setOwner(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="vc-add-section-input-fields-registration-number">
-                                <label>Registration Number</label>
-                                <input type="text" name="registration_number" placeholder="Registration Number" value={registrationNumber} onChange={e => setRegistrationNumber(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Registration Number</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="registration_number" placeholder="Registration Number" value={registrationNumber} onChange={e => setRegistrationNumber(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="vc-add-section-input-fields-name">
-                                <label>Name</label>
-                                <input type="text" name="name" placeholder="Name" value={name} onChange={e => setName(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Name</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="name" placeholder="Name" value={name} onChange={e => setName(e.target.value)}/>   
+                                </div>
                             </div>
-                            <div className="vc-add-section-input-fields-phone">
-                                <label>Phone</label>
-                                <input type="text" name="phone" placeholder="Phone" value={phone} onChange={e => setPhone(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Phone</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="phone" placeholder="Phone" value={phone} onChange={e => setPhone(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="vc-add-section-input-fields-email">
-                                <label>Email</label>
-                                <input type="text" name="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Email</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="vc-add-section-input-fields-website">
-                                <label>Website</label>
-                                <input type="text" name="website" placeholder="Website" value={website} onChange={e => setWebsite(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Website</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="website" placeholder="Website" value={website} onChange={e => setWebsite(e.target.value)}/>
+                                </div>
                             </div>
-                            <div className="vc-add-section-input-fields-opening-times">
-                                <label>Opening Times</label>
-                                <input type="text" name="opening_times" placeholder="Opening Times" value={openingTimes} onChange={e => setOpeningTimes(e.target.value)} />
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Opening Times</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="opening_times" placeholder="Opening Times" value={openingTimes} onChange={e => setOpeningTimes(e.target.value)} />
+                                </div>
                             </div>
-                            <div className="vc-add-section-input-fields-address">
-                                <label>Address</label>
-                                <input type="text" name="address" placeholder="Address" value={address} onChange={e => setAddress(e.target.value)}/>
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">Address</label>
+                                <div className="col-sm-4">
+                                    <input className="form-control" type="text" name="address" placeholder="Address" value={address} onChange={e => setAddress(e.target.value)}/>
+                                </div>
                             </div>
                             <div className="ph-add-section-buttons">
-                                <button type="submit">Add</button>
-                                <button type="reset">Reset</button>
+                                <button className="button-secondary mr-3" type="submit">Add</button>
+                                <button className="button-secondary" type="reset">Reset</button>
                             </div>
                         </div>
                     </form>

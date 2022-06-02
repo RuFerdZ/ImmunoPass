@@ -28,7 +28,7 @@ export async function createDoctor(wallet, doctor) {
     const keypair = Keypair.generate()
     
     doctor.publicKey = keypair.publicKey;
-  
+
     try {
         await program.rpc.createDoctor(
             doctor.firstname, 
@@ -301,8 +301,6 @@ export async function createPassportHolder(wallet, passportHolder) {
     const keypair = Keypair.generate();
 
     passportHolder.publicKey = keypair.publicKey;
-
-    // passportHolder.dateOfBirth = "893643173"
 
     try {
         await program.rpc.createPassportHolder(

@@ -5,6 +5,7 @@ import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-ad
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { network } from '../../config';
 import VaccinationCampDashboard from './VaccinationCampDashboard';
+import { useNavigate } from 'react-router';
 
 const wallets = [
   getPhantomWallet(),
@@ -15,17 +16,27 @@ const wallets = [
 export function VaccinationCampLogin() {
 
   const wallet = useWallet();
+  const navigate = useNavigate();
 
   if (!wallet.connected) {
     return (
-      <div className="main-center-container">
-        <div>
-            Vaccination Camp Login To Continue
+      <div className="main-center-container text-center">
+        <div className='primary-text'>
+          Vaccination Camp 
         </div>
-        <div className="wallet-container">
-            <WalletMultiButton />
+        <div className='secondary-text mt-5'>
+          Login to Continue
         </div>
-    </div>
+        <div className='inline-flex-default'>
+          <div className="button-secondary mt-3 mr-2"
+                  onClick={() => navigate(-1)}
+              >back
+          </div>
+          <div className="wallet-container mt-3">
+              <WalletMultiButton />
+          </div>
+        </div>
+      </div>
     )
   } else {
     return (
