@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { getVaccinationCampByWalletAddress } from '../../api'
 import UserNotFound from '../UserNotFound'
 import { styled } from '@mui/material/styles';
-
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -28,6 +28,7 @@ import QRCode from "react-qr-code";
 
 // import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet } from '@solana/wallet-adapter-react';
+import ViewRecordModal from '../ViewRecordModal';
 // import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -136,58 +137,41 @@ export default function VaccinationCampDashboard() {
     );
   } else {
     return (
-      <div className='doc-dashboard'>
+    <div  className= {`${openVaccine && "primary-container"} doc-dashboard`}>
       <div className='doc-dashboard-header'>
-        <h1 className='doc-dashboard-title'>Vaccination Camp Dashboard</h1>
+          <h1 className='primary-text black-color py-4 text-uppercase text-center'>
+            Vaccination Camp Dashboard
+          </h1>
       </div>
-
       
       <div className='doc-dashboard-body'>
-
-        <div className='doc-dashboard-body-row1'>
-          <div className='doc-dashboard-body-row1-col1'>
-            <div className='doc-dashboard-body-row1-col1-content'>
-              <div className="doctor-welcome">
-                <h1>{vaccinationCamp.name}</h1>
+        <div className="box-container white-color px-4">
+              <div className="main-box mr-3">
+                <div className="light-black-card p-3 pb-4">
+                  <div className="secondary-text text-uppercase text-center mt-3 mb-4">
+                    Your Information
+                  </div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Name: </span>{vaccinationCamp.name}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Registration Number: </span>{vaccinationCamp.registrationNumber}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Phone: </span>{vaccinationCamp.phone}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Address: </span>{vaccinationCamp.address}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Email: </span><a className="website-link" href={'mailto:' + vaccinationCamp.email} target='_blank'>{vaccinationCamp.email}</a></div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Website: </span><a className="website-link" href={vaccinationCamp.website} target='_blank'>{vaccinationCamp.website}</a></div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Joined Date: </span>{getDateFormatted(vaccinationCamp.joinedDate)}</div>
+                  <div className="wallet-container mt-3">
+                      <WalletMultiButton />
+                  </div>
+                </div>
               </div>
-              <div className="doctor-info">
-                <h3 className="doc-info-label">Your Information</h3>
-                <p>
-                  <span className='doctor-info-label'>Registration Number:</span> {vaccinationCamp.registrationNumber}
-                </p>
-                <p>
-                  <span className='doctor-info-label'>Phone:</span> {vaccinationCamp.phone}
-                </p>
-                <p>
-                  <span className='doctor-info-label'>Address:</span> {vaccinationCamp.address}
-                </p>
-                <p>
-                  <span className='doctor-info-label'>Email:</span>  <a className="website-link" href={'mailto:' + vaccinationCamp.email} target='_blank'> {vaccinationCamp.email}</a> 
-                </p>
-                <p>
-                  <span className='doctor-info-label'>Website:</span> <a className="website-link" href={vaccinationCamp.website} target='_blank'> {vaccinationCamp.website}</a>
-                </p>
-                <p>
-                  <span className='doctor-info-label'>Joined Date:</span> {getDateFormatted(vaccinationCamp.joinedDate)}
-                </p>
+              <div className="main-box">
+                <div className="light-black-card text-center text-uppercase p-3">
+                  <div className="secondary-text my-3">Statistics</div>
+                  <div className="text-bold mt-5 px-5">Approve: <span className="approved ml-3">Yes</span></div>
+                  <div className="text-bold mt-5 px-5">Pending: <span className="pending ml-3">Yes</span></div>
+                  <div className="text-bold mt-5 px-5">Rejected: <span className="rejected ml-3">Yes</span></div>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <div className='doc-dashboard-body-row1-col2'>
-          <div className='doc-dashboard-body-row1-col2-content'>
-              <div className="doctor-actions">
-                <h1>Statistics</h1>
-              </div>
-              <div className="patient-info">
-               
-                
-              </div>
-            </div>
-          </div>
         </div>
-
-        
       </div>
       <div className="data-table">
         <TableContainer component={Paper}>
@@ -219,7 +203,12 @@ export default function VaccinationCampDashboard() {
           </Table>
         </TableContainer> 
       </div>
-</div>
+      {openVaccine &&
+          <ViewRecordModal
+            closeVaccine={setOpenVaccine}
+          />
+      }
+    </div>
 
     
  

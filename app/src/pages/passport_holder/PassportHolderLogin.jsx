@@ -4,8 +4,7 @@ import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-ad
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { network } from '../../config';
 import PassportHolderDashboard from './PassportHolderDashboard';
-// import { useNavigate } from 'react-router';
-
+import { useNavigate } from 'react-router';
 
 const wallets = [
   getPhantomWallet(),
@@ -16,6 +15,7 @@ const wallets = [
 export  function PassportHolderLogin() {
 
   const wallet = useWallet();
+  const navigate = useNavigate();
   // const navigate = useNavigate();
 
   // useEffect(() => {
@@ -26,14 +26,23 @@ export  function PassportHolderLogin() {
 
   if (!wallet.connected) {
     return (
-      <div className="main-center-container">
-        <div>
-            Passport Holder Login To Continue
+      <div className="main-center-container text-center">
+        <div className='primary-text'>
+          Passport Holder
         </div>
-        <div className="wallet-container">
-            <WalletMultiButton />
+        <div className='secondary-text mt-5'>
+          Login to Continue
         </div>
-    </div>
+        <div className='inline-flex-default'>
+          <div className="button-secondary mt-3 mr-2"
+                  onClick={() => navigate(-1)}
+              >back
+          </div>
+          <div className="wallet-container mt-3">
+              <WalletMultiButton />
+          </div>
+        </div>
+      </div>
     )
   }else{
     return (

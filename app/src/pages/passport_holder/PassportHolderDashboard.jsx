@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getPassportHolderByWalletAddress, getVaccinationRecordsOfPassportHolder } from '../../api'
 import UserNotFound from '../UserNotFound'
 import { styled } from '@mui/material/styles';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 import {
   Chart,
@@ -29,13 +30,14 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 import QRCode from "react-qr-code";
 
 // import { getPhantomWallet } from '@solana/wallet-adapter-wallets';
 import { useWallet } from '@solana/wallet-adapter-react';
+import ViewRecordModal from '../ViewRecordModal';
 // import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 
@@ -101,6 +103,7 @@ const data = [
 
 export default function PassportHolderDashboard() {
 
+  const navigate = useNavigate();
   const wallet = useWallet();
   const [ passportHolder, setPassportHolder ] = useState({});
   const [ vaccines, setVaccines ] = useState([]);
@@ -157,84 +160,40 @@ export default function PassportHolderDashboard() {
       <UserNotFound />
   );
   } else {
-    return (
-      <div className='doc-dashboard'>
+    return ( 
+      <div className= {`${openVaccine && "primary-container"} doc-dashboard`}>
             <div className='doc-dashboard-header'>
-              <h1 className='doc-dashboard-title'>User Dashboard</h1>
+              <h1 className='primary-text black-color py-4 text-uppercase text-center'>User Dashboard</h1>
             </div>
-
             
-            <div className='doc-dashboard-body'>
-
-              <div className='doc-dashboard-body-row1'>
-                <div className='doc-dashboard-body-row1-col1'>
-                  <div className='doc-dashboard-body-row1-col1-content'>
-                    <div className="doctor-welcome">
-                      <h1>Welcome {passportHolder.title} {passportHolder.firstname} {passportHolder.lastname}</h1>
-                    </div>
-                    <div className="doctor-info">
-                      <h3 className="doc-info-label">Your Information</h3>
-                      <p>
-                        <span className='doctor-info-label'>Identification Number:</span> {passportHolder.nic}
-                      </p>
-                      
-                      <p>
-                        <span className='doctor-info-label'>Gender:</span> {passportHolder.gender}
-                      </p>
-                      <p>
-                        <span className='doctor-info-label'>Phone:</span> {passportHolder.phone}
-                      </p>
-                      <p>
-                        <span className='doctor-info-label'>Address:</span> {passportHolder.address}
-                      </p>
-                      <p>
-                        <span className='doctor-info-label'>Date of Birth:</span> {getDateFormatted(passportHolder.dateOfBirth)}
-                      </p>
-                      <p>
-                        <span className='doctor-info-label'>Place of Birth:</span> {passportHolder.placeOfBirth}
-                      </p>
-                      <p>
-                        <span className='doctor-info-label'>Joined Date:</span> {getDateFormatted(passportHolder.joinedDate)}
-                      </p>
-                    </div>
+            <div className="box-container white-color px-4">
+              <div className="main-box mr-3">
+                <div className="light-black-card p-3 pb-4">
+                  <div className="secondary-text text-uppercase text-center mt-3 mb-4">
+                    Your Information
+                  </div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Identification Number: </span>{passportHolder.nic}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Gender: </span>{passportHolder.gender}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Phone: </span>{passportHolder.phone}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Address: </span>{passportHolder.address}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Date of Birth: </span>{getDateFormatted(passportHolder.dateOfBirth)}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Place of Birth: </span>{passportHolder.placeOfBirth}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Joined Date: </span>{getDateFormatted(passportHolder.joinedDate)}</div>
+                  <div className="wallet-container mt-3">
+                      <WalletMultiButton />
                   </div>
                 </div>
-
-                <div className='doc-dashboard-body-row1-col2'>
-                <div className='doc-dashboard-body-row1-col2-content'>
-                    <div className="doctor-actions">
-                      <h1>Statistics</h1>
-                    </div>
-                    <div className="patient-info">
-                     
-                      <div className="legend">
-                        <li className="approved">Approved</li> 
-                        <li className="pending">Pending </li>
-                        <li className="rejected">Rejected</li>
-                      </div>
-                      <Paper className="chart-patient">
-                        <Chart
-                          data={data}
-                          backgroundColor='#191c24'
-                          className="chart-body"
-                        >
-                          <PieSeries valueField="value" 
-                            argumentField="argument" 
-                            innerRadius={0.6} />
-                          {/* <Title text="Studies per day"/> */}
-                        </Chart>
-                      </Paper>
-                    </div>
-                  </div>
-                </div>
-{/* 
-                <div className='doc-dashboard-body-row1-col3'>
-                  
-                </div> */}
               </div>
-
-              
+              <div className="main-box">
+                <div className="light-black-card text-center text-uppercase p-3">
+                  <div className="secondary-text my-3">Statistics</div>
+                  <div className="text-bold mt-5 px-5">Approve: <span className="approved ml-3">Yes</span></div>
+                  <div className="text-bold mt-5 px-5">Pending: <span className="pending ml-3">Yes</span></div>
+                  <div className="text-bold mt-5 px-5">Rejected: <span className="rejected ml-3">Yes</span></div>
+                </div>
+              </div>
             </div>
+
             <div className="data-table">
               <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -265,7 +224,13 @@ export default function PassportHolderDashboard() {
                 </Table>
               </TableContainer> 
             </div>
-            
+           
+            {openVaccine &&
+              <ViewRecordModal 
+                closeVaccine={setOpenVaccine}
+              />
+            }
+        
       </div>
            
             

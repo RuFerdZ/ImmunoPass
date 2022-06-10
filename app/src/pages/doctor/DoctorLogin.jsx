@@ -21,7 +21,7 @@ export function DoctorLogin() {
 
 
   const wallet = useWallet();
-
+  const navigate = useNavigate();
 
   
 // const navigate = useNavigate();
@@ -34,19 +34,29 @@ export function DoctorLogin() {
 
   if (!wallet.connected) {
     return (
-      <div className="main-center-container">
-        <div>
-            Doctor Login To Continue
+      <div className="main-center-container text-center">
+        <div className='primary-text'>
+          Doctor
         </div>
-        <div className="wallet-container">
-            <WalletMultiButton />
+        
+          <div className='secondary-text mt-5'>
+            Login to Continue
+          </div>
+        <div className='inline-flex-default'>
+          <div className="button-secondary mt-3 mr-2"
+                  onClick={() => navigate(-1)}
+              >back
+          </div>
+          <div className="wallet-container mt-3">
+              <WalletMultiButton />
+          </div>
         </div>
-    </div>
+      </div>
     )
   } else {
     return (
-      <AdminDashboard />
-      // <DoctorDashboard wallet={wallet} />
+      // <AdminDashboard />
+      <DoctorDashboard wallet={wallet} />
 
     )
   }
