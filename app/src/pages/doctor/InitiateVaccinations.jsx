@@ -6,8 +6,9 @@ import Button from '@mui/material/Button';
 import { useEffect, useState } from 'react';
 import { getPassportHolderByNIC, initiateVaccinationRecord, getVaccinationCampByRegistrationNumber } from '../../api'
 import { PublicKey } from '@solana/web3.js';
-
+import { useNavigate } from 'react-router';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 export default function InitiateVaccinations(){
 
@@ -34,7 +35,8 @@ export default function InitiateVaccinations(){
     const [vcAddress, setVCAddress] = useState('');
 
     const wallet = useWallet();
-    
+    const navigate = useNavigate();
+
     const loadPatient= async (e) => {
         e.preventDefault();
         const pat = await getPassportHolderByNIC(wallet, nic);
@@ -52,6 +54,7 @@ export default function InitiateVaccinations(){
 
     const loadVaccinationCamp = async (e) => {
       e.preventDefault();
+      console.log(wallet);
       const vc = await getVaccinationCampByRegistrationNumber(wallet, regNo)
       if (vc == null){
         setVCPubkey("Not Found!");
@@ -86,8 +89,8 @@ export default function InitiateVaccinations(){
 
     const createVaccinationRecord = async (e) => {
         e.preventDefault();
-
-        const vaccination = {
+        console.log(wallet);
+        let vaccination = {
             vaccine: vaccine,
             notes: notes,
             age: age,
@@ -98,8 +101,6 @@ export default function InitiateVaccinations(){
             passportHolder: patient.publicKey,
         }
         const record = await initiateVaccinationRecord(wallet, vaccination)
-
-        console.log(record)
     } 
 
 
@@ -107,119 +108,162 @@ export default function InitiateVaccinations(){
     return (
         <div className='doc-dashboard'>
         <div className='doc-dashboard-header'>
-          <h1 className='doc-dashboard-title'>Initiate Vaccination</h1>
+          <h1 className='primary-text black-color pt-3 pb-2 text-uppercase text-center'>Initiate Vaccination</h1>
         </div>
-
         
         <div className='doc-dashboard-body'>
-
-          <div className='doc-dashboard-body-row1'>
-            <div className='doc-dashboard-body-row1-col1'>
-              <div className='doc-dashboard-body-row1-col1-content'>
-                <div className="doctor-actions">
-                  <h1>Patient</h1>
+          <div className="box-container white-color px-4">
+            <div className="main-box mr-3">
+              <div className="light-black-card-md py-3 px-5 pb-4">
+                <div className="secondary-text text-uppercase text-center mt-3 mb-4">
+                  Patient
                 </div>
-                <div className="doctor-info">
-                    <form onSubmit={loadPatient}>
-                        <label>Enter Patient Identification Number: </label><br/>
-                        <input className='search-patient' type="text" value={nic} onChange={e => setNIC(e.target.value)} placeholder="Enter Identification Number.."/>
-                        {/* <Button className="load-patient" variant="contained" onClick={loadPatient()}>Load Patient</Button> */}
-                        <button type='submit'>Load Patient</button>
-                    </form>
-                </div>
-                <div className="patient-info">
-                    <h3 className="doc-info-label">Patient Information</h3>
-                    <div className="patient-content">
-                    <label>Public Key: </label><br/>
-                        <input className='detail-patient' type="text" name="pubkey" value={pubkey} disabled/>
-                        <br/>
-                        <label>First Name: </label><br/>
-                        <input className='detail-patient' type="text" name="firstname" value={firstname} disabled/>
-                        <br/>
-                        <label>Last Name: </label><br/>
-                        <input className='detail-patient' type="text" name="lastname" value={lastname} disabled />
-                        <br/>
-                        <label>Date of Birth: </label><br/>
-                        <input className='detail-patient' type="text" name="dob" value={getDateFormatted(dateOfBirth)} disabled/>
-                        <br/>
-                        <label>Gender: </label><br/>
-                        <input className='detail-patient' type="text" name="gender" value={gender} disabled/>
+                <form onSubmit={loadPatient}>
+                  <label className="">Patient ID Number:</label>
+                  <div className="form-group row">
+                    <div className="col-sm-12">
+                        <input className="form-control" 
+                          type="text" name="patient" 
+                          placeholder="Enter Identification Number"
+                          value={nic} 
+                          onChange={e => setNIC(e.target.value)} 
+                        />
                     </div>
-                </div>  
-            
+                  </div>
+                  <button className="button-secondary-reverse text-bold" type='submit'>Load Patient</button>
+                </form>
+                <div className="secondary-text text-center text-uppercase my-4">Patient Information</div>
+                <div className="mt-3" style={{wordBreak:"break-all"}}><span className="text-bold mr-2">Public Key: </span>
+                  {pubkey}
+                </div>
+                <div className="mt-3"><span className="text-bold mr-2">First Name: </span>
+                  {firstname}
+                </div>
+                <div className="mt-3"><span className="text-bold mr-2">Last Name: </span>
+                  {lastname}
+                </div>
+                <div className="mt-3"><span className="text-bold mr-2">Date of Birth: </span>
+                  {getDateFormatted(dateOfBirth)}
+                </div>
+                <div className="mt-3"><span className="text-bold mr-2">Gender: </span>
+                  {gender}
+                </div>
               </div>
             </div>
-
-            <div className='doc-dashboard-body-row1-col1'>
-              <div className='doc-dashboard-body-row1-col1-content'>
-                <div className="doctor-actions">
-                  <h1>Vaccination Camp</h1>
+            <div className="main-box mr-3">
+              <div className="light-black-card-md py-3 px-5 pb-4">
+                <div className="secondary-text text-uppercase text-center mt-3 mb-4">
+                  Vaccination Camp
                 </div>
-                <div className="doctor-info">
-                    <form onSubmit={loadVaccinationCamp}>
-                        <label>Enter Registration Number: </label><br/>
-                        <input className='search-patient' type="text" value={regNo} onChange={e => setRegNo(e.target.value)} placeholder="Enter Registration Number.."/>
-                        {/* <Button className="load-patient" variant="contained" onClick={loadPatient()}>Load Patient</Button> */}
-                        <button type='submit'>Load Vaccination Camp</button>
-                    </form>
-                </div>
-                <div className="patient-info">
-                    <h3 className="doc-info-label">Vaccination Camp Information</h3>
-                    <div className="patient-content">
-                        <label>Public Key: </label><br/>
-                        <input className='detail-patient' type="text" name="pubkey" value={vcPubKey} disabled/>
-                        <br/>
-                        <label>Name: </label><br/>
-                        <input className='detail-patient' type="text" name="firstname" value={vcName} disabled/>
-                        <br/>
-                        <label>Address: </label><br/>
-                        <input className='detail-patient' type="text" name="firstname" value={vcAddress} disabled/>
-                        <br/>
-                        
+                <form onSubmit={loadVaccinationCamp}>
+                  <label className="">Registration Number:</label>
+                  <div className="form-group row">
+                    <div className="col-sm-12">
+                        <input className="form-control" 
+                          type="text" name="vaccine" 
+                          placeholder="Enter Registration Number"
+                          value={regNo} 
+                          onChange={e => setRegNo(e.target.value)}
+                        />
                     </div>
-                </div>  
-            
-              </div>
-            </div>
-
-            <div className='doc-dashboard-body-row1-col2'>
-            <div className='doc-dashboard-body-row1-col2-content'>
-                <div className="doctor-actions">
-                  <h1>Vaccination</h1>
+                  </div>
+                  <button className="button-secondary-reverse text-bold" type='submit'>Load Vaccination Camp</button>
+                </form>
+                <div className="secondary-text text-center text-uppercase my-4">Vaccination Camp Information</div>
+                <div className="mt-3" style={{wordBreak:"break-all"}}><span className="text-bold mr-2">Public Key: </span>
+                  {vcPubKey}
                 </div>
-
-
-                <div className="vaccination-info">
-                    <form onSubmit={createVaccinationRecord}>
-                        <label>Vaccine: </label>
-                        <input className='detail-patient' type="text" name="vaccine" onChange={e => setVaccine(e.target.value)} value={vaccine}/>
-                        <br/>
-                        <label>Batch Number: </label><br/>
-                        <input className='detail-patient' type="text" name="batchNumber" onChange={e => setBatch(e.target.value)} value={batch} />
-                        <br/>
-                        <label>Dosage: </label><br/>
-                        <input className='detail-patient' type="text" name="dosage" onChange={e => setDosage(e.target.value)} value={dosage} />
-                        <br/>
-                        <label>Age: </label><br/>
-                        <input className='detail-patient' type="text" name="age" onChange={e => setAge(e.target.value)} value={age} />
-                        <br/>
-                        <label>Weight: </label><br/>
-                        <input className='detail-patient' type="text" name="weight" onChange={e => setWeight(e.target.value)} value={weight} />
-                        <br/>
-                        <label>Notes: </label><br/>
-                        <textarea className='detail-patient' name="notes" rows="4" cols="50" onChange={e => setNotes(e.target.value)} value={notes}></textarea>
-                        <div className="create-record">
-                            <button type='submit'>Initiate Vaccination</button>
-                        </div>
-                        
-                    </form>
+                <div className="mt-3"><span className="text-bold mr-2">Name: </span>
+                  {vcName}
+                </div>
+                <div className="mt-3"><span className="text-bold mr-2">Address: </span>
+                  {vcAddress}
+                </div>
+                <div className="text-center mt-4">
+                  <WalletMultiButton />
                 </div>
               </div>
             </div>
-
+            <div className="main-box">
+              <div className="light-black-card-md text-center py-3 px-5 p-3">
+                <div className="secondary-text text-uppercase my-3">Vaccination</div>
+                <form onSubmit={createVaccinationRecord}>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">Vaccine:</label>
+                    <div className="col-sm-9">
+                        <input className="form-control" 
+                        type="text" 
+                        placeholder="Enter Vaccine" 
+                        name="vaccine" 
+                        onChange={e => setVaccine(e.target.value)} 
+                        value={vaccine} />
+                    </div>
+                  </div>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">Batch:</label>
+                    <div className="col-sm-9">
+                        <input className="form-control" 
+                        type="text" 
+                        placeholder="Enter Batch Number" 
+                        name="batchNumber" 
+                        onChange={e => setBatch(e.target.value)} 
+                        value={batch} />
+                    </div>
+                  </div>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">Dosage:</label>
+                    <div className="col-sm-9">
+                        <input className="form-control" 
+                        type="text" 
+                        placeholder="Enter Dosage" 
+                        name="dosage" 
+                        onChange={e => setDosage(e.target.value)} 
+                        value={dosage} />
+                    </div>
+                  </div>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">Age:</label>
+                    <div className="col-sm-9">
+                        <input className="form-control" 
+                        type="text" 
+                        placeholder="Enter Age" 
+                        name="age" 
+                        onChange={e => setAge(e.target.value)} 
+                        value={age} />
+                    </div>
+                  </div>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">Weight:</label>
+                    <div className="col-sm-9">
+                        <input className="form-control" 
+                        type="text" 
+                        placeholder="Enter Weight" 
+                        name="weight" 
+                        onChange={e => setWeight(e.target.value)} 
+                        value={weight} />
+                    </div>
+                  </div>
+                  <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">Notes:</label>
+                    <div className="col-sm-9">
+                        <textarea className="form-control" 
+                        type="text" 
+                        placeholder="Enter Notes" 
+                        name="notes" rows="4" cols="50" onChange={e => setNotes(e.target.value)} value={notes} />
+                    </div>
+                  </div>
+                  <button 
+                    className="button-secondary-reverse text-bold" 
+                    type='submit'>
+                      Initiate Vaccination
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
+
         </div>
-  </div>
+      </div>
   
     )
 }
