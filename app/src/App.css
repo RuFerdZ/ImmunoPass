@@ -195,6 +195,9 @@ TableHead {
 .white-color {
   color: #FFFFFF;
 }
+.peach-color {
+  color: #FF4C29;
+}
 
 .main-center-container-default {
   justify-content: center;
@@ -231,6 +234,13 @@ TableHead {
   border-radius: 25px;
 }
 
+.light-black-card-md {
+  background-color: #232323;
+  margin: auto;
+  min-height: 84vh;
+  border-radius: 25px;
+}
+
 .button-primary {
   background-color: #F9FAF5;
   padding: 10px;
@@ -258,6 +268,23 @@ TableHead {
 .button-secondary:hover {
   background: #FF4C29;
   color: #000000;
+  transition-duration: 0.6s;
+}
+
+.button-secondary-reverse {
+  cursor: pointer !important;
+  background: #FF4C29;
+  border: none;
+  text-transform: uppercase;
+  color: #000000;
+  border-radius: 25px;
+  min-width: 100px;
+  height: 35px !important;
+  padding: 5px 10x 5px 10px !important;
+}
+.button-secondary-reverse:hover {
+  background: #000000;
+  color: #FFFFFF;
   transition-duration: 0.6s;
 }
 
@@ -334,4 +361,20 @@ a:hover {
 /* position */
 .primary-container {
   display: flex;
+}
+
+a:hover {
+  text-decoration: none !important;
+  color: #000000 !important;
+  transition-duration: 0.6s;
+}
+
+.css-11xur9t-MuiPaper-root-MuiTableContainer-root {
+  background-color: beige !important;
+}
+
+.back-btn {
+  width: 10px;
+  margin: auto;
+  margin-bottom: 1%;
 }

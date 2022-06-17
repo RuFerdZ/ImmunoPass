@@ -2,11 +2,6 @@ import { Program, web3 } from '@project-serum/anchor';
 import { Provider } from '@project-serum/anchor';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { workspace, network, opts } from '../src/config';
-import { Doctor } from '../src/models/Doctor';
-import { VaccinationCamp } from '../src/models/VaccinationCamp';
-import { PassportHolder } from '../src/models/PassportHolder';
-import { VaccinationRecord } from '../src/models/VaccinationRecord';
-import { ValidationRecord } from '../src/models/ValidationRecord';
 import * as bs58 from "bs58";
 import { publicKey } from '@project-serum/anchor/dist/cjs/utils';
 
@@ -157,12 +152,13 @@ export async function getAssignedVaccinationsForDoctor(wallet, pubKey) {
                   memcmp: {
                     offset: 8 +
                     32,
-                    bytes: pubKey.toBase58(),
+                    bytes: pubKey?.toBase58(),
                   }
                 }
               ]
         )
-        return vaccinations.map(vaccination => new VaccinationRecord(vaccination.publicKey, vaccination.account));
+        console.log("vac - ", vaccinations)
+        return vaccinations
     } catch (err) {
         console.log("Error in getting vaccination records of a doctor. - " + err);
     }
@@ -261,7 +257,7 @@ export async function getAssignedVaccinationsForCamp(wallet, pubKey) {
                 }
               ]
         )
-        return vaccinations.map(vaccination => new VaccinationRecord(vaccination.publicKey, vaccination.account));
+        return vaccinations
     } catch (err) {
         console.log("Error in getting vaccination records of a vaccination camp. - " + err);
     }
@@ -497,7 +493,7 @@ export async function getValidationRecordByPublicKey(wallet, pubKey) {
 
     try {
         const validationRecord = await program.account.validationRecord.fetch(pubKey);
-        return new ValidationRecord(validationRecord.publicKey, validationRecord.account);
+        return validationRecord
     } catch (err) {
         console.log("Error in getting validation record by public key. - " + err);
     }
@@ -519,7 +515,7 @@ export async function getValidationRecordsOfRecord(wallet, pubKey) {
                 }
               ]
         )
-        return records.map(record => new ValidationRecord(record.publicKey, record.account));
+        return records
     } catch (err) {
         console.log("Error in getting validation records of a record. - " + err);
     }
@@ -552,12 +548,12 @@ export async function getVaccinationRecordsOfPassportHolder(wallet, pubKey) {
                 {
                   memcmp: {
                     offset: 8,
-                    bytes: pubKey,
+                    bytes: pubKey?.toBase58(),
                   }
                 }
               ]
         )
-        return records.map(record => new VaccinationRecord(record.publicKey, record.account));
+        return records;
     } catch (err) {
         console.log("Error in getting vaccination records of passport holder. - " + err);
     }
