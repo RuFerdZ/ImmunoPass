@@ -98,11 +98,13 @@ export default function VaccinationCampDashboard() {
 
   const loadVC = async () => {
     const vc = await getVaccinationCampByWalletAddress(wallet);
+    console.log("vac -", vc)
     setVaccinationCamp(vc);
   }
 
   const loadVaccines = async (accountKey) => {
     const vac = await getAssignedVaccinationsForCamp(wallet, accountKey);
+
     setVaccines(vac);
   }
 
@@ -133,7 +135,7 @@ export default function VaccinationCampDashboard() {
   }
 
 
-  if (vaccinationCamp === undefined) {
+  if (vaccinationCamp === undefined || vaccinationCamp === null || vaccinationCamp.length === 0) {
     return (
         <UserNotFound />
     );
