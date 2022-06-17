@@ -57,7 +57,6 @@ export function DoctorLogin() {
     return (
       // <AdminDashboard />
       <DoctorDashboard wallet={wallet} />
-
     )
   }
 }
