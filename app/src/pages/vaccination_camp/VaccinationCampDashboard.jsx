@@ -1,7 +1,11 @@
 import React from 'react';
 
 import { useEffect, useState } from 'react';
-import { getVaccinationCampByWalletAddress } from '../../api'
+import {
+  getAssignedVaccinationsForCamp,
+  getVaccinationCampByWalletAddress,
+  getVaccinationRecordsOfPassportHolder
+} from '../../api'
 import UserNotFound from '../UserNotFound'
 import { styled } from '@mui/material/styles';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
@@ -12,7 +16,6 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -31,29 +34,10 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import ViewRecordModal from '../ViewRecordModal';
 // import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
 // table configuration
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: '#191c24',
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -72,17 +56,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+function createData(date, vaccine, batchNumber, dosage, status) {
+  return { date, vaccine, batchNumber, dosage, status };
 }
-
-const rows = [
-  createData('13-09-2022', 'Sinopharm', 'SN12390881451', '5 kg', 'VALID'),
-  createData('02-11-2021', 'Pfizer', 'PF9089031841', '3 shots', 'VALID'),
-  createData('11-09-2022', 'Astrazenaca', 'AZ09124901nxX', '20 g', 'PENDING'),
-  createData('18-09-2022', 'Moderna', 'MD92141515MM', '3 km', 'INVALID'),
-  createData('10-09-2022', 'BioNTech', 'BT1240980989015', '7 Watts', 'VALID'),
-];
 
 
 export default function VaccinationCampDashboard() {
@@ -91,6 +67,7 @@ export default function VaccinationCampDashboard() {
   const wallet = useWallet();
   const [ vaccinationCamp, setVaccinationCamp ] = useState([]);
   const [ vaccines, setVaccines ] = useState([]);
+  const [rows, setRows] = useState([])
 
   // QR modal settings
   const [open, setOpen] = React.useState(false);
@@ -103,14 +80,39 @@ export default function VaccinationCampDashboard() {
   const handleCloseVaccinee = () => setOpenVaccine(false);
 
   useEffect(() => {
-    // console.log('wallet address -', wallet.publicKey);
     loadVC()
   }, []);
 
+  useEffect(() => {
+    if (vaccinationCamp?.publicKey) {
+      loadVaccines(vaccinationCamp?.publicKey)
+    }
+  }, [vaccinationCamp]);
+
+  useEffect(() => {
+    setRows([])
+    if (vaccines) {
+      createRecords(vaccines)
+    }
+  }, [vaccines]);
+
   const loadVC = async () => {
     const vc = await getVaccinationCampByWalletAddress(wallet);
-    setVaccinationCamp(vc?.account);
-    console.log(vc?.account)
+    setVaccinationCamp(vc);
+  }
+
+  const loadVaccines = async (accountKey) => {
+    const vac = await getAssignedVaccinationsForCamp(wallet, accountKey);
+    setVaccines(vac);
+  }
+
+  const createRecords = (vacs) => {
+    vacs.forEach(vaccine => {
+      let row = createData(vaccine?.account?.createdDate, vaccine?.account?.vaccine, vaccine?.account?.batchNumber, vaccine?.account?.dosage, vaccine?.account?.status)
+      setRows(rows.concat(row))
+      console.log("rows - ", row)
+    })
+    console.log(rows)
   }
 
 
@@ -151,13 +153,13 @@ export default function VaccinationCampDashboard() {
                   <div className="secondary-text text-uppercase text-center mt-3 mb-4">
                     Your Information
                   </div>
-                  <div className="mt-2 px-5"><span className="text-bold mr-2">Name: </span>{vaccinationCamp.name}</div>
-                  <div className="mt-2 px-5"><span className="text-bold mr-2">Registration Number: </span>{vaccinationCamp.registrationNumber}</div>
-                  <div className="mt-2 px-5"><span className="text-bold mr-2">Phone: </span>{vaccinationCamp.phone}</div>
-                  <div className="mt-2 px-5"><span className="text-bold mr-2">Address: </span>{vaccinationCamp.address}</div>
-                  <div className="mt-2 px-5"><span className="text-bold mr-2">Email: </span><a className="website-link" href={'mailto:' + vaccinationCamp.email} target='_blank'>{vaccinationCamp.email}</a></div>
-                  <div className="mt-2 px-5"><span className="text-bold mr-2">Website: </span><a className="website-link" href={vaccinationCamp.website} target='_blank'>{vaccinationCamp.website}</a></div>
-                  <div className="mt-2 px-5"><span className="text-bold mr-2">Joined Date: </span>{getDateFormatted(vaccinationCamp.joinedDate)}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Name: </span>{vaccinationCamp.account.name}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Registration Number: </span>{vaccinationCamp.account.registrationNumber}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Phone: </span>{vaccinationCamp.account.phone}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Address: </span>{vaccinationCamp.account.address}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Email: </span><a className="website-link" href={'mailto:' + vaccinationCamp.account.email} target='_blank'>{vaccinationCamp.account.email}</a></div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Website: </span><a className="website-link" href={vaccinationCamp.account.website} target='_blank'>{vaccinationCamp.account.website}</a></div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Joined Date: </span>{getDateFormatted(vaccinationCamp.account.joinedDate)}</div>
                   <div className="wallet-container mt-3">
                       <WalletMultiButton />
                   </div>
@@ -188,16 +190,14 @@ export default function VaccinationCampDashboard() {
             </TableHead>
             <TableBody>
               {rows.map((row) => (
-                <StyledTableRow key={row.name}>
-                  <StyledTableCell component="th" scope="row">
-                    {row.name}
-                  </StyledTableCell>
-                  <StyledTableCell align="left">{row.calories}</StyledTableCell>
-                  <StyledTableCell align="left">{row.fat}</StyledTableCell>
-                  <StyledTableCell align="left">{row.carbs}</StyledTableCell>
-                  <StyledTableCell align="left">{getStatus(row.protein)}</StyledTableCell>
-                  <StyledTableCell align="left"><Button size="small" onClick={handleOpenVaccine}>View Record</Button></StyledTableCell>
-                </StyledTableRow>
+                  <StyledTableRow key={row.name}>
+                    <StyledTableCell component="th" scope="row">{getDateFormatted(row.date)}</StyledTableCell>
+                    <StyledTableCell align="left">{row.vaccine}</StyledTableCell>
+                    <StyledTableCell align="left">{row.batchNumber}</StyledTableCell>
+                    <StyledTableCell align="left">{row.dosage}</StyledTableCell>
+                    <StyledTableCell align="left">{getStatus(row.status)}</StyledTableCell>
+                    <StyledTableCell align="left"><Button size="small" onClick={handleOpenVaccine}>View Record</Button></StyledTableCell>
+                  </StyledTableRow>
               ))}
             </TableBody>
           </Table>
