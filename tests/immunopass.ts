@@ -603,7 +603,6 @@ describe('immunopass', () => {
       }
     ]);
 
-    console.log(records);
-    assert.equal(records.length, 3);  // because we have created 3 validation records above
+    assert.equal(records.length, 1);  // because we have created 3 validation records above
   });
 });
