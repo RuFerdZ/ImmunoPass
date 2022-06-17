@@ -55,11 +55,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-
-function createData(date, vaccine, batchNumber, dosage, status) {
-  return { date, vaccine, batchNumber, dosage, status };
-}
-
 export default function DoctorDashboard(props) {
   
   const wallet = useWallet();
@@ -87,7 +82,7 @@ export default function DoctorDashboard(props) {
   useEffect(() => {
     setRows([])
     if (vaccines) {
-      createRecords(vaccines)
+      setRows(vaccines)
     }
   }, [vaccines]);
 
@@ -111,13 +106,6 @@ export default function DoctorDashboard(props) {
     var options = { year: 'numeric', month: 'long', day: 'numeric' };
     const date = new Date(timestamp * 1000);
     return date.toLocaleDateString('en-US', options);
-  }
-
-  const createRecords = (vacs) => {
-    vacs.forEach(vaccine => {
-      let row = createData(vaccine?.account?.createdDate, vaccine?.account?.vaccine, vaccine?.account?.batchNumber, vaccine?.account?.dosage, vaccine?.account?.status)
-      setRows(rows.concat(row))
-    })
   }
 
   const getStatus = (status) => {
@@ -187,11 +175,11 @@ export default function DoctorDashboard(props) {
                 <TableBody>
                   {rows.map((row) => (
                       <StyledTableRow key={row.name}>
-                        <StyledTableCell component="th" scope="row">{getDateFormatted(row.date)}</StyledTableCell>
-                        <StyledTableCell align="left">{row.vaccine}</StyledTableCell>
-                        <StyledTableCell align="left">{row.batchNumber}</StyledTableCell>
-                        <StyledTableCell align="left">{row.dosage}</StyledTableCell>
-                        <StyledTableCell align="left">{getStatus(row.status)}</StyledTableCell>
+                        <StyledTableCell component="th" scope="row">{getDateFormatted(row.account.createdDate)}</StyledTableCell>
+                        <StyledTableCell align="left">{row.account.vaccine}</StyledTableCell>
+                        <StyledTableCell align="left">{row.account.batchNumber}</StyledTableCell>
+                        <StyledTableCell align="left">{row.account.dosage}</StyledTableCell>
+                        <StyledTableCell align="left">{getStatus(row.account.status)}</StyledTableCell>
                         <StyledTableCell align="left"><Button size="small" onClick={handleOpenVaccine}>View Record</Button></StyledTableCell>
                       </StyledTableRow>
                   ))}
