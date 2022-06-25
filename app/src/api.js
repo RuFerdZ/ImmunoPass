@@ -462,12 +462,12 @@ export async function validateVaccination(wallet, validationRecord) {
 
         try {
             await program.rpc.createValidationRecord(
-                validationRecord.recordType, 
-                validationRecord.record, 
-                validationRecord.validatorType, 
-                validationRecord.validator, 
-                validationRecord.status, 
-                validationRecord.notes, {
+                validationRecord.recordType,     // vaccination camp
+                validationRecord.record,         // public key of vaccination
+                validationRecord.validatorType,  // doctor, ph, vc
+                validationRecord.validator,      // person who is validating
+                validationRecord.status,         // reject, complete, pending
+                validationRecord.notes, {        // any notes by the person
                     accounts: {
                         validationRecord: validationRecord.publicKey,
                         author: provider.wallet.publicKey,
