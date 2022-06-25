@@ -15,10 +15,11 @@ describe('immunopass', () => {
   const doctor = anchor.web3.Keypair.generate();
   const vaccinationCamp = anchor.web3.Keypair.generate();
   const vaccinationRecord = anchor.web3.Keypair.generate();
+  const record = anchor.web3.Keypair.generate();
 
 
   it('shoud be able to create a doctor', async () => {
-    
+
     // create new keypair for a doctor
     // const doctor = anchor.web3.Keypair.generate();
 
@@ -55,7 +56,25 @@ describe('immunopass', () => {
     assert.equal(doctorCreated.businessAddress, businessAddress);
     assert.equal(doctorCreated.businessTelephone, businessTelephone);
     assert.equal(doctorCreated.qualifications, qualifications);
-    assert.ok(doctorCreated.joinedDate);  
+    assert.ok(doctorCreated.joinedDate);
+
+    // console.log(doctorCreated);
+  });
+
+  it ('can fetch a doctor by license number', async () => {
+    // doctor login
+    const searchedDoc = await program.account.doctor.all([
+      {
+        memcmp: {
+          offset: 8 +
+              32 +
+              4,
+          bytes: bs58.encode(Buffer.from("DOC001")),
+        }
+      }
+    ]);
+
+    assert.equal(searchedDoc.length, 1);
   });
 
   it('cannot create a doctor without a firstname', async () => {
@@ -91,7 +110,7 @@ describe('immunopass', () => {
   });
 
   it('shoud be able to create a vaccination camp', async () => {
-    
+
     // create new keypair for a doctor
     const camp = anchor.web3.Keypair.generate();
 
@@ -132,7 +151,7 @@ describe('immunopass', () => {
     ];
     let address = "No.1, Galle Road, Colombo";
 
-// integers of type i64 cant be passed as arguments to the contract
+    // integers of type i64 cant be passed as arguments to the contract
 
     await program.rpc.createVaccinationCamp(registrationNumber, name, phone, email, website, JSON.stringify(openingTimes), address, {
       accounts: {
@@ -154,19 +173,10 @@ describe('immunopass', () => {
     assert.equal(campCreated.openingTimes, JSON.stringify(openingTimes));
     assert.equal(campCreated.address, address);
     assert.ok(campCreated.joinedDate);
-
-
-    // // timestamp to date
-    // let unix_timestamp = campCreated.joinedDate;
-    // var date = new Date(unix_timestamp * 1000);
-    // var hours = date.getHours();
-    // var minutes = "0" + date.getMinutes();
-    // var seconds = "0" + date.getSeconds();
-    // var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
   });
 
   it('shoud not be able to create a vaccination camp', async () => {
-    
+
     // create new keypair for a doctor
     const camp = anchor.web3.Keypair.generate();
 
@@ -227,7 +237,7 @@ describe('immunopass', () => {
   it('can fetch all doctors', async () => {
     const doctors = await program.account.doctor.all();
     assert.equal(doctors.length, 1);
-  });   
+  });
 
   it('can fetch all vaccination camps', async () => {
     const vaccinationCamps = await program.account.vaccinationCamp.all();
@@ -238,12 +248,14 @@ describe('immunopass', () => {
     let firstname = "Hasani";
     let lastname = "Dilhari";
     let dateOfBirth = "870976800";
+    let gender = "FEMALE";
+    let title = "Miss. ";
     let address =  "No. 123, Nittambuwa, Gampaha";
     let phone = "07123456789";
     let placeOfBirth = "Gampaha";
     let nic = "123456789V";
 
-    await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, address, phone, placeOfBirth, nic, {
+    await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, gender, title, address, phone, placeOfBirth, nic, {
       accounts: {
         passportHolder: holder.publicKey,
         author: program.provider.wallet.publicKey,
@@ -253,7 +265,6 @@ describe('immunopass', () => {
     });
     // check if the doctor is created
     const createdHolder = await program.account.passportHolder.fetch(holder.publicKey);
-
     assert.equal(createdHolder.firstname, firstname);
     assert.equal(createdHolder.lastname, lastname);
     assert.equal(createdHolder.dateOfBirth, dateOfBirth);
@@ -290,12 +301,14 @@ describe('immunopass', () => {
     let firstname = "Dilanka";
     let lastname = "Harshani";
     let dateOfBirth = "870976800";
+    let gender = "FEMALE";
+    let title = "Miss. ";
     let address =  "No. 123, Nittambuwa, Gampaha";
     let phone = "07123456789";
     let placeOfBirth = "Gampaha";
     let nic = "";
 
-    await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, address, phone, placeOfBirth, nic, {
+    await program.rpc.createPassportHolder(firstname, lastname, dateOfBirth, gender, title, address, phone, placeOfBirth, nic, {
       accounts: {
         passportHolder: holder02.publicKey,
         author: program.provider.wallet.publicKey,
@@ -333,7 +346,7 @@ describe('immunopass', () => {
     let dosage = "10mg";
     let batch_number = "BCG_123456789";
 
-    await program.rpc.createVaccinationRecord(vaccine, notes, age, weight, dosage, batch_number, doctor.publicKey, vaccinationCamp.publicKey, holder.publicKey, {
+    await program.rpc.createVaccinationRecord(vaccine, notes, age, weight, dosage, batch_number, program.provider.wallet.publicKey, vaccinationCamp.publicKey, holder.publicKey, {
       accounts: {
         vaccinationRecord: record.publicKey,
         author: program.provider.wallet.publicKey,
@@ -351,10 +364,23 @@ describe('immunopass', () => {
     assert.equal(createdRecord.weight, weight);
     assert.equal(createdRecord.dosage, dosage);
     assert.equal(createdRecord.batchNumber, batch_number);
-    assert.equal(createdRecord.doctor.toString(), doctor.publicKey.toString());
+    assert.equal(createdRecord.doctor.toString(), program.provider.wallet.publicKey.toString());
     assert.equal(createdRecord.vaccinationCamp.toString(), vaccinationCamp.publicKey.toString());
     assert.equal(createdRecord.passportHolder.toString(), holder.publicKey.toString());
     assert.ok(createdRecord.createdDate);
+  });
+
+  it ('can fetch vaccination records of passport holder', async () => {
+    const records = await program.account.vaccinationRecord.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: holder.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(records.length, 1);
   });
 
   it('can fetch all vaccination records', async () => {
@@ -371,9 +397,9 @@ describe('immunopass', () => {
     let status = "Valid";
     let notes = "No issues";
 
-    await program.rpc.createVerificationRecord(recordType, vaccinationRecord.publicKey, validatorType, doctor.publicKey, status, notes, {
+    await program.rpc.createValidationRecord(recordType, vaccinationRecord.publicKey, validatorType, program.provider.wallet.publicKey, status, notes, {
       accounts: {
-        verificationRecord: vRecord.publicKey,
+        validationRecord: vRecord.publicKey,
         author: program.provider.wallet.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       },
@@ -381,19 +407,19 @@ describe('immunopass', () => {
     });
 
     // check if the doctor is created
-    const createdVerificationRecord = await program.account.verificationRecord.fetch(vRecord.publicKey);
+    const createdVerificationRecord = await program.account.validationRecord.fetch(vRecord.publicKey);
 
     assert.equal(createdVerificationRecord.recordType, recordType.toUpperCase());
     assert.equal(createdVerificationRecord.record.toString(), vaccinationRecord.publicKey.toString());
     assert.equal(createdVerificationRecord.validatorType, validatorType.toUpperCase());
-    assert.equal(createdVerificationRecord.validator.toString(), doctor.publicKey.toString());
+    assert.equal(createdVerificationRecord.validator.toString(), program.provider.wallet.publicKey.toString());
     assert.equal(createdVerificationRecord.status, status.toUpperCase());
     assert.equal(createdVerificationRecord.notes, notes);
     assert.ok(createdVerificationRecord.createdDate);
   });
 
   it('can fetch all verification records', async () => {
-    const verificationRecords = await program.account.verificationRecord.all();
+    const verificationRecords = await program.account.validationRecord.all();
     assert.equal(verificationRecords.length, 1);
   });
 
@@ -424,11 +450,9 @@ describe('immunopass', () => {
     ]);
 
     assert.equal(searchedVC.length, 1);
-    // console.log(searchedVC[0]);
   });
 
   it ('can fetch a passport holder by wallet address', async () => {
-    // passport holder login
     const searchedPH = await program.account.passportHolder.all([
       {
         memcmp: {
@@ -438,8 +462,147 @@ describe('immunopass', () => {
       }
     ]);
 
-    assert.equal(searchedPH.length, 2);  // because we have created 2 passport holders above
-    // console.log(searchedPH);
+    assert.equal(searchedPH.length, 2);
   });
 
+  it('can validate vaccination records', async () => {
+
+    const doctor01 = anchor.web3.Keypair.generate();
+    const vaccinationCamp01 = anchor.web3.Keypair.generate();
+    const holder01 = anchor.web3.Keypair.generate();
+
+    let signature = await program.provider.connection.requestAirdrop(doctor01.publicKey, 1000000000);
+    await program.provider.connection.confirmTransaction(signature);
+
+    signature = await program.provider.connection.requestAirdrop(vaccinationCamp01.publicKey, 1000000000);
+    await program.provider.connection.confirmTransaction(signature);
+
+    signature = await program.provider.connection.requestAirdrop(holder01.publicKey, 1000000000);
+    await program.provider.connection.confirmTransaction(signature);
+
+    let vaccine = "BCG";
+    let notes = "Dose 1";
+    let age = "5";
+    let weight = "13";
+    let dosage = "10mg";
+    let batch_number = "BCG_123456789";
+
+    await program.rpc.createVaccinationRecord(vaccine, notes, age, weight, dosage, batch_number, doctor01.publicKey, vaccinationCamp01.publicKey, holder01.publicKey, {
+      accounts: {
+        vaccinationRecord: record.publicKey,
+        author: doctor01.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [doctor01, record],
+    });
+
+    // create new keypair for a passport holder
+    const docRecord = anchor.web3.Keypair.generate();
+
+    let recordType = "vaccination";
+    let validatorType = "doctor";
+    let status = "Valid";
+    notes = "No issues";
+
+
+    await program.rpc.createValidationRecord(recordType, record.publicKey, validatorType, doctor01.publicKey, status, notes, {
+      accounts: {
+        validationRecord: docRecord.publicKey,
+        author: doctor01.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [doctor01, docRecord],
+    });
+
+
+    const vcRecord = anchor.web3.Keypair.generate();
+    validatorType = "vaccination_camp";
+
+    await program.rpc.createValidationRecord(recordType, record.publicKey, validatorType, vaccinationCamp01.publicKey, status, notes, {
+      accounts: {
+        validationRecord: vcRecord.publicKey,
+        author: vaccinationCamp01.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [vaccinationCamp01, vcRecord],
+    });
+
+    validatorType = "passport_holder";
+    const phRecord = anchor.web3.Keypair.generate();
+
+    await program.rpc.createValidationRecord(recordType, record.publicKey, validatorType, holder01.publicKey, status, notes, {
+      accounts: {
+        validationRecord: phRecord.publicKey,
+        author: holder01.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      },
+      signers: [holder01, phRecord],
+    });
+
+    // validation
+    // await program.rpc.checkVaccinationRecordValidity({
+    //   accounts: {
+    //     vaccinationRecord: record.publicKey,
+    //     docVerificationRecord: docRecord.publicKey,
+    //     phVerificationRecord: phRecord.publicKey,
+    //     vcVerificationRecord: vcRecord.publicKey,
+    //     author: doctor01.publicKey,
+    //   },
+    // });
+
+  });
+
+
+  it ('can fetch a validation records of a vaccination record', async () => {
+    const records = await program.account.validationRecord.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: record.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(records.length, 3);  // because we have created 3 validation records above
+  });
+
+  it ('can fetch a vaccinations records of a vaccination camp', async () => {
+    const vaccinations = await program.account.vaccinationRecord.all([
+      {
+        memcmp: {
+          offset: 8 + 32 + 32,
+          bytes: vaccinationCamp.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(vaccinations.length, 1);  // because we have created 1 vaccination record above
+  });
+
+  it ('can fetch a vaccinations records of a doctor', async () => {
+    const vaccinations = await program.account.vaccinationRecord.all([
+      {
+        memcmp: {
+          offset: 8 + 32,
+          bytes: doctor.publicKey.toBase58(),
+        }
+      }
+    ]);
+
+    assert.equal(vaccinations.length, 0);  // because we have created 0 vaccination record above
+  });
+
+  it ('can fetch a passport holder by nic', async () => {
+
+    const records = await program.account.passportHolder.all([
+      {
+        memcmp: {
+          offset: 8 + 32 + 4,
+          bytes:  bs58.encode(Buffer.from('123456789V')),
+        }
+      }
+    ]);
+
+    assert.equal(records.length, 1);  // because we have created 3 validation records above
+  });
 });
