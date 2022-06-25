@@ -56,10 +56,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-function createData(date, vaccine, batchNumber, dosage, status) {
-  return { date, vaccine, batchNumber, dosage, status };
-}
-
 
 export default function VaccinationCampDashboard() {
 
@@ -92,27 +88,20 @@ export default function VaccinationCampDashboard() {
   useEffect(() => {
     setRows([])
     if (vaccines) {
-      createRecords(vaccines)
+      setRows(vaccines)
     }
   }, [vaccines]);
 
   const loadVC = async () => {
     const vc = await getVaccinationCampByWalletAddress(wallet);
+    console.log("vac -", vc)
     setVaccinationCamp(vc);
   }
 
   const loadVaccines = async (accountKey) => {
     const vac = await getAssignedVaccinationsForCamp(wallet, accountKey);
-    setVaccines(vac);
-  }
 
-  const createRecords = (vacs) => {
-    vacs.forEach(vaccine => {
-      let row = createData(vaccine?.account?.createdDate, vaccine?.account?.vaccine, vaccine?.account?.batchNumber, vaccine?.account?.dosage, vaccine?.account?.status)
-      setRows(rows.concat(row))
-      console.log("rows - ", row)
-    })
-    console.log(rows)
+    setVaccines(vac);
   }
 
 
@@ -133,7 +122,7 @@ export default function VaccinationCampDashboard() {
   }
 
 
-  if (vaccinationCamp === undefined) {
+  if (vaccinationCamp === undefined || vaccinationCamp === null || vaccinationCamp.length === 0) {
     return (
         <UserNotFound />
     );
@@ -191,11 +180,11 @@ export default function VaccinationCampDashboard() {
             <TableBody>
               {rows.map((row) => (
                   <StyledTableRow key={row.name}>
-                    <StyledTableCell component="th" scope="row">{getDateFormatted(row.date)}</StyledTableCell>
-                    <StyledTableCell align="left">{row.vaccine}</StyledTableCell>
-                    <StyledTableCell align="left">{row.batchNumber}</StyledTableCell>
-                    <StyledTableCell align="left">{row.dosage}</StyledTableCell>
-                    <StyledTableCell align="left">{getStatus(row.status)}</StyledTableCell>
+                    <StyledTableCell component="th" scope="row">{getDateFormatted(row.account.createdDate)}</StyledTableCell>
+                    <StyledTableCell align="left">{row.account.vaccine}</StyledTableCell>
+                    <StyledTableCell align="left">{row.account.batchNumber}</StyledTableCell>
+                    <StyledTableCell align="left">{row.account.dosage}</StyledTableCell>
+                    <StyledTableCell align="left">{getStatus(row.account.status)}</StyledTableCell>
                     <StyledTableCell align="left"><Button size="small" onClick={handleOpenVaccine}>View Record</Button></StyledTableCell>
                   </StyledTableRow>
               ))}
