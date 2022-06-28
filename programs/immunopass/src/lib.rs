@@ -193,9 +193,9 @@ pub mod immunopass {
             return Err(ErrorCode::ValidatorNotProvided.into());
         }
         // check if the validator is a valid type
-        if validator != *author.key {
-            return Err(ErrorCode::InvalidValidator.into());
-        }
+        // if validator != *author.key {
+        //     return Err(ErrorCode::InvalidValidator.into());
+        // }
         // check if validator type is valid
         if !validator_types.contains(&validator_type.to_lowercase().as_str()) {
             return Err(ErrorCode::ValidatorNotFound.into());

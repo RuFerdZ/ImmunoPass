@@ -5,6 +5,7 @@ import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-r
 import { network } from '../../config';
 import PassportHolderDashboard from './PassportHolderDashboard';
 import { useNavigate } from 'react-router';
+import {Link} from "react-router-dom";
 
 const wallets = [
   getPhantomWallet(),
@@ -42,6 +43,15 @@ export  function PassportHolderLogin() {
               <WalletMultiButton />
           </div>
         </div>
+          <div className='secondary-text mt-5'>
+              Register or Update Patient Account
+              <div className="reg-button-wrap">
+                  <Link to="/passport-holder/register-update">
+                      <div className="reg-button button-secondary mt-3 mr-2" >Click here</div>
+                  </Link>
+              </div>
+
+          </div>
       </div>
     )
   }else{
