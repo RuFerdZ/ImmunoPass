@@ -12,8 +12,9 @@ import InitiateVaccinations from './pages/doctor/InitiateVaccinations';
 
 import LandingPage from './pages/LandingPage'
 import AdminDashboard from './pages/admin/AdminDashboard';
-import { AdminLogin } from './pages/admin/AdminLogin';
+import AdminLogin from './pages/admin/AdminLogin';
 import ValidationDashboard from "./pages/validation/ValidationDashboard";
+import PassportHolderSetWallet from "./pages/passport_holder/PassportHolderSetWallet";
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 
@@ -34,6 +35,7 @@ export default function App() {
           <Route exact path="/vaccination-camp/dashboard" element={<VaccinationCampDashboard />} />
           <Route exact path="/validate/vaccination" element={<ValidationDashboard />} />
           <Route exact path="/admin/dashboard" element={<AdminLogin />} />
+          <Route exact path="/passport-holder/register-update" element={<PassportHolderSetWallet />} />
         </Routes>
       </BrowserRouter>
     </div>
