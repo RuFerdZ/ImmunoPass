@@ -377,4 +377,26 @@ a:hover {
   width: 10px;
   margin: auto;
   margin-bottom: 1%;
+  font-family: 'Sora', sans-serif !important;
+  font-size: initial !important;
 }
+
+.reg-button-wrap {
+  width: 165px !important;
+  margin: auto;
+  display: flex;
+}
+
+.reg-button {
+  width: 165px !important;
+  margin: auto;
+  display: flex;
+}
+
+.center-regform {
+  margin: auto !important;
+  display: inline;
+  justify-content: center;
+  /*width: 100% !important;*/
+}
+
