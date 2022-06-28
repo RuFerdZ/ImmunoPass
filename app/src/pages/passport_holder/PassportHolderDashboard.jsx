@@ -127,6 +127,7 @@ export default function PassportHolderDashboard() {
                     Your Information
                   </div>
                   <div className="mt-2 px-5"><span className="text-bold mr-2">Identification Number: </span>{passportHolder?.account?.nic}</div>
+                  <div className="mt-2 px-5"><span className="text-bold mr-2">Name: </span>{passportHolder?.account?.title + ' ' + passportHolder?.account?.firstname + ' ' + passportHolder?.account?.lastname}</div>
                   <div className="mt-2 px-5"><span className="text-bold mr-2">Gender: </span>{passportHolder?.account?.gender}</div>
                   <div className="mt-2 px-5"><span className="text-bold mr-2">Phone: </span>{passportHolder?.account?.phone}</div>
                   <div className="mt-2 px-5"><span className="text-bold mr-2">Address: </span>{passportHolder?.account?.address}</div>
