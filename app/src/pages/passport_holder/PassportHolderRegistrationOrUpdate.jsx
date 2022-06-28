@@ -114,8 +114,8 @@ export default function PassportHolderRegistrationOrUpdate(){
                             <div className="form-group row">
                                 <label className="col-sm-2 col-form-label">Gender</label>
                                 <div className="col-sm-4">
-                                    <input type="radio" name="gender" value="male" checked={gender === 'MALE'} onChange={e => setGender(e.target.value)} />male
-                                    <input type="radio" name="gender" value="female" checked={gender === 'FEMAL'} onChange={e => setGender(e.target.value)} />female
+                                    <input type="radio" name="gender" value="male"  onChange={e => setGender(e.target.value)} />male
+                                    <input type="radio" name="gender" value="female"  onChange={e => setGender(e.target.value)} />female
                                 </div>
                             </div>
 
