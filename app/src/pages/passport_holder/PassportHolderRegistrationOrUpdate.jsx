@@ -5,6 +5,9 @@ import { getPassportHolderByWalletAddress, createPassportHolder} from '../../api
 import { useWallet } from '@solana/wallet-adapter-react';
 import {useNavigate} from "react-router-dom";
 import UserExists from "../UserExists";
+import RegistrationConfirmationModal from './RegistrationConfirmationModal';
+import {WalletMultiButton} from "@solana/wallet-adapter-react-ui";
+
 
 export default function PassportHolderRegistrationOrUpdate(){
     const navigate = useNavigate();
@@ -19,6 +22,11 @@ export default function PassportHolderRegistrationOrUpdate(){
     const [phone, setPhone] = useState('');
     const [birthplace, setBirthplace] = useState('');
     const [nic, setNIC] = useState('');
+
+    //  model settings
+    const [openModal, setOpenModal] = React.useState(false);
+    const handleOpenModal = () => setOpenModal(true);
+    const handleCloseModal = () => setOpenModal(false);
 
     useEffect(() => {
         loadPH()
@@ -71,6 +79,7 @@ export default function PassportHolderRegistrationOrUpdate(){
 
         const passportHolder = await createPassportHolder(wallet, passportHolderRequest);
         console.log("passport holder - " , passportHolder)
+        handleOpenModal();
     }
 
     const getTimestamp = (date) => {
@@ -87,7 +96,7 @@ export default function PassportHolderRegistrationOrUpdate(){
                         {/* add input fields for owner, firstname, lastname, date_of_birth, gender, title, address, phone, place_of_birth, nic */}
 
 
-                        <h2>Update your Passport</h2>
+                        <h2>Register your Vaccination Passport</h2>
                         <div className="ph-add-section-input-fields">
                             <div className="form-group row">
                                 <label className="col-sm-2 col-form-label">First Name</label>
@@ -157,7 +166,13 @@ export default function PassportHolderRegistrationOrUpdate(){
                         </div>
                         <div className="ph-add-section-buttons">
                             <button className="button-secondary mr-3" type="submit">Add</button>
-                            <button className="button-secondary" type="reset">Reset</button>
+                            <button className="button-secondary" type="reset">Reset</button> <br />
+                            <div className='inline-flex-default'>
+                                <div className="button-secondary mt-3 mr-2"
+                                     onClick={() => navigate(-1)}
+                                >back
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -168,4 +183,12 @@ export default function PassportHolderRegistrationOrUpdate(){
             <UserExists />
         )
     }
+
+    {openModal &&
+    <RegistrationConfirmationModal
+        closeModal={setOpenModal}
+    />
+    }
 }
+
+
