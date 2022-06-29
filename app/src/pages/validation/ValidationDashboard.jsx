@@ -130,7 +130,7 @@ export default function ValidationDashboard(){
                                 {vaccination?.account?.notes}
                             </div>
                             <div className="mt-3"><span className="text-bold mr-2">Age: </span>
-                                {(vaccination?.account?.age).toString()} years
+                                {(vaccination?.account?.age | 0).toString() } years
                             </div>
                             <div className="mt-3"><span className="text-bold mr-2">Weight: </span>
                                 {vaccination?.account?.weight}
