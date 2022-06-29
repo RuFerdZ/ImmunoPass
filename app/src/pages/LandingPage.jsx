@@ -18,7 +18,7 @@ function LandingPage() {
                         <div className="button-primary mt-3">Vaccination Camp Login</div>
                     </Link>
                     <Link to="/verify/vaccination">
-                        <div className="button-primary my-3">Validate Vaccination</div>
+                        <div className="button-primary my-3">Verify Vaccination</div>
                     </Link>
                 </div>
             </div>
