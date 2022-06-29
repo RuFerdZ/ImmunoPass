@@ -499,6 +499,10 @@
             "type": "publicKey"
           },
           {
+            "name": "batchNumber",
+            "type": "string"
+          },
+          {
             "name": "createdDate",
             "type": "i64"
           },
@@ -520,10 +524,6 @@
           },
           {
             "name": "dosage",
-            "type": "string"
-          },
-          {
-            "name": "batchNumber",
             "type": "string"
           },
           {

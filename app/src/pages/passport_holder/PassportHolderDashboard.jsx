@@ -158,7 +158,7 @@ export default function PassportHolderDashboard() {
                       <StyledTableCell>Date of Vaccination</StyledTableCell>
                       <StyledTableCell align="left">Public Key</StyledTableCell>
                       <StyledTableCell align="left">Vaccine</StyledTableCell>
-                      <StyledTableCell align="left">Batch Number</StyledTableCell>
+                      <StyledTableCell align="left">Batch Code</StyledTableCell>
                       <StyledTableCell align="left">Dosage</StyledTableCell>
                       <StyledTableCell align="left">Status</StyledTableCell>
                       <StyledTableCell align="left"></StyledTableCell>
