@@ -34,7 +34,7 @@ export default function App() {
           <Route exact path="/doctor/initiate-vaccination" element={<InitiateVaccinations />} />
           <Route exact path="/passport-holder/dashboard" element={<PassportHolderDashboard />} />
           <Route exact path="/vaccination-camp/dashboard" element={<VaccinationCampDashboard />} />
-          <Route exact path="/validate/vaccination" element={<ValidationLogin />} />
+          <Route exact path="/verify/vaccination" element={<ValidationLogin />} />
           <Route exact path="/admin/dashboard" element={<AdminLogin />} />
           <Route exact path="/passport-holder/register-update" element={<PassportHolderSetWallet />} />
         </Routes>

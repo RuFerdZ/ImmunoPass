@@ -17,7 +17,7 @@ function LandingPage() {
                     <Link to="/vaccination-camp/home">
                         <div className="button-primary mt-3">Vaccination Camp Login</div>
                     </Link>
-                    <Link to="/validate/vaccination">
+                    <Link to="/verify/vaccination">
                         <div className="button-primary my-3">Validate Vaccination</div>
                     </Link>
                 </div>
