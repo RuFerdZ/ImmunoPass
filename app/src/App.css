@@ -27,14 +27,13 @@
   margin-bottom: 50px;
 }
 
-
 .role-selection {
   justify-content: center;
   align-items: center;
   display: flex;
   flex-direction: column;
   width: 100%;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   justify-content: space-evenly;
 }
 
@@ -49,13 +48,14 @@
   justify-content: center;
 }
 
-.dashboard-header{
+.dashboard-header {
   width: 100%;
   background-color: #5d9ba0;
   color: white;
 }
 
-.user-profile-table th,td{
+.user-profile-table th,
+td {
   text-align: left;
 }
 
@@ -63,14 +63,13 @@ TableHead {
   background-color: #5d9ba0 !important;
 }
 
-
 .doc-dashboard {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   margin: 0px;
   height: 100%;
 }
 
-.doc-dashboard-title{
+.doc-dashboard-title {
   padding: 20px;
   color: white;
   font-size: 3rem;
@@ -78,14 +77,16 @@ TableHead {
   margin: 0px;
 }
 
-.doc-dashboard-body-row1{
+.doc-dashboard-body-row1 {
   flex-direction: row;
   display: flex;
   justify-content: space-evenly;
   padding: 10px;
 }
 
-.doc-dashboard-body-row1-col1,.doc-dashboard-body-row1-col2,.doc-dashboard-body-row1-col3{
+.doc-dashboard-body-row1-col1,
+.doc-dashboard-body-row1-col2,
+.doc-dashboard-body-row1-col3 {
   /* height: 250px; */
   width: 30%;
   background-color: #191c24;
@@ -112,7 +113,7 @@ TableHead {
   padding: 2%;
 }
 
-.doctor-actions{
+.doctor-actions {
   color: white;
 }
 
@@ -123,18 +124,18 @@ TableHead {
   border-radius: 4px;
   font-size: 16px;
   background-color: white;
-  background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoNeJzJdqGD_fqnfD3Mx8nkIfzr23GRQ4uv1siNhcN4oBAAer-pIgBmn83hE4pJrlK_Vg&usqp=CAU');
-  background-position: 10px 10px; 
+  background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoNeJzJdqGD_fqnfD3Mx8nkIfzr23GRQ4uv1siNhcN4oBAAer-pIgBmn83hE4pJrlK_Vg&usqp=CAU");
+  background-position: 10px 10px;
   background-size: 22px 22px;
   background-repeat: no-repeat;
   padding: 12px 20px 12px 40px;
 }
 
-.load-patient{
+.load-patient {
   margin-top: 10px !important;
 }
 
-.detail-patient{
+.detail-patient {
   width: 90%;
   box-sizing: border-box;
   border: 2px solid #ccc;
@@ -146,35 +147,36 @@ TableHead {
   margin-bottom: 20px;
 }
 
-.patient-content, .vaccination-info{
+.patient-content,
+.vaccination-info {
   color: #8b807e;
   text-align: left;
-  padding-left: 10%;  
+  padding-left: 10%;
 }
 
-.create-record{
+.create-record {
   padding-bottom: 10%;
 }
 
-.chart-body{
+.chart-body {
   padding: 5% !important;
   background-color: #191c24;
 }
 
-.legend{
+.legend {
   color: white;
   font-weight: 500;
   font-size: 1rem;
   /* uppercase text */
-  text-transform: uppercase; 
+  text-transform: uppercase;
   /* line spacing */
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
   text-align: left;
   padding-left: 10%;
 }
 
 .approved {
-  color:#9ccc65 ;
+  color: #9ccc65;
 }
 
 .pending {
@@ -185,7 +187,7 @@ TableHead {
   color: #ff7043;
 }
 
-.website-link{
+.website-link {
   color: wheat;
 }
 
@@ -193,10 +195,10 @@ TableHead {
   color: #000000;
 }
 .white-color {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 .peach-color {
-  color: #FF4C29;
+  color: #ff4c29;
 }
 
 .main-center-container-default {
@@ -221,7 +223,7 @@ TableHead {
 
 /* cards */
 .black-card {
-  background-color: #0F1511;
+  background-color: #0f1511;
   width: 700px;
   margin: auto;
   border-radius: 25px;
@@ -242,7 +244,7 @@ TableHead {
 }
 
 .button-primary {
-  background-color: #F9FAF5;
+  background-color: #f9faf5;
   padding: 10px;
   border-radius: 10px;
   font-weight: 600;
@@ -251,7 +253,7 @@ TableHead {
 }
 .button-primary:hover {
   text-decoration: none !important;
-  background-color: #FF4C29;
+  background-color: #ff4c29;
   transition-duration: 0.6s;
 }
 .button-secondary {
@@ -259,21 +261,24 @@ TableHead {
   background: #000000;
   border: none;
   text-transform: uppercase;
-  color: #FFFFFF;
+  color: #ffffff;
   border-radius: 25px;
   min-width: 100px;
   height: 42px !important;
   padding: 9px 20px 9px 20px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .button-secondary:hover {
-  background: #FF4C29;
+  background: #ff4c29;
   color: #000000;
   transition-duration: 0.6s;
 }
 
 .button-secondary-reverse {
   cursor: pointer !important;
-  background: #FF4C29;
+  background: #ff4c29;
   border: none;
   text-transform: uppercase;
   color: #000000;
@@ -284,7 +289,7 @@ TableHead {
 }
 .button-secondary-reverse:hover {
   background: #000000;
-  color: #FFFFFF;
+  color: #ffffff;
   transition-duration: 0.6s;
 }
 
@@ -318,11 +323,11 @@ a:hover {
 }
 .wallet-adapter-button-trigger {
   background: #000000 !important;
-  color: #FFF;
+  color: #fff;
   border-radius: 25px !important;
   padding: 9px 20px 9px 20px !important;
   display: flex !important;
-  font-family: 'Sora', sans-serif !important;
+  font-family: "Sora", sans-serif !important;
   font-size: initial;
   font-weight: inherit !important;
   height: inherit !important;
@@ -330,7 +335,7 @@ a:hover {
   text-transform: uppercase;
 }
 .wallet-adapter-button:hover {
-  background: #FF4C29 !important;
+  background: #ff4c29 !important;
   transition-duration: 0.6s;
 }
 
@@ -344,6 +349,9 @@ a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 .modal-container {
   width: 600px;
@@ -355,7 +363,11 @@ a:hover {
 }
 .modal-body {
   height: 55vh;
-  overflow-y: scroll;
+  overflow-y: auto;
+}
+.modal-body.note-modal {
+  height: 30vh;
+  overflow: unset;
 }
 
 /* position */
@@ -377,7 +389,7 @@ a:hover {
   width: 10px;
   margin: auto;
   margin-bottom: 1%;
-  font-family: 'Sora', sans-serif !important;
+  font-family: "Sora", sans-serif !important;
   font-size: initial !important;
 }
 
@@ -399,4 +411,3 @@ a:hover {
   justify-content: center;
   /*width: 100% !important;*/
 }
-
