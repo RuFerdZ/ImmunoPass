@@ -22,7 +22,7 @@ export function ValidationLogin() {
         return (
             <div className="main-center-container text-center">
                 <div className='primary-text'>
-                    Admin
+                    Verifier
                 </div>
                 <div className='secondary-text mt-5'>
                     Connect Wallet to Verify Vaccination

@@ -80,7 +80,7 @@ export default function ValidationDashboard(){
         <div className='doc-dashboard'>
             <div className='doc-dashboard-header'>
 
-                <h1 className='primary-text black-color pt-3 pb-2 text-uppercase text-center'>Validate Vaccination</h1>
+                <h1 className='primary-text black-color pt-3 pb-2 text-uppercase text-center'>Verify Vaccination</h1>
                 <div className="button-secondary back-btn"
                      onClick={() => navigate(-1)}
                 >back
