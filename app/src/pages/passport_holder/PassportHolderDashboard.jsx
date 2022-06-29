@@ -89,7 +89,8 @@ export default function PassportHolderDashboard() {
     //   console.log("rows - ", row)
     // })
     setRows(vacs)
-    console.log(rows)
+
+    console.log("oubkey", vacs[0]?.publicKey.toString())
   }
 
   const getDateFormatted = (timestamp) => {
@@ -155,8 +156,9 @@ export default function PassportHolderDashboard() {
                   <TableHead>
                     <TableRow>
                       <StyledTableCell>Date of Vaccination</StyledTableCell>
+                      <StyledTableCell align="left">Public Key</StyledTableCell>
                       <StyledTableCell align="left">Vaccine</StyledTableCell>
-                      <StyledTableCell align="left">Batch Number</StyledTableCell>
+                      <StyledTableCell align="left">Batch Code</StyledTableCell>
                       <StyledTableCell align="left">Dosage</StyledTableCell>
                       <StyledTableCell align="left">Status</StyledTableCell>
                       <StyledTableCell align="left"></StyledTableCell>
@@ -166,6 +168,7 @@ export default function PassportHolderDashboard() {
                     {rows.map((row) => (
                       <StyledTableRow key={row.name}>
                         <StyledTableCell component="th" scope="row">{getDateFormatted(row.account.createdDate)}</StyledTableCell>
+                        <StyledTableCell align="left">{row.publicKey.toString()}</StyledTableCell>
                         <StyledTableCell align="left">{row.account.vaccine}</StyledTableCell>
                         <StyledTableCell align="left">{row.account.batchNumber}</StyledTableCell>
                         <StyledTableCell align="left">{row.account.dosage}</StyledTableCell>

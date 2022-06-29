@@ -329,10 +329,8 @@ export async function createPassportHolder(wallet, passportHolder) {
 export async function getPassportHolderByPubKey(wallet, pubKey) {
     const provider = await getProvider(wallet);
     const program = new Program(workspace.programIdl, workspace.programID, provider);
-    console.log(pubKey)
     try {
         const passportHolder = await program.account.passportHolder.fetch(pubKey);
-        console.log(passportHolder);
         return passportHolder;
     } catch (err) {
         console.log("Error in getting passport holder by public key. - " + err);
@@ -565,3 +563,29 @@ function toTimestamp(strDate){
     return datum/1000;
  }
 
+
+export async function getVaccinationByBatchNumber(wallet, batchNo) {
+    const provider = await getProvider(wallet);
+    const program = new Program(workspace.programIdl, workspace.programID, provider);
+
+    try{
+        const vaccinations = await program.account.vaccinationRecord.all(
+            [
+                {
+                    memcmp: {
+                        offset: 8 +
+                            32 +
+                            32 +
+                            32 +
+                            4,
+                        bytes: bs58.encode(Buffer.from(batchNo)),
+                    }
+                }
+            ]
+        )
+        return vaccinations
+    } catch (err) {
+        console.log("Error in getting vaccination records from batch Number. - " + err);
+    }
+    return null;
+}
