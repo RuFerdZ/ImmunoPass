@@ -22,9 +22,12 @@ export default function ValidationDashboard(){
     const [vaccination, setVaccination] = useState('');
     const [validationRecords, setValidationRecords] = useState('');
 
-    const loadVaccinationRecord = async () => {
+    const loadVaccinationRecord = async (e) => {
+        e.preventDefault();
+        console.log(pubkey)
+        console.log("wallet - ", wallet)
 
-        let vacc = await getVaccinationRecordByPubkey(wallet,new PublicKey(pubkey))
+        let vacc = await getVaccinationRecordByPubkey(wallet, new PublicKey(pubkey).toBase58())
         console.log(vacc)
     }
 
@@ -68,115 +71,115 @@ export default function ValidationDashboard(){
 
                                 <button className="button-secondary-reverse text-bold" type='submit'>Load Vaccination</button>
                             </form>
-                            <div className="secondary-text text-uppercase my-4">Vaccination Information</div>
-                            <div className="mt-3" style={{wordBreak:"break-all"}}><span className="text-bold mr-2">Vaccine: </span>
-                                {vaccination.vaccine}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Batch Number: </span>
-                                {vaccination.batchNumber}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Dosage: </span>
-                                {vaccination.dosage}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Status: </span>
-                                {vaccination.status}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Notes: </span>
-                                {vaccination.notes}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Age: </span>
-                                {vaccination.age}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Weight: </span>
-                                {vaccination.weight}
-                            </div>
+                            {/*<div className="secondary-text text-uppercase my-4">Vaccination Information</div>*/}
+                            {/*<div className="mt-3" style={{wordBreak:"break-all"}}><span className="text-bold mr-2">Vaccine: </span>*/}
+                            {/*    {vaccination.vaccine}*/}
+                            {/*</div>*/}
+                            {/*<div className="mt-3"><span className="text-bold mr-2">Batch Number: </span>*/}
+                            {/*    {vaccination.batchNumber}*/}
+                            {/*</div>*/}
+                            {/*<div className="mt-3"><span className="text-bold mr-2">Dosage: </span>*/}
+                            {/*    {vaccination.dosage}*/}
+                            {/*</div>*/}
+                            {/*<div className="mt-3"><span className="text-bold mr-2">Status: </span>*/}
+                            {/*    {vaccination.status}*/}
+                            {/*</div>*/}
+                            {/*<div className="mt-3"><span className="text-bold mr-2">Notes: </span>*/}
+                            {/*    {vaccination.notes}*/}
+                            {/*</div>*/}
+                            {/*<div className="mt-3"><span className="text-bold mr-2">Age: </span>*/}
+                            {/*    {vaccination.age}*/}
+                            {/*</div>*/}
+                            {/*<div className="mt-3"><span className="text-bold mr-2">Weight: </span>*/}
+                            {/*    {vaccination.weight}*/}
+                            {/*</div>*/}
                         </div>
                     </div>
 
-                    <div className="main-box mr-3">
-                        <div className="light-black-card-md py-3 px-5 pb-4">
+                    {/*<div className="main-box mr-3">*/}
+                    {/*    <div className="light-black-card-md py-3 px-5 pb-4">*/}
 
-                            <div className="secondary-text text-uppercase my-4">Patient Information</div>
-                            <div className="mt-3" style={{wordBreak:"break-all"}}><span className="text-bold mr-2">Vaccine: </span>
-                                {vaccination.vaccine}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Batch Number: </span>
-                                {vaccination.batchNumber}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Dosage: </span>
-                                {vaccination.dosage}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Status: </span>
-                                {vaccination.status}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Notes: </span>
-                                {vaccination.notes}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Age: </span>
-                                {vaccination.age}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Weight: </span>
-                                {vaccination.weight}
-                            </div>
-                        </div>
-                    </div>
+                    {/*        <div className="secondary-text text-uppercase my-4">Patient Information</div>*/}
+                    {/*        <div className="mt-3" style={{wordBreak:"break-all"}}><span className="text-bold mr-2">Vaccine: </span>*/}
+                    {/*            {vaccination.vaccine}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Batch Number: </span>*/}
+                    {/*            {vaccination.batchNumber}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Dosage: </span>*/}
+                    {/*            {vaccination.dosage}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Status: </span>*/}
+                    {/*            {vaccination.status}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Notes: </span>*/}
+                    {/*            {vaccination.notes}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Age: </span>*/}
+                    {/*            {vaccination.age}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Weight: </span>*/}
+                    {/*            {vaccination.weight}*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
 
-                    <div className="main-box mr-3">
-                        <div className="light-black-card-md py-3 px-5 pb-4">
+                    {/*<div className="main-box mr-3">*/}
+                    {/*    <div className="light-black-card-md py-3 px-5 pb-4">*/}
 
-                            <div className="secondary-text text-uppercase my-4">Doctor Information</div>
-                            <div className="mt-3" style={{wordBreak:"break-all"}}><span className="text-bold mr-2">Vaccine: </span>
-                                {vaccination.vaccine}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Batch Number: </span>
-                                {vaccination.batchNumber}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Dosage: </span>
-                                {vaccination.dosage}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Status: </span>
-                                {vaccination.status}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Notes: </span>
-                                {vaccination.notes}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Age: </span>
-                                {vaccination.age}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Weight: </span>
-                                {vaccination.weight}
-                            </div>
-                        </div>
-                    </div>
+                    {/*        <div className="secondary-text text-uppercase my-4">Doctor Information</div>*/}
+                    {/*        <div className="mt-3" style={{wordBreak:"break-all"}}><span className="text-bold mr-2">Vaccine: </span>*/}
+                    {/*            {vaccination.vaccine}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Batch Number: </span>*/}
+                    {/*            {vaccination.batchNumber}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Dosage: </span>*/}
+                    {/*            {vaccination.dosage}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Status: </span>*/}
+                    {/*            {vaccination.status}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Notes: </span>*/}
+                    {/*            {vaccination.notes}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Age: </span>*/}
+                    {/*            {vaccination.age}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Weight: </span>*/}
+                    {/*            {vaccination.weight}*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
 
-                    <div className="main-box mr-3">
-                        <div className="light-black-card-md py-3 px-5 pb-4">
+                    {/*<div className="main-box mr-3">*/}
+                    {/*    <div className="light-black-card-md py-3 px-5 pb-4">*/}
 
 
-                            <div className="secondary-text text-uppercase my-4">Vaccination Camp Information</div>
-                            <div className="mt-3" style={{wordBreak:"break-all"}}><span className="text-bold mr-2">Vaccine: </span>
-                                {vaccination.vaccine}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Batch Number: </span>
-                                {vaccination.batchNumber}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Dosage: </span>
-                                {vaccination.dosage}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Status: </span>
-                                {vaccination.status}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Notes: </span>
-                                {vaccination.notes}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Age: </span>
-                                {vaccination.age}
-                            </div>
-                            <div className="mt-3"><span className="text-bold mr-2">Weight: </span>
-                                {vaccination.weight}
-                            </div>
-                        </div>
-                    </div>
+                    {/*        <div className="secondary-text text-uppercase my-4">Vaccination Camp Information</div>*/}
+                    {/*        <div className="mt-3" style={{wordBreak:"break-all"}}><span className="text-bold mr-2">Vaccine: </span>*/}
+                    {/*            {vaccination.vaccine}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Batch Number: </span>*/}
+                    {/*            {vaccination.batchNumber}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Dosage: </span>*/}
+                    {/*            {vaccination.dosage}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Status: </span>*/}
+                    {/*            {vaccination.status}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Notes: </span>*/}
+                    {/*            {vaccination.notes}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Age: </span>*/}
+                    {/*            {vaccination.age}*/}
+                    {/*        </div>*/}
+                    {/*        <div className="mt-3"><span className="text-bold mr-2">Weight: </span>*/}
+                    {/*            {vaccination.weight}*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </div>
             </div>
         </div>
