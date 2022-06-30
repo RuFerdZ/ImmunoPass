@@ -140,8 +140,8 @@ export default function InitiateVaccinations({ goBack }) {
     <div className="doc-dashboard">
       <div className="doc-dashboard-header row mx-0">
         <div className="col-4 d-flex">
-          <button className="button-secondary my-auto" onClick={goBack}>
-            Go back
+          <button className="button-secondary my-auto ml-2" onClick={goBack}>
+            Back
           </button>
         </div>
         <div className="col-4">
