@@ -422,13 +422,13 @@ pub struct VaccinationRecord {
     pub passport_holder: Pubkey,
     pub doctor: Pubkey,
     pub vaccination_camp: Pubkey,
-    pub batch_number: String,
     pub created_date: i64,
     pub vaccine: String,
     pub notes: String,
     pub age: i64,
     pub weight: String,
     pub dosage: String,
+    pub batch_number: String,
     pub status: String
 }
 
@@ -540,9 +540,8 @@ impl VaccinationRecord {
         + TIMESTAMP_LENGTH                                // age
         + STRING_LENGTH_PREFIX + WEIGHT_LENGTH            // weight
         + STRING_LENGTH_PREFIX + DOSAGE_LENGTH            // dosage
-        + STRING_LENGTH_PREFIX + BATCH_NUMBER_LENGTH;     // batch_number
-
-
+        + STRING_LENGTH_PREFIX + BATCH_NUMBER_LENGTH      // batch_number
+        + STRING_LENGTH_PREFIX + STATUS_LENGTH;           // status
 }
 
 // validation record attribute length rules
