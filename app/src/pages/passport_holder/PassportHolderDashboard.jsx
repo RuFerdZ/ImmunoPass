@@ -57,9 +57,8 @@ export default function PassportHolderDashboard() {
   const [selectedStatus, setSelectedStatus] = useState("pending");
 
   // vaccine model settings
-  const [openVaccine, setOpenVaccine] = React.useState(false);
-  const handleOpenVaccine = () => setOpenVaccine(true);
-  const handleCloseVaccinee = () => setOpenVaccine(false);
+  const [openVaccine, setOpenVaccine] = useState(false);
+  const [rowPk, setRowPk] = useState(null);
 
   // var accountKey = ""
 
@@ -154,6 +153,11 @@ export default function PassportHolderDashboard() {
       NotificationManager.error("Couldn't change the status", "Error");
       console.log(error);
     }
+  };
+
+  const handleOpenValidationModal = (pk) => {
+    setRowPk(pk);
+    setOpenVaccine(true);
   };
 
   if (
@@ -280,7 +284,10 @@ export default function PassportHolderDashboard() {
                       />
                     </StyledTableCell>
                     <StyledTableCell align="left">
-                      <Button size="small" onClick={handleOpenVaccine}>
+                      <Button
+                        size="small"
+                        onClick={() => handleOpenValidationModal(row.publicKey)}
+                      >
                         View Record
                       </Button>
                     </StyledTableCell>
@@ -291,9 +298,12 @@ export default function PassportHolderDashboard() {
           </TableContainer>
         </div>
 
-        {openVaccine && <ViewRecordModal closeVaccine={setOpenVaccine} />}
+        {openVaccine && (
+          <ViewRecordModal closeVaccine={setOpenVaccine} publicKey={rowPk} />
+        )}
         <NotificationContainer />
       </div>
     );
   }
 }
+
