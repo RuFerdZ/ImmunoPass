@@ -116,6 +116,31 @@ export async function getDoctorByWalletAddress(wallet) {
   }
 }
 
+export async function getDoctorByWalletAddressExternal(wallet, key) {
+
+  const provider = await getProvider(wallet);
+  const program = new Program(
+      workspace.programIdl,
+      workspace.programID,
+      provider
+  );
+  try {
+    const doctor = await program.account.doctor.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: key.toBase58(),
+        },
+      },
+    ]);
+    return doctor[0];
+  } catch (err) {
+    console.log("Error in getting doctor by wallet address. - " + err);
+    throw err;
+  }
+}
+
+
 export async function initiateVaccinationRecord(wallet, vaccinationRecord) {
   const provider = await getProvider(wallet);
   const program = new Program(
