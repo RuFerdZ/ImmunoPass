@@ -69,9 +69,8 @@ export default function DoctorDashboard(props) {
   const [rows, setRows] = useState([]);
 
   // vaccine model settings
-  const [openVaccine, setOpenVaccine] = React.useState(false);
-  const handleOpenVaccine = () => setOpenVaccine(true);
-  const handleCloseVaccinee = () => setOpenVaccine(false);
+  const [openVaccine, setOpenVaccine] = useState(false);
+  const [rowPk, setRowPk] = useState(null);
 
   useEffect(() => {
     loadDoctor();
@@ -158,6 +157,11 @@ export default function DoctorDashboard(props) {
       NotificationManager.error("Couldn't change the status", "Error");
       console.log(error);
     }
+  };
+
+  const handleOpenValidationModal = (pk) => {
+    setRowPk(pk);
+    setOpenVaccine(true);
   };
 
   if (doctor === undefined || doctor === null || doctor.length === 0) {
@@ -277,7 +281,10 @@ export default function DoctorDashboard(props) {
                       />
                     </StyledTableCell>
                     <StyledTableCell align="left">
-                      <Button size="small" onClick={handleOpenVaccine}>
+                      <Button
+                        size="small"
+                        onClick={() => handleOpenValidationModal(row.publicKey)}
+                      >
                         View Record
                       </Button>
                     </StyledTableCell>
@@ -287,7 +294,9 @@ export default function DoctorDashboard(props) {
             </Table>
           </TableContainer>
         </div>
-        {openVaccine && <ViewRecordModal closeVaccine={setOpenVaccine} />}
+        {openVaccine && (
+          <ViewRecordModal closeVaccine={setOpenVaccine} publicKey={rowPk} />
+        )}
         <NotificationContainer />
       </div>
     );
