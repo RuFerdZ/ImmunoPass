@@ -411,3 +411,12 @@ a:hover {
   justify-content: center;
   /*width: 100% !important;*/
 }
+
+.validators-section {
+  margin: 75px;
+  text-align: center;
+}
+
+.custom-validator{
+  margin-top: 20px;
+}
