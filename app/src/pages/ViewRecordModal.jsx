@@ -26,6 +26,14 @@ const ViewRecordModal = ({ closeVaccine, publicKey }) => {
         getValidationStatus();
     }, []);
 
+    useEffect(() => {
+        if (rows.length>0) {
+            rows.sort(function (x, y) {
+                return y?.account?.createdDate - x?.account?.createdDate;
+            })
+        }
+    }, [rows]);
+
     return (
         <div className="modal-background">
             <div className="modal-container shadow-sm">

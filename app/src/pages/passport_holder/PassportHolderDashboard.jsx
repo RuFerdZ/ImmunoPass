@@ -90,6 +90,7 @@ export default function PassportHolderDashboard() {
 
   const loadVaccines = async (accountKey) => {
     try {
+      console.log("account key - ", accountKey)
       const vac = await getVaccinationRecordsOfPassportHolder(
         wallet,
         accountKey
@@ -102,14 +103,7 @@ export default function PassportHolderDashboard() {
   };
 
   const createRecords = (vacs) => {
-    // vacs.forEach(vaccine => {
-    //   let row = createData(vaccine?.account?.createdDate, vaccine?.account?.vaccine, vaccine?.account?.batchNumber, vaccine?.account?.dosage, vaccine?.account?.status)
-    //   setRows(rows.concat(row))
-    //   console.log("rows - ", row)
-    // })
     setRows(vacs);
-
-    console.log("oubkey", vacs[0]?.publicKey.toString());
   };
 
   const getDateFormatted = (timestamp) => {
