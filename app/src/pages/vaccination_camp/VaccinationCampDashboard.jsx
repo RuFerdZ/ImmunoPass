@@ -240,16 +240,13 @@ export default function VaccinationCampDashboard() {
             </div>
           </div>
           <div className="main-box">
-            <div className="light-black-card text-center text-uppercase p-3">
-              <div className="secondary-text my-3">Statistics</div>
+            <div className="light-black-card  text-uppercase p-3">
+              <div className="secondary-text text-center my-3">Statistics</div>
               <div className="text-bold mt-5 px-5">
-                Approve: <span className="approved ml-3">Yes</span>
+                Active: <span className="approved ml-3">True</span>
               </div>
               <div className="text-bold mt-5 px-5">
-                Pending: <span className="pending ml-3">Yes</span>
-              </div>
-              <div className="text-bold mt-5 px-5">
-                Rejected: <span className="rejected ml-3">Yes</span>
+                Vaccination Count <span className="pending ml-3">{vaccines.length}</span>
               </div>
             </div>
           </div>
