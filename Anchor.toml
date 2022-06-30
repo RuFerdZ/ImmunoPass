@@ -1,16 +1,16 @@
 [features]
 seeds = false
 [programs.localnet]
-immunopass = "HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG"
+immunopass = "2KywXPJLebpRqAGDeWuQDEaReX3M951js7DorDCFtvRW"
 
 [programs.testnet]
-immunopass = "HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG"
+immunopass = "2KywXPJLebpRqAGDeWuQDEaReX3M951js7DorDCFtvRW"
 
 [programs.devnet]
-immunopass = "HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG"
+immunopass = "2KywXPJLebpRqAGDeWuQDEaReX3M951js7DorDCFtvRW"
 
 [programs.mainnet]
-immunopass = "HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG"
+immunopass = "2KywXPJLebpRqAGDeWuQDEaReX3M951js7DorDCFtvRW"
 
 [registry]
 url = "https://anchor.projectserum.com"

@@ -4,7 +4,7 @@ use std::clone::Clone;
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::system_program;
 
-declare_id!("HoVPS3s5fbgFfbXAuGg6hfL8CKMYjLBhPHdtfqBgLNMG");
+declare_id!("2KywXPJLebpRqAGDeWuQDEaReX3M951js7DorDCFtvRW");
 
 #[program]
 pub mod immunopass {
@@ -422,13 +422,13 @@ pub struct VaccinationRecord {
     pub passport_holder: Pubkey,
     pub doctor: Pubkey,
     pub vaccination_camp: Pubkey,
+    pub batch_number: String,
     pub created_date: i64,
     pub vaccine: String,
     pub notes: String,
     pub age: i64,
     pub weight: String,
     pub dosage: String,
-    pub batch_number: String,
     pub status: String
 }
 
