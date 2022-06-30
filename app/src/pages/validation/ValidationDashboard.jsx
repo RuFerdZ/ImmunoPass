@@ -30,7 +30,7 @@ export default function ValidationDashboard() {
 
   const [batchNumber, setBatchNumber] = useState("");
   const [vaccination, setVaccination] = useState("");
-  const [validationRecords, setValidationRecords] = useState("");
+  const [validationRecords, setValidationRecords] = useState([]);
 
   useEffect(() => {
     if (vaccination?.publicKey) {
@@ -40,6 +40,14 @@ export default function ValidationDashboard() {
       loadValidationRecords(vaccination?.publicKey);
     }
   }, [vaccination]);
+
+  useEffect(() => {
+    if (validationRecords.length > 0) {
+      validationRecords.sort(function (x, y) {
+        return y?.account?.createdDate - x?.account?.createdDate;
+      })
+    }
+  }, [validationRecords]);
 
   const loadVaccinationRecord = async (e) => {
     e.preventDefault();
@@ -84,6 +92,23 @@ export default function ValidationDashboard() {
       const doc = await getDoctorByWalletAddress(wallet, v?.doctor);
       console.log("doc = ", doc);
       setDoctor(doc);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const loadValidator = async (type, key) => {
+    try {
+      if (type === 'PASSPORT_HOLDER') {
+        const ph = await getPassportHolderByWalletAddress(wallet, key);
+        return (ph?.account?.title + '. ' + ph?.account?.firstname + ' ' + ph?.account?.lastname)
+      } else if (type === 'DOCTOR') {
+        const doc = await getDoctorByWalletAddress(wallet, key);
+        return ('Dr. ' + doc?.account?.firstname + ' ' + doc?.account?.lastname);
+      } else if (type === 'VACCINATION_CAMP'){
+        const vc = await getVaccinationCampByWalletAddress(wallet, key);
+        return vc?.account?.name;
+      }
     } catch (error) {
       console.log(error);
     }
@@ -279,6 +304,27 @@ export default function ValidationDashboard() {
           </div>
         </div>
       </div>
+      <div className="validators-section">
+        <h2>Validators</h2>
+        <h6>(latest first)</h6>
+        {validationRecords.map((row) => (
+            <div className="card custom-validator">
+              <div className="card-header">
+                {getDateFormatted(row?.account?.createdDate)}
+              </div>
+              <div className="card-body">
+                <h6>{row?.account?.validatorType}</h6>
+                {/*<h5 className="card-title">{loadValidator(row?.account?.validatorType, row?.account?.validator)}</h5>*/}
+                <p className="card-text">{row?.account?.notes}</p>
+
+                {row?.account?.status === 'PENDING' ? <a className="btn btn-secondary">{row?.account?.status}</a>: ''}
+                {row?.account?.status === 'APPROVED' ? <a  className="btn btn-success">{row?.account?.status}</a>: ''}
+                {row?.account?.status === 'REJECTED' ? <a  className="btn btn-danger">{row?.account?.status}</a>: ''}
+              </div>
+            </div>
+        ))}
+      </div>
+
     </div>
   );
 }
