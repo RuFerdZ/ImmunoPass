@@ -21,7 +21,7 @@ export  function PassportHolderSetWallet() {
         return (
             <div className="main-center-container text-center">
                 <div className='primary-text'>
-                    Passport Holder Registration & Updation
+                    Passport Holder Registration
                 </div>
                 <div className='secondary-text mt-5'>
                     Connect Wallet to Continue
