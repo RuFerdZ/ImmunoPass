@@ -9,6 +9,10 @@ import { useNavigate } from "react-router-dom";
 import UserExists from "../UserExists";
 import RegistrationConfirmationModal from "./RegistrationConfirmationModal";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
 
 export default function PassportHolderRegistrationOrUpdate() {
   const navigate = useNavigate();
@@ -23,11 +27,6 @@ export default function PassportHolderRegistrationOrUpdate() {
   const [phone, setPhone] = useState("");
   const [birthplace, setBirthplace] = useState("");
   const [nic, setNIC] = useState("");
-
-  //  model settings
-  const [openModal, setOpenModal] = React.useState(false);
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
 
   useEffect(() => {
     loadPH();
@@ -62,12 +61,6 @@ export default function PassportHolderRegistrationOrUpdate() {
     }
   };
 
-  const getDateFormatted = (timestamp) => {
-    let options = { year: "numeric", month: "long", day: "numeric" };
-    const date = new Date(timestamp * 1000);
-    return date.toLocaleDateString("en-US", options);
-  };
-
   const createPassportHolderAccount = async (e) => {
     e.preventDefault();
     try {
@@ -88,9 +81,14 @@ export default function PassportHolderRegistrationOrUpdate() {
         passportHolderRequest
       );
       console.log("passport holder - ", passportHolder);
-      handleOpenModal();
+      NotificationManager.success(
+        "Successfully created passport holder",
+        "Success"
+      );
+      navigate("/passport-holder/home");
     } catch (error) {
       console.log(error);
+      NotificationManager.error("Couldn't create passport holder", "Error");
     }
   };
 
@@ -111,161 +109,166 @@ export default function PassportHolderRegistrationOrUpdate() {
           <form onSubmit={createPassportHolderAccount}>
             {/* add input fields for owner, firstname, lastname, date_of_birth, gender, title, address, phone, place_of_birth, nic */}
 
-            <h2>Register your Vaccination Passport</h2>
-            <div className="ph-add-section-input-fields">
-              <div className="form-group row">
-                <label className="col-sm-2 col-form-label">First Name</label>
-                <div className="col-sm-4">
-                  <input
-                    type="text"
-                    name="firstname"
-                    placeholder="First Name"
-                    value={firstname}
-                    onChange={(e) => setFirstname(e.target.value)}
-                  />
-                </div>
+            <div className="d-flex justify-content-between">
+              <div
+                className="button-secondary ml-2"
+                onClick={() => navigate(-1)}
+              >
+                back
               </div>
-
-              <div className="form-group row">
-                <label className="col-sm-2 col-form-label">Last Name</label>
-                <div className="col-sm-4">
-                  <input
-                    type="text"
-                    name="lastname"
-                    placeholder="Last Name"
-                    value={lastname}
-                    onChange={(e) => setLastname(e.target.value)}
-                  />
+              <h2 className="text-center">
+                Register your Vaccination Passport
+              </h2>
+              <div className="button-secondary ml-2 invisible">back</div>
+            </div>
+            <div className="row mx-0">
+              <div className="col-6 offset-4">
+                <div className="form-group row">
+                  <label className="col-sm-4 col-form-label">First Name</label>
+                  <div className="col-sm-8">
+                    <input
+                      type="text"
+                      name="firstname"
+                      placeholder="First Name"
+                      value={firstname}
+                      onChange={(e) => setFirstname(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-group row">
-                <label className="col-sm-2 col-form-label">Date of Birth</label>
-                <div className="col-sm-4">
-                  <input
-                    type="date"
-                    name="date_of_birth"
-                    placeholder="Date of Birth"
-                    value={dateOfBirth}
-                    onChange={(e) => setDateOfBirth(e.target.value)}
-                  />
+                <div className="form-group row">
+                  <label className="col-sm-4 col-form-label">Last Name</label>
+                  <div className="col-sm-8">
+                    <input
+                      type="text"
+                      name="lastname"
+                      placeholder="Last Name"
+                      value={lastname}
+                      onChange={(e) => setLastname(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* add gender radios */}
-              <div className="form-group row">
-                <label className="col-sm-2 col-form-label">Gender</label>
-                <div className="col-sm-4">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="male"
-                    onChange={(e) => setGender(e.target.value)}
-                  />{" "}
-                  Male <br />
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="female"
-                    onChange={(e) => setGender(e.target.value)}
-                  />{" "}
-                  Female
+                <div className="form-group row">
+                  <label className="col-sm-4 col-form-label">
+                    Date of Birth
+                  </label>
+                  <div className="col-sm-8">
+                    <input
+                      type="date"
+                      name="date_of_birth"
+                      placeholder="Date of Birth"
+                      value={dateOfBirth}
+                      onChange={(e) => setDateOfBirth(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-group row">
-                <label className="col-sm-2 col-form-label">Title</label>
-                <div className="col-sm-4">
-                  <input
-                    type="text"
-                    name="title"
-                    placeholder="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
+                {/* add gender radios */}
+                <div className="form-group row">
+                  <label className="col-sm-4 col-form-label">Gender</label>
+                  <div className="col-sm-8">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="male"
+                      onChange={(e) => setGender(e.target.value)}
+                    />{" "}
+                    Male <br />
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="female"
+                      onChange={(e) => setGender(e.target.value)}
+                    />{" "}
+                    Female
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-group row">
-                <label className="col-sm-2 col-form-label">Address</label>
-                <div className="col-sm-4">
-                  <input
-                    type="text"
-                    name="address"
-                    placeholder="address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
+                <div className="form-group row">
+                  <label className="col-sm-4 col-form-label">Title</label>
+                  <div className="col-sm-8">
+                    <input
+                      type="text"
+                      name="title"
+                      placeholder="title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-group row">
-                <label className="col-sm-2 col-form-label">NIC</label>
-                <div className="col-sm-4">
-                  <input
-                    type="text"
-                    name="nic"
-                    placeholder="NIC"
-                    value={nic}
-                    onChange={(e) => setNIC(e.target.value)}
-                  />
+                <div className="form-group row">
+                  <label className="col-sm-4 col-form-label">Address</label>
+                  <div className="col-sm-8">
+                    <input
+                      type="text"
+                      name="address"
+                      placeholder="address"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-group row">
-                <label className="col-sm-2 col-form-label">phone</label>
-                <div className="col-sm-4">
-                  <input
-                    type="text"
-                    name="phone"
-                    placeholder="Telephone"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
+                <div className="form-group row">
+                  <label className="col-sm-4 col-form-label">NIC</label>
+                  <div className="col-sm-8">
+                    <input
+                      type="text"
+                      name="nic"
+                      placeholder="NIC"
+                      value={nic}
+                      onChange={(e) => setNIC(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-group row">
-                <label className="col-sm-2 col-form-label">
-                  Place of Birth
-                </label>
-                <div className="col-sm-4">
-                  <input
-                    type="text"
-                    name="birthplace"
-                    placeholder="birth place"
-                    value={birthplace}
-                    onChange={(e) => setBirthplace(e.target.value)}
-                  />
+                <div className="form-group row">
+                  <label className="col-sm-4 col-form-label">phone</label>
+                  <div className="col-sm-8">
+                    <input
+                      type="text"
+                      name="phone"
+                      placeholder="Telephone"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group row">
+                  <label className="col-sm-4 col-form-label">
+                    Place of Birth
+                  </label>
+                  <div className="col-sm-8">
+                    <input
+                      type="text"
+                      name="birthplace"
+                      placeholder="birth place"
+                      value={birthplace}
+                      onChange={(e) => setBirthplace(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="ph-add-section-buttons">
-              <button className="button-secondary mr-3" type="submit">
-                Add
-              </button>
-              <button className="button-secondary" type="reset">
-                Reset
-              </button>{" "}
-              <br />
-              <div className="inline-flex-default">
-                <div
-                  className="button-secondary mt-3 mr-2"
-                  onClick={() => navigate(-1)}
-                >
-                  back
-                </div>
+            <div className="d-flex">
+              <div className="mx-auto d-flex">
+                <button className="button-secondary mr-3" type="reset">
+                  Reset
+                </button>
+                <button className="button-secondary" type="submit">
+                  Add
+                </button>
               </div>
             </div>
           </form>
         </div>
+        <NotificationContainer />
       </div>
     );
   } else {
     return <UserExists />;
-  }
-
-  {
-    openModal && <RegistrationConfirmationModal closeModal={setOpenModal} />;
   }
 }
