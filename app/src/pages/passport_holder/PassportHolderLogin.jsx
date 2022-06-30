@@ -44,7 +44,7 @@ export  function PassportHolderLogin() {
           </div>
         </div>
           <div className='secondary-text mt-5'>
-              Register or Update Patient Account
+              Register Passport Profile
               <div className="reg-button-wrap">
                   <Link to="/passport-holder/register-update">
                       <div className="reg-button button-secondary mt-3 mr-2" >Click here</div>
