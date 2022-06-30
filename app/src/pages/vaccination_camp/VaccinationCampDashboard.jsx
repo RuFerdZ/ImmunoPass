@@ -76,9 +76,8 @@ export default function VaccinationCampDashboard() {
   const handleClose = () => setOpen(false);
 
   // vaccine model settings
-  const [openVaccine, setOpenVaccine] = React.useState(false);
-  const handleOpenVaccine = () => setOpenVaccine(true);
-  const handleCloseVaccinee = () => setOpenVaccine(false);
+  const [openVaccine, setOpenVaccine] = useState(false);
+  const [rowPk, setRowPk] = useState(null);
 
   useEffect(() => {
     loadVC();
@@ -158,6 +157,11 @@ export default function VaccinationCampDashboard() {
       NotificationManager.error("Couldn't change the status", "Error");
       console.log(error);
     }
+  };
+
+  const handleOpenValidationModal = (pk) => {
+    setRowPk(pk);
+    setOpenVaccine(true);
   };
 
   if (
@@ -291,7 +295,10 @@ export default function VaccinationCampDashboard() {
                     />
                   </StyledTableCell>
                   <StyledTableCell align="left">
-                    <Button size="small" onClick={handleOpenVaccine}>
+                    <Button
+                      size="small"
+                      onClick={() => handleOpenValidationModal(row.publicKey)}
+                    >
                       View Record
                     </Button>
                   </StyledTableCell>
@@ -301,7 +308,9 @@ export default function VaccinationCampDashboard() {
           </Table>
         </TableContainer>
       </div>
-      {openVaccine && <ViewRecordModal closeVaccine={setOpenVaccine} />}
+      {openVaccine && (
+        <ViewRecordModal closeVaccine={setOpenVaccine} publicKey={rowPk} />
+      )}
       <NotificationContainer />
     </div>
   );
