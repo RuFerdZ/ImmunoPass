@@ -3,7 +3,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import {
-  getDoctorByPubKey,
+  getDoctorByPubKey, getDoctorByWalletAddress, getDoctorByWalletAddressExternal,
   getPassportHolderByPubKey,
   getVaccinationCampByPubKey,
 } from "../api";
@@ -49,7 +49,9 @@ export default function RecordCard({
   const getDoctor = async () => {
     let doctor = null;
     try {
-      doctor = await getDoctorByPubKey(wallet, publicKey);
+
+      doctor = await getDoctorByWalletAddressExternal(wallet, publicKey);
+      console.log('doctor - ', doctor)
       return doctor;
     } catch (error) {
       return null;
