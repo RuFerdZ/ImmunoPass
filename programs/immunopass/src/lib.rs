@@ -415,7 +415,6 @@ pub struct PassportHolder {
     pub is_active: bool
 }
 
-
 // vaccination record account
 #[account]
 pub struct VaccinationRecord {
@@ -479,6 +478,7 @@ const GENDER_LENGTH: usize = 10 * 4;
 
 
 // doctor attribute length rules
+// size = 5761  bytes
 impl Doctor {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH                               // owner
@@ -496,6 +496,7 @@ impl Doctor {
 }
 
 // vaccination camp attribute length rules
+// size = 5337  bytes
 impl VaccinationCamp {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH                                   // owner
@@ -512,6 +513,7 @@ impl VaccinationCamp {
 
 
 // passport holder attribute length rules
+// size = 4689  bytes
 impl PassportHolder {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH                               // owner
@@ -529,6 +531,7 @@ impl PassportHolder {
 }
 
 // vaccination record attribute length rules
+// size =  3504  bytes
 impl VaccinationRecord {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH                               // passport_holder
@@ -545,6 +548,7 @@ impl VaccinationRecord {
 }
 
 // validation record attribute length rules
+// size = 2456  bytes
 impl ValidationRecord {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH                                // record
