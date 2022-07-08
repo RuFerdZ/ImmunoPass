@@ -17,13 +17,6 @@ export  function PassportHolderLogin() {
 
   const wallet = useWallet();
   const navigate = useNavigate();
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (wallet.connected) {
-  //     navigate('/passport-holder/dashboard')
-  //   }
-  // },[wallet.connected]);
 
   if (!wallet.connected) {
     return (
