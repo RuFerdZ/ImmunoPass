@@ -10,6 +10,7 @@ declare_id!("2KywXPJLebpRqAGDeWuQDEaReX3M951js7DorDCFtvRW");
 pub mod immunopass {
     use super::*;
 
+    // function to create/update a doctor
     pub fn create_doctor(ctx: Context<CreateDoctor>, firstname: String, lastname: String, date_of_birth: String, license_number: String, licence_issued_date: String, licence_expiry_date: String, business_address: String, business_telephone: String, qualifications: String) -> ProgramResult {
 
         let doctor: &mut Account<Doctor> = &mut ctx.accounts.doctor;
@@ -39,6 +40,7 @@ pub mod immunopass {
         Ok(())
     }
 
+    // function to create/update a vaccination camp
     pub fn create_vaccination_camp(ctx: Context<CreateVaccinationCamp>, registration_number: String, name: String, phone: String, email: String, website: String, opening_times: String, address: String) -> ProgramResult {
     
         let vaccination_camp: &mut Account<VaccinationCamp> = &mut ctx.accounts.vaccination_camp;
@@ -66,6 +68,7 @@ pub mod immunopass {
         Ok(())
     }
 
+    // function to create/update a passport holder
     pub fn create_passport_holder(ctx: Context<CreatePassportHolder>, firstname: String, lastname: String, date_of_birth: String, gender: String, title: String, address: String, phone: String, place_of_birth: String, nic: String) -> ProgramResult {
         let genders = vec!["FEMALE", "MALE", "OTHER"];
 
@@ -78,6 +81,7 @@ pub mod immunopass {
         passport_holder.lastname = lastname;
         passport_holder.date_of_birth = date_of_birth.parse().unwrap();
 
+        // check gender
         if gender.is_empty() {
             passport_holder.gender = "NOT_SPECIFIED".parse().unwrap();
         } else if !genders.contains(&gender.to_uppercase().as_str()) {
@@ -106,6 +110,7 @@ pub mod immunopass {
         Ok(())
     }
 
+    // function to create a vaccination record
     pub fn create_vaccination_record(ctx: Context<CreateVaccinationRecord>, vaccine: String, notes: String, age: String, weight: String, dosage: String, batch_number: String, doctor: Pubkey, vaccination_camp: Pubkey, passport_holder: Pubkey) -> ProgramResult {
         let author: &Signer = &ctx.accounts.author;
 
@@ -179,6 +184,7 @@ pub mod immunopass {
         Ok(())
     }
 
+    // function to create a validation record
     pub fn create_validation_record(ctx: Context<CreateValidationRecord>, record_type: String, record: Pubkey, validator_type: String, validator: Pubkey, status: String, notes: String) -> ProgramResult {
 
         let validator_types = vec!["doctor", "vaccination_camp", "passport_holder"];
@@ -192,10 +198,7 @@ pub mod immunopass {
         if validator.to_bytes().len() == 0 {
             return Err(ErrorCode::ValidatorNotProvided.into());
         }
-        // check if the validator is a valid type
-        // if validator != *author.key {
-        //     return Err(ErrorCode::InvalidValidator.into());
-        // }
+
         // check if validator type is valid
         if !validator_types.contains(&validator_type.to_lowercase().as_str()) {
             return Err(ErrorCode::ValidatorNotFound.into());
@@ -228,6 +231,7 @@ pub mod immunopass {
         Ok(())
     }
 
+    // function to check vaccination record validity
     pub fn check_vaccination_record_validity(ctx: Context<VerifyVaccinationRecord>) -> ProgramResult {
 
         let vaccination_record: &mut Account<VaccinationRecord> = &mut ctx.accounts.vaccination_record;
@@ -236,8 +240,7 @@ pub mod immunopass {
         let vc_verification_record: &mut Account<ValidationRecord> = &mut ctx.accounts.vc_verification_record;
         let ph_verification_record: &mut Account<ValidationRecord> = &mut ctx.accounts.ph_verification_record;
 
-
-
+        // check validity logic
         if doc_verification_record.status == "invalid".to_uppercase() || vc_verification_record.status == "invalid".to_uppercase() || ph_verification_record.status == "invalid".to_uppercase() {
             vaccination_record.status = "invalid".to_uppercase();
         } else if doc_verification_record.status == "valid".to_uppercase() && vc_verification_record.status == "valid".to_uppercase() && ph_verification_record.status == "valid".to_uppercase() {
