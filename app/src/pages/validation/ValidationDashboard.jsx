@@ -154,7 +154,7 @@ export default function ValidationDashboard() {
                 Vaccination Data
               </div>
               <form onSubmit={loadVaccinationRecord}>
-                <label className="">Vaccination Batch Code:</label>
+                <label className="">Vaccination Code:</label>
                 <div className="form-group row">
                   <div className="col-sm-12">
                     <input
