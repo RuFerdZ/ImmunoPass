@@ -16,7 +16,7 @@ immunopass = "2KywXPJLebpRqAGDeWuQDEaReX3M951js7DorDCFtvRW"
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "devnet"
+cluster = "localnet"
 wallet = "/home/rusiru/.config/solana/id.json"
 
 [scripts]
