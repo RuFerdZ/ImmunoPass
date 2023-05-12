@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build .\app\ --file Dockerfile -t ruferdz/immunopass:latest
+      run: docker build ./app --file ./app/Dockerfile -t ruferdz/immunopass:latest
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v1
